@@ -1,0 +1,76 @@
+
+library value_notifiable;
+
+import 'package:flutter/widgets.dart';
+
+class ItemNotifier<T> {
+  T? _value;
+  VoidCallback? _listener;
+
+  void setListener(VoidCallback listener) {
+    _listener = listener;
+  }
+
+  void removeListener() {
+    _listener = null;
+  }
+
+  void notify(T? value) {
+    this._value = value;
+    _listener?.call();
+  }
+}
+
+class ItemNotifiable<T> extends StatefulWidget {
+  final ItemNotifier<T?> notifier;
+  final Widget Function(BuildContext context, T? value) builder;
+
+  const ItemNotifiable({
+    Key? key,
+    required this.notifier,
+    required this.builder,
+  })  : assert(notifier != null),
+        assert(builder != null),
+        super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _ItemNotifiableState<T>();
+}
+
+class _ItemNotifiableState<T> extends State<ItemNotifiable<T>> {
+  late T? value;
+
+  @override
+  void initState() {
+    super.initState();
+    value = widget.notifier._value;
+    widget.notifier.setListener(_valueChanged);
+  }
+
+  @override
+  void didUpdateWidget(ItemNotifiable<T> oldWidget) {
+    if (oldWidget.notifier != widget.notifier) {
+      oldWidget.notifier.removeListener();
+      value = widget.notifier._value;
+      widget.notifier.setListener(_valueChanged);
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void dispose() {
+    widget.notifier.removeListener();
+    super.dispose();
+  }
+
+  void _valueChanged() {
+    setState(() {
+      value = widget.notifier._value;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.builder(context, value);
+  }
+}
