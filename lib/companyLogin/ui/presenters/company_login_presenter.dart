@@ -1,7 +1,6 @@
 
 
 import 'package:flutter_projects/_shared/exceptions/af_exception.dart';
-import 'package:flutter_projects/af_core/company_management/entities/credentials.dart';
 import 'package:flutter_projects/af_core/company_management/services/current_company_provider.dart';
 import 'package:flutter_projects/companyLogin/ui/contracts/company_login_view.dart';
 

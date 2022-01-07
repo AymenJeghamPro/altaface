@@ -7,6 +7,30 @@ class SecureSharedPrefs {
   final encryptionKey = 'PeShVmYq3t6w9z@C';
   final initializationVector = IV.fromLength(16);
 
+  void save(String key, Object data) async {
+    var mapString = json.encode(data);
+    var encryptedMapString = _encryptString(mapString);
+    var preferences = await SharedPreferences.getInstance();
+    await preferences.setString(key, encryptedMapString);
+  }
+
+  Future<String?> getString(String key) async {
+    var preferences = await SharedPreferences.getInstance();
+
+    if (preferences.containsKey(key) == false) {
+      return null;
+    }
+
+    var encryptedMapString = preferences.getString(key);
+    if (encryptedMapString == null) {
+      return null;
+    }
+
+    var string = _decryptString(encryptedMapString);
+
+    return string;
+  }
+
   void saveMap(String key, Map data) async {
     var mapString = json.encode(data);
     var encryptedMapString = _encryptString(mapString);
@@ -45,6 +69,7 @@ class SecureSharedPrefs {
   String _decryptString(String base64String) {
     final key = Key.fromUtf8(encryptionKey);
     final encrypter = Encrypter(AES(key));
-    return encrypter.decrypt(Encrypted.from64(base64String), iv: initializationVector);
+    return encrypter.decrypt(Encrypted.from64(base64String),
+        iv: initializationVector);
   }
 }

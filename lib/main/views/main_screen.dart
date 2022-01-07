@@ -7,7 +7,7 @@ import 'package:flutter_projects/common_widgets/screen_presenter/screen_presente
 import 'package:flutter_projects/companyLogin/ui/views/company_login_screen.dart';
 import 'package:flutter_projects/main/contracts/main_view.dart';
 import 'package:flutter_projects/main/presenters/main_presenter.dart';
-
+import 'package:flutter_projects/usersList/ui/views/users_list_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -37,15 +37,15 @@ class _MainScreenState extends State<MainScreen> implements MainView {
 
   @override
   void showLoginScreen() {
-    ScreenPresenter.present(const CompanyLoginScreen(), context);
+    Future.microtask(() {
+      ScreenPresenter.present(const CompanyLoginScreen(), context);
+    });
   }
 
   @override
   void goToUsersListScreen() {
-    // TODO: implement goToUsersListScreen
+    Future.microtask(() {
+      ScreenPresenter.present( UsersListScreen(), context);
+    });
   }
-
-
-
-
 }

@@ -118,8 +118,6 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen> implements Comp
     );
   }
 
-
-
   @override
   void showLoader() {
     _keyErrorNotifier.notify(null);

@@ -6,13 +6,13 @@ import 'package:flutter_projects/af_core/af_api/exceptions/unexpected_response_f
 
 import '../exceptions/malformed_response_exception.dart';
 
-class WPAPIResponseProcessor {
+class AFAPIResponseProcessor {
   dynamic processResponse(APIResponse response) {
     return _parseResponseData(response.data);
   }
 
   dynamic _parseResponseData(dynamic responseData) {
-    if (responseData is! Map<String, dynamic>) {
+    if (responseData is! List< dynamic>) {
       throw UnexpectedResponseFormatException();
     }
 
@@ -20,30 +20,30 @@ class WPAPIResponseProcessor {
       throw MalformedResponseException();
     }
 
-    return _readWPResponseDataFromResponse(responseData);
+    return _readAFResponseDataFromResponse(responseData);
   }
 
-  bool _isResponseProperlyFormed(Map<String, dynamic> responseMap) {
-    if (responseMap.containsKey('status')) {
-      if (responseMap['status'] == 'success') {
-        return responseMap.containsKey('data');
-      } else {
-        return true;
-      }
-    }
-    return false;
+  bool _isResponseProperlyFormed(List< dynamic>responseMap) {
+    // if (responseMap.containsKey('status')) {
+    //   if (responseMap['status'] == 'success') {
+    //     return responseMap.containsKey('data');
+    //   } else {
+    //     return true;
+    //   }
+    // }
+    return true;
   }
 
-  dynamic _readWPResponseDataFromResponse(Map<String, dynamic> responseMap) {
-    if (responseMap['status'] != 'success') {
-      throw ServerSentException(responseMap['message'], responseMap['errorCode'] ?? 0);
-    }
+  dynamic _readAFResponseDataFromResponse(List< dynamic> responseMap) {
+    // if (responseMap['status'] != 'success') {
+    //   throw ServerSentException(responseMap['message'], responseMap['errorCode'] ?? 0);
+    // }
 
-    if ((responseMap['data'] is List<dynamic>)) {
-      return _parseDataList(responseMap['data']);
-    } else {
-      return responseMap['data'];
-    }
+    // if ((responseMap['data'] is List<dynamic>)) {
+    //   return _parseDataList(responseMap['data']);
+    // } else {
+      return responseMap;
+   // }
   }
 
   List<Map<String, dynamic>> _parseDataList(List<dynamic> responseDataList) {

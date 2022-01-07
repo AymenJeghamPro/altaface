@@ -18,7 +18,7 @@ class Company extends JSONInitializable implements JSONConvertible {
   Company.fromJson(Map<String, dynamic> jsonMap) : super.fromJson(jsonMap) {
     var sift = Sift();
     try {
-      _id = '${sift.readNumberFromMap(jsonMap, 'id')}';
+      _id = sift.readStringFromMap(jsonMap, 'id');
       _name = sift.readStringFromMap(jsonMap, 'name');
       _language = sift.readStringFromMap(jsonMap, 'language');
       _timeZone = sift.readStringFromMap(jsonMap, 'timezone');
@@ -37,12 +37,12 @@ class Company extends JSONInitializable implements JSONConvertible {
 
 
     Map<String, dynamic> jsonMap = {
-      'company_id': int.parse(_id!),
-      'company_name': _name,
+      'id': _id,
+      'name': _name,
       'language': _language,
       'timezone': _timeZone,
-      'company_logo': _logoUrl,
-      'radius': _siteDefaultRadius,
+      'logo': _logoUrl,
+      'site_default_radius': _siteDefaultRadius,
       'address_id': _addressId,
       'is_archived' : _isArchived
     };
