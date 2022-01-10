@@ -1,3 +1,4 @@
+
 import 'package:flutter_projects/af_core/company_management/services/current_company_provider.dart';
 import 'package:flutter_projects/main/contracts/main_view.dart';
 
@@ -12,17 +13,13 @@ class MainPresenter {
 
 
   Future<void> showLandingScreen() async {
-    var _ = await Future.delayed(const Duration(milliseconds: 1000));
+    var _ = await Future.delayed(const Duration(milliseconds: 5000));
 
     if (isLoggedIn() == false) {
       _view.showLoginScreen();
     } else {
-      _showLandingScreenForLoggedInUser();
+      _view.goToUsersListScreen();
     }
-  }
-
-  void _showLandingScreenForLoggedInUser() {
-
   }
 
   bool isLoggedIn() {

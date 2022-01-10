@@ -25,7 +25,7 @@ class LoginTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(color: Colors.transparent),
+      decoration: const BoxDecoration(color: Colors.transparent),
       child: TextFormField(
         textAlign: TextAlign.center,
         obscureText: obscureText,
@@ -39,21 +39,21 @@ class LoginTextField extends StatelessWidget {
           hintText: hint,
           errorText: errorText,
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(100.0)),
+            borderRadius: const BorderRadius.all(Radius.circular(100.0)),
             borderSide: BorderSide(
               color: AppColors.defaultColor,
               width: 1,
             ),
           ),
           errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(100.0)),
+            borderRadius: BorderRadius.all(const Radius.circular(100.0)),
             borderSide: BorderSide(
               color: errorColor,
               width: 1,
             ),
           ),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(100.0)),
+            borderRadius: const BorderRadius.all(Radius.circular(100.0)),
             borderSide: BorderSide(
               color: AppColors.defaultColor,
               width: 1,

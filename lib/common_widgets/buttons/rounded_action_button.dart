@@ -70,7 +70,7 @@ class RoundedRectangleActionButton extends StatelessWidget {
               if (subtitle != null)
                 Text(
                   subtitle!,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
                     color: Color.fromRGBO(130, 130, 130, 1.0),

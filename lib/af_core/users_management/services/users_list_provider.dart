@@ -6,33 +6,33 @@ import 'package:flutter_projects/af_core/af_api/exceptions/http_exception.dart';
 import 'package:flutter_projects/af_core/af_api/exceptions/server_sent_exception.dart';
 import 'package:flutter_projects/af_core/af_api/services/af_api.dart';
 import 'package:flutter_projects/af_core/af_api/services/network_adapter.dart';
-import 'package:flutter_projects/af_core/company_management/constants/company_management_urls.dart';
-import 'package:flutter_projects/af_core/company_management/entities/company.dart';
-import 'package:flutter_projects/af_core/company_management/repositories/company_repository.dart';
+import 'package:flutter_projects/af_core/company_management/services/current_company_provider.dart';
+import 'package:flutter_projects/af_core/users_management/constants/users_management_urls.dart';
+import 'package:flutter_projects/af_core/users_management/entities/users.dart';
+import 'package:flutter_projects/af_core/users_management/repository/users_repository.dart';
 
-class CurrentCompanyProvider {
-  final CompanyRepository _companyRepository;
+class UsersListProvider {
+  final CurrentCompanyProvider _currentCompanyProvider;
+  final UsersRepository _usersRepository;
   final NetworkAdapter _networkAdapter;
   bool isLoading = false;
 
-  CurrentCompanyProvider.initWith(
-      this._companyRepository, this._networkAdapter);
+  UsersListProvider.initWith(this._currentCompanyProvider,
+      this._usersRepository, this._networkAdapter);
 
-  CurrentCompanyProvider()
-      : _companyRepository = CompanyRepository(),
+  UsersListProvider()
+      : _currentCompanyProvider = CurrentCompanyProvider(),
+        _usersRepository = UsersRepository(),
         _networkAdapter = AFAPI();
 
   void reset() {
     isLoading = false;
   }
 
-  bool isLoggedIn() {
-    return _companyRepository.getCurrentCompany() != null;
-  }
+  Future<List<User>> getUsers(String companyId) async {
+    var url = UsersManagementUrls.getUsersUrl();
 
-  Future<Company?> login(String key) async {
-    var url = CompanyManagementUrls.getCompany();
-    Map<String, String> qParams = {'key': key};
+    Map<String, String> qParams = {'company_id': companyId};
     Uri uri = Uri.parse(url);
     final finalUri = uri.replace(queryParameters: qParams);
     var apiRequest = APIRequest(finalUri.toString());
@@ -52,7 +52,7 @@ class CurrentCompanyProvider {
     }
   }
 
-  Company _processResponse(APIResponse apiResponse) {
+  List<User> _processResponse(APIResponse apiResponse) {
     if (apiResponse.data == null) throw InvalidResponseException();
 
     var responseMapList = apiResponse.data;
@@ -60,13 +60,15 @@ class CurrentCompanyProvider {
     return _readItemsFromResponse(responseMapList);
   }
 
-  Company _readItemsFromResponse(Map<String, dynamic> responseMap) {
+  List<User> _readItemsFromResponse(
+      List<dynamic> responseMapList) {
     try {
-      var company = Company.fromJson(responseMap);
-
-      _companyRepository.saveCompany(company);
-
-      return company;
+      var users = <User>[];
+      for (var responseMap in responseMapList) {
+        var user = User.fromJson(responseMap);
+        users.add(user);
+      }
+      return users;
     } catch (e) {
       throw InvalidResponseException();
     }
