@@ -37,7 +37,8 @@ class RoundedRectangleActionButton extends StatelessWidget {
         padding: const EdgeInsets.only(left: 8, right: 8),
         onPressed: (disabled || showLoader) ? null : onPressed,
         color: color ?? AppColors.defaultColor,
-        disabledColor: showLoader ? color : AppColors.defaultColor.withOpacity(0.5),
+        disabledColor:
+            showLoader ? color : AppColors.defaultColor.withOpacity(0.5),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: showLoader ? _buildLoader() : _buildIconAndTitle(),
@@ -49,7 +50,8 @@ class RoundedRectangleActionButton extends StatelessWidget {
   List<Widget> _buildIconAndTitle() {
     return [
       if (icon != null) icon!,
-      if (icon != null && title != null && title!.isNotEmpty) const SizedBox(width: 8),
+      if (icon != null && title != null && title!.isNotEmpty)
+        const SizedBox(width: 8),
       if (title != null && title!.isNotEmpty)
         Flexible(
           child: Column(
@@ -90,7 +92,8 @@ class RoundedRectangleActionButton extends StatelessWidget {
         child: CircularProgressIndicator(
           strokeWidth: 2,
           backgroundColor: Colors.transparent,
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.white.withOpacity(0.7)),
+          valueColor:
+              AlwaysStoppedAnimation<Color>(Colors.white.withOpacity(0.7)),
         ),
       )
     ];

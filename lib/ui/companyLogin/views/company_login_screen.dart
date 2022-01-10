@@ -36,23 +36,88 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Container(
           decoration: const BoxDecoration(
-            image: DecorationImage(image: AssetImage("assets/icons/background1.png"), fit: BoxFit.cover),
+            gradient: LinearGradient(
+                colors: [
+                  Colors.transparent,
+                  Colors.transparent,
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: [0.0, 1.0],
+                tileMode: TileMode.clamp),
           ),
-          padding: const EdgeInsets.all(10.0),
           child: ListView(
             physics: const ClampingScrollPhysics(),
             children: <Widget>[
-              userIcon(),
-              loginIcon(),
-              const SizedBox(height: 40),
-              formUI(),
-              const SizedBox(height: 16),
-              _loginButton()
+              //top
+              Container(
+                height: 300,
+                decoration: const BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage('assets/images/top1.png'),
+                        fit: BoxFit.fill)),
+                child: Stack(
+                  children: <Widget>[
+                    Positioned(
+                      child: Container(
+                          decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage('assets/images/top2.png'),
+                                  fit: BoxFit.fill))),
+                    ),
+                    userIcon(),
+                    Stack(
+                      children: <Widget>[
+                        Positioned(
+                          left: 30,
+                          top: 40,
+                          width: 80,
+                          height: 150,
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 50),
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/ic_altagem_logo.png'))),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 200, left: 40),
+                            child: const Text(
+                              "Altaface",
+                              style: TextStyle(
+                                  color: Colors.green,
+                                  fontSize: 40,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: <Widget>[
+                    loginIcon(),
+                    const SizedBox(height: 40),
+                    formUI(),
+                    const SizedBox(height: 16),
+                    _loginButton()
+                  ],
+                ),
+              ),
             ],
           ),
         ),
@@ -65,14 +130,16 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
       notifier: _showLogoNotifier,
       builder: (context, showLogo) => AnimatedContainer(
         duration: const Duration(milliseconds: 100),
-        margin: EdgeInsets.only(top: (showLogo ?? true) ? 40 : 0),
+        margin: EdgeInsets.only(top: (showLogo ?? true) ? 0 : 0),
         curve: Curves.easeInOut,
         width: double.infinity,
-        child: Center(
-          child: SizedBox(
-            height: (showLogo ?? true) ? 120 : 0,
-            width: 120,
-            child: Image.asset('assets/logo/ic_altagem_logo.png'),
+        child: Positioned(
+          child: Container(
+            child: Container(
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('assets/images/ic_altagem_logo.png'))),
+            ),
           ),
         ),
       ),
@@ -80,16 +147,25 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
   }
 
   Widget userIcon() {
-    return  Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            SizedBox(
-              height: 120,
-              width: 120,
-              child: Image.asset('assets/logo/ic_altagem_logo.png'),
-            ),
-          ],
-        );
+    return ItemNotifiable<bool>(
+      notifier: _showLogoNotifier,
+      builder: (context, showLogo) => AnimatedContainer(
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.easeInOut,
+        child: Positioned(
+          right: 50,
+          top: 40,
+          width: 80,
+          height: 150,
+          child: Container(
+            decoration: const BoxDecoration(
+                image: DecorationImage(
+                    image:
+                        AssetImage('assets/images/scan-du-visage-colors.png'))),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget formUI() {
