@@ -28,7 +28,7 @@ class AFAPI implements NetworkAdapter {
     apiRequest.addHeaders(await _buildAFHeaders(forceRefresh: forceRefresh));
     try {
       var apiResponse = await _networkAdapter.get(apiRequest);
-      return _processResponse(apiResponse, apiRequest);
+      return apiResponse;
     } on APIException catch (exception) {
       if (_shouldRefreshTokenOnException(exception)) {
         return get(apiRequest, forceRefresh: true);
@@ -97,8 +97,9 @@ class AFAPI implements NetworkAdapter {
   }
 
   APIResponse _processResponse(APIResponse response, APIRequest apiRequest) {
-    var responseData = AFAPIResponseProcessor().processResponse(response);
-    return APIResponse(apiRequest, response.statusCode, responseData, {});
+    // var responseData = AFAPIResponseProcessor().processResponse(response);
+    // return APIResponse(apiRequest, response.statusCode, responseData, {});
+    return response;
   }
 
   bool _shouldRefreshTokenOnException(APIException apiException) {

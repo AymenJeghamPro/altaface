@@ -1,6 +1,6 @@
-import 'package:flutter_projects/af_core/company_management/services/current_company_provider.dart';
-import 'package:flutter_projects/main/contracts/main_view.dart';
-import 'package:flutter_projects/main/presenters/main_presenter.dart';
+import 'package:flutter_projects/af_core/service/company/current_company_provider.dart';
+import 'package:flutter_projects/ui/main/contracts/main_view.dart';
+import 'package:flutter_projects/ui/main/presenters/main_presenter.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
