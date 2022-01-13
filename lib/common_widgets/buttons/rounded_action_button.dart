@@ -11,7 +11,7 @@ class RoundedRectangleActionButton extends StatelessWidget {
   final bool disabled;
   final bool showLoader;
 
-  RoundedRectangleActionButton({
+  const RoundedRectangleActionButton({
     this.title,
     this.subtitle,
     this.icon,
@@ -24,7 +24,7 @@ class RoundedRectangleActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: (subtitle != null) ? 50 : 40,
       child: MaterialButton(
         minWidth: 50,
@@ -34,10 +34,10 @@ class RoundedRectangleActionButton extends StatelessWidget {
           side: BorderSide(color: borderColor ?? Colors.transparent),
           borderRadius: BorderRadius.circular(25.0),
         ),
-        padding: EdgeInsets.only(left: 8, right: 8),
+        padding: const EdgeInsets.only(left: 8, right: 8),
         onPressed: (disabled || showLoader) ? null : onPressed,
         color: color ?? AppColors.defaultColor,
-        disabledColor: showLoader ? AppColors.defaultColor : AppColors.defaultColor.withOpacity(0.5),
+        disabledColor: showLoader ? color : AppColors.defaultColor.withOpacity(0.5),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: showLoader ? _buildLoader() : _buildIconAndTitle(),
@@ -49,7 +49,7 @@ class RoundedRectangleActionButton extends StatelessWidget {
   List<Widget> _buildIconAndTitle() {
     return [
       if (icon != null) icon!,
-      if (icon != null && title != null && title!.isNotEmpty) SizedBox(width: 8),
+      if (icon != null && title != null && title!.isNotEmpty) const SizedBox(width: 8),
       if (title != null && title!.isNotEmpty)
         Flexible(
           child: Column(
@@ -66,7 +66,7 @@ class RoundedRectangleActionButton extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              if (subtitle != null) SizedBox(height: 6),
+              if (subtitle != null) const SizedBox(height: 6),
               if (subtitle != null)
                 Text(
                   subtitle!,

@@ -40,21 +40,14 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
       resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-                colors: [
-                  AppColors.defaultColor.withOpacity(0.8),
-                  AppColors.defaultColor,
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                stops: const [0.0, 1.0],
-                tileMode: TileMode.clamp),
+          decoration: const BoxDecoration(
+            image: DecorationImage(image: AssetImage("assets/icons/background1.png"), fit: BoxFit.cover),
           ),
           padding: const EdgeInsets.all(10.0),
           child: ListView(
             physics: const ClampingScrollPhysics(),
             children: <Widget>[
+              userIcon(),
               loginIcon(),
               const SizedBox(height: 40),
               formUI(),
@@ -76,7 +69,7 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
         curve: Curves.easeInOut,
         width: double.infinity,
         child: Center(
-          child: Container(
+          child: SizedBox(
             height: (showLogo ?? true) ? 120 : 0,
             width: 120,
             child: Image.asset('assets/logo/ic_altagem_logo.png'),
@@ -84,6 +77,19 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
         ),
       ),
     );
+  }
+
+  Widget userIcon() {
+    return  Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            SizedBox(
+              height: 120,
+              width: 120,
+              child: Image.asset('assets/logo/ic_altagem_logo.png'),
+            ),
+          ],
+        );
   }
 
   Widget formUI() {
@@ -109,7 +115,8 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
       notifier: _showLoaderNotifier,
       builder: (context, value) => RoundedRectangleActionButton(
         title: 'Login',
-        borderColor: AppColors.defaultColorDark,
+        borderColor: AppColors.successColor,
+        color: AppColors.successColor,
         onPressed: () => _performLogin(),
         showLoader: value ?? false,
       ),
@@ -150,6 +157,7 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
 
   @override
   void goToTechniciansListScreen() {
-    ScreenPresenter.presentAndRemoveAllPreviousScreens(UsersListScreen(), context);
+    ScreenPresenter.presentAndRemoveAllPreviousScreens(
+        UsersListScreen(), context);
   }
 }

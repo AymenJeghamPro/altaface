@@ -32,6 +32,10 @@ class CurrentCompanyProvider {
     return _companyRepository.getCurrentCompany() != null;
   }
 
+  Company? getCurrentCompany() {
+    return _companyRepository.getCurrentCompany() ;
+  }
+
   Future<Company?> login(String key) async {
     var url = CompanyManagementUrls.getCompany();
     Map<String, String> qParams = {'key': key};

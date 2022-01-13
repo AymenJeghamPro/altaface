@@ -1,7 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_projects/_shared/constants/app_colors.dart';
 import 'package:flutter_projects/af_core/entity/user/user.dart';
+import 'package:flutter_projects/common_widgets/alert/alert.dart';
 import 'package:flutter_projects/common_widgets/appBar/simple_app_bar.dart';
+import 'package:flutter_projects/common_widgets/loader/loader.dart';
 import 'package:flutter_projects/common_widgets/notifiable/item_notifiable.dart';
 import 'package:flutter_projects/common_widgets/search_bar/search_bar_with_title.dart';
 import 'package:flutter_projects/common_widgets/text/text_styles.dart';
@@ -27,16 +32,17 @@ class _UsersListScreenState extends State<UsersListScreen>
   String _noUsersMessage = "";
   String _noSearchResultsMessage = "";
   String _errorMessage = "";
-  static const LOADER_VIEW = 0;
   static const USERS_VIEW = 1;
   static const NO_USERS_VIEW = 2;
   static const NO_SEARCH_RESULTS_VIEW = 3;
   static const ERROR_VIEW = 4;
+  late Loader loader;
 
   @override
   void initState() {
     presenter = UsersListPresenter(this);
     presenter.getUsers();
+    loader = Loader(context);
     super.initState();
   }
 
@@ -57,9 +63,7 @@ class _UsersListScreenState extends State<UsersListScreen>
             ItemNotifiable<int>(
                 notifier: _viewSelectorNotifier,
                 builder: (context, value) {
-                  if (value == LOADER_VIEW) {
-                    return Expanded(child: _loader());
-                  } else if (value == USERS_VIEW) {
+                  if (value == USERS_VIEW) {
                     return Expanded(child: _getUsers());
                   } else if (value == NO_USERS_VIEW) {
                     return Expanded(child: _noUsersMessageView());
@@ -91,10 +95,6 @@ class _UsersListScreenState extends State<UsersListScreen>
     );
   }
 
-  Widget _loader() {
-    return const Center(child: CircularProgressIndicator());
-  }
-
   Widget _getUsers() {
     return ItemNotifiable<List<User>>(
       notifier: _usersListNotifier,
@@ -124,7 +124,7 @@ class _UsersListScreenState extends State<UsersListScreen>
     return UserCard(
       user: usersList[index],
       onPressed: () => {
-        _selectUserAtIndex(index),
+        presenter.selectUserAtIndex(index)
       },
     );
   }
@@ -178,8 +178,6 @@ class _UsersListScreenState extends State<UsersListScreen>
         });
   }
 
-  void _selectUserAtIndex(int index) async {}
-
   @override
   void showUsersList(List<User> users) {
     _usersListNotifier.notify(users);
@@ -195,7 +193,14 @@ class _UsersListScreenState extends State<UsersListScreen>
 
   @override
   void showLoader() {
-    _viewSelectorNotifier.notify(LOADER_VIEW);
+    SchedulerBinding.instance?.addPostFrameCallback((_) {
+      loader.showLoadingIndicator("Loading");
+    });
+  }
+
+  @override
+  void hideLoader() {
+    loader.hideOpenDialog();
   }
 
   @override
@@ -218,5 +223,10 @@ class _UsersListScreenState extends State<UsersListScreen>
   void showNoUsersMessage(String message) {
     _noUsersMessage = message;
     _viewSelectorNotifier.notify(NO_USERS_VIEW);
+  }
+
+  @override
+  void onUserClicked(User user) {
+    Alert.showSimpleAlert(context: context, title: "user signing in ", message: "mr ${user.firstName}");
   }
 }
