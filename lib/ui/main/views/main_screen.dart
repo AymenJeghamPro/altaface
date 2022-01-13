@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_projects/_shared/constants/app_colors.dart';
@@ -23,7 +21,7 @@ class _MainScreenState extends State<MainScreen> implements MainView {
   @override
   void initState() {
     presenter = MainPresenter(this);
-    presenter.showLandingScreen();
+    presenter.initializeReposAndShowLandingScreen();
     super.initState();
   }
 
@@ -31,22 +29,18 @@ class _MainScreenState extends State<MainScreen> implements MainView {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: AppColors.defaultColor,
+        color: Colors.white,
       ),
     );
   }
 
   @override
   void showLoginScreen() {
-    Future.microtask(() {
-      ScreenPresenter.present(const CompanyLoginScreen(), context);
-    });
+    ScreenPresenter.presentAndRemoveAllPreviousScreens(const CompanyLoginScreen(), context);
   }
 
   @override
   void goToUsersListScreen() {
-    Future.microtask(() {
-      ScreenPresenter.present( UsersListScreen(), context);
-    });
+      ScreenPresenter.presentAndRemoveAllPreviousScreens(UsersListScreen(), context);
   }
 }

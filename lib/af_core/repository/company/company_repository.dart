@@ -10,7 +10,12 @@ class CompanyRepository {
 
   static CompanyRepository? _singleton;
 
-  factory CompanyRepository() {
+  static Future<void> initRepo() async {
+    await getInstance()._readData();
+  }
+
+  static CompanyRepository getInstance() {
+
     _singleton ??= CompanyRepository.withSharedPrefs(SecureSharedPrefs());
     return _singleton!;
   }
@@ -28,7 +33,7 @@ class CompanyRepository {
     _sharedPrefs.save('company', company);
   }
 
-  void _readData() async {
+  Future<void> _readData() async {
     var company = await _sharedPrefs.getString('company');
     if (company != null) {
       _currentCompany = Company.fromJson(json.decode(company));

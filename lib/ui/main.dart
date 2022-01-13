@@ -16,8 +16,6 @@ class _AltaFaceAppState extends State<AltaFaceApp> with WidgetsBindingObserver{
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    RepositoryInitializer.initializeRepos();
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: const MainScreen(),
@@ -25,21 +23,4 @@ class _AltaFaceAppState extends State<AltaFaceApp> with WidgetsBindingObserver{
     );
   }
 
-  @override
-  initState() {
-    super.initState();
-    WidgetsBinding.instance!.addObserver(this);
-  }
-
-  @override
-  dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  didChangeAppLifecycleState(AppLifecycleState state) {
-    // get current company
-    super.didChangeAppLifecycleState(state);
-  }
 }

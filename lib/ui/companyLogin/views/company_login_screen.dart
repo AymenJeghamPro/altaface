@@ -48,12 +48,12 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                stops: [0.0, 1.0],
+                stops: const [0.0, 1.0],
                 tileMode: TileMode.clamp),
           ),
-          padding: EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(10.0),
           child: ListView(
-            physics: ClampingScrollPhysics(),
+            physics: const ClampingScrollPhysics(),
             children: <Widget>[
               loginIcon(),
               const SizedBox(height: 40),
@@ -150,6 +150,6 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
 
   @override
   void goToTechniciansListScreen() {
-    ScreenPresenter.present(UsersListScreen(), context);
+    ScreenPresenter.presentAndRemoveAllPreviousScreens(UsersListScreen(), context);
   }
 }
