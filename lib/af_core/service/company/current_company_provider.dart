@@ -21,7 +21,7 @@ class CurrentCompanyProvider {
       this._companyRepository, this._networkAdapter);
 
   CurrentCompanyProvider()
-      : _companyRepository = CompanyRepository(),
+      : _companyRepository = CompanyRepository.getInstance(),
         _networkAdapter = AFAPI();
 
   void reset() {

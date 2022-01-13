@@ -1,8 +1,8 @@
 
 import 'company/company_repository.dart';
 
-class RepositoryInitializer {
-  static void initializeRepos() {
-    CompanyRepository();
+class RepositoryInitializer  {
+  Future<void>  initializeRepos() async {
+   await CompanyRepository.initRepo();
   }
 }

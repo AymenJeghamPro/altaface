@@ -7,7 +7,7 @@ import 'package:flutter_projects/ui/usersList/contracts/uses_list_view.dart';
 class UsersListPresenter {
   final UsersListView _view;
   final UsersListProvider _usersListProvider ;
-  List<User> _users = [];
+  final List<User> _users = [];
   var _searchText = "";
 
   UsersListPresenter(this._view) : _usersListProvider = UsersListProvider();
@@ -62,8 +62,30 @@ class UsersListPresenter {
     _view.hideSearchBar();
   }
 
-  performSearch(String searchText) {}
+  performSearch(String searchText) {
+    _searchText = searchText;
+    _showFilteredCompanies();
+  }
 
-  refresh() {}
+  refresh() {
+    _usersListProvider.reset();
+    getUsers();
+  }
+
+  void _showFilteredCompanies() {
+    List<User> _filteredList = [];
+    for (int i = 0; i < _users.length; i++) {
+      var item = _users[i];
+      if (item.userName!.toLowerCase().contains(_searchText.toLowerCase())) {
+        _filteredList.add(item);
+      }
+    }
+
+    if (_filteredList.isEmpty) {
+      _view.showNoSearchResultsMessage("There are no user with the  given search criteria.");
+    } else {
+      _view.showUsersList(_filteredList);
+    }
+  }
 
 }

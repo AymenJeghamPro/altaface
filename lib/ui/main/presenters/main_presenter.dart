@@ -1,28 +1,30 @@
-
+import 'package:flutter_projects/af_core/repository/repository_initializer.dart';
 import 'package:flutter_projects/af_core/service/company/current_company_provider.dart';
 import 'package:flutter_projects/ui/main/contracts/main_view.dart';
 
 class MainPresenter {
   final MainView _view;
+  final RepositoryInitializer _repositoryInitializer;
   final CurrentCompanyProvider _currentCompanyProvider;
 
   MainPresenter(this._view)
-      : _currentCompanyProvider = CurrentCompanyProvider();
+      : _repositoryInitializer = RepositoryInitializer(),
+        _currentCompanyProvider = CurrentCompanyProvider();
 
-  MainPresenter.initWith(this._view, this._currentCompanyProvider);
+  MainPresenter.initWith(
+    this._view,
+    this._currentCompanyProvider,
+    this._repositoryInitializer,
+  );
 
-
-  Future<void> showLandingScreen() async {
-    var _ = await Future.delayed(const Duration(milliseconds: 5000));
-
-    if (isLoggedIn() == false) {
+  Future<void> initializeReposAndShowLandingScreen() async {
+    await _repositoryInitializer.initializeRepos();
+    var isLoggedIn = _currentCompanyProvider.isLoggedIn();
+    if (isLoggedIn == false) {
       _view.showLoginScreen();
     } else {
       _view.goToUsersListScreen();
     }
   }
 
-  bool isLoggedIn() {
-    return _currentCompanyProvider.isLoggedIn();
-  }
 }

@@ -5,6 +5,7 @@ import 'package:flutter_projects/common_widgets/appBar/simple_app_bar.dart';
 import 'package:flutter_projects/common_widgets/notifiable/item_notifiable.dart';
 import 'package:flutter_projects/common_widgets/search_bar/search_bar_with_title.dart';
 import 'package:flutter_projects/common_widgets/text/text_styles.dart';
+import 'package:flutter_projects/ui/companyLogin/views/user_card.dart';
 import 'package:flutter_projects/ui/usersList/contracts/uses_list_view.dart';
 import 'package:flutter_projects/ui/usersList/presenters/users_list_presenter.dart';
 
@@ -120,7 +121,12 @@ class _UsersListScreenState extends State<UsersListScreen>
   }
 
   Widget _getUserCard(int index, List<User> usersList) {
-    return Text(usersList[index].userName!);
+    return UserCard(
+      user: usersList[index],
+      onPressed: () => {
+        _selectUserAtIndex(index),
+      },
+    );
   }
 
   Widget _noUsersMessageView() {
@@ -171,6 +177,8 @@ class _UsersListScreenState extends State<UsersListScreen>
           }
         });
   }
+
+  void _selectUserAtIndex(int index) async {}
 
   @override
   void showUsersList(List<User> users) {
