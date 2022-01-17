@@ -5,6 +5,8 @@ abstract class UsersListView {
 
   void showLoader();
 
+  void hideLoader();
+
   void showSearchBar();
 
   void hideSearchBar();
@@ -16,5 +18,7 @@ abstract class UsersListView {
   void showNoSearchResultsMessage(String message);
 
   void showErrorMessage(String message);
+
+  void onUserClicked(User user);
 
 }

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter_projects/_shared/local_storage/secure_shared_prefs.dart';
 import 'package:flutter_projects/af_core/entity/company/company.dart';

@@ -30,10 +30,11 @@ class UsersListProvider {
     isLoading = false;
   }
 
-  Future<List<User>> getUsers(String companyId) async {
+  Future<List<User>> getUsers() async {
+     var currentCompany = _currentCompanyProvider.getCurrentCompany();
     var url = UsersManagementUrls.getUsersUrl();
 
-    Map<String, String> qParams = {'company_id': companyId};
+    Map<String, String> qParams = {'company_id': currentCompany!.id!};
     Uri uri = Uri.parse(url);
     final finalUri = uri.replace(queryParameters: qParams);
     var apiRequest = APIRequest(finalUri.toString());
