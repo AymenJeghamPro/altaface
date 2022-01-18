@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_projects/_shared/constants/app_colors.dart';
 import 'package:flutter_projects/af_core/entity/user/user.dart';
-import 'package:flutter_projects/common_widgets/alert/alert.dart';
 import 'package:flutter_projects/common_widgets/appBar/simple_app_bar.dart';
+import 'package:flutter_projects/common_widgets/buttons/rounded_action_button.dart';
+import 'package:flutter_projects/common_widgets/form_widgets/login_text_field.dart';
 import 'package:flutter_projects/common_widgets/loader/loader.dart';
 import 'package:flutter_projects/common_widgets/notifiable/item_notifiable.dart';
+import 'package:flutter_projects/common_widgets/popUp/popup_alert.dart';
 import 'package:flutter_projects/common_widgets/search_bar/search_bar_with_title.dart';
 import 'package:flutter_projects/common_widgets/text/text_styles.dart';
 import 'package:flutter_projects/ui/companyLogin/views/user_card.dart';
@@ -28,6 +30,9 @@ class _UsersListScreenState extends State<UsersListScreen>
   final _usersListNotifier = ItemNotifier<List<User>?>();
   final _scrollController = ScrollController();
   final _viewSelectorNotifier = ItemNotifier<int>();
+  final _passwordErrorNotifier = ItemNotifier<String>();
+  final _showLoaderNotifier = ItemNotifier<bool>();
+  final _passwordTextController = TextEditingController();
 
   String _noUsersMessage = "";
   String _noSearchResultsMessage = "";
@@ -123,9 +128,7 @@ class _UsersListScreenState extends State<UsersListScreen>
   Widget _getUserCard(int index, List<User> usersList) {
     return UserCard(
       user: usersList[index],
-      onPressed: () => {
-        presenter.selectUserAtIndex(index)
-      },
+      onPressed: () => {presenter.selectUserAtIndex(index)},
     );
   }
 
@@ -227,6 +230,52 @@ class _UsersListScreenState extends State<UsersListScreen>
 
   @override
   void onUserClicked(User user) {
-    Alert.showSimpleAlert(context: context, title: "user signing in ", message: "mr ${user.firstName}");
+    popupAlert(context: context, widget: technicianLoginPopUp(user, () {}));
+  }
+
+  Widget technicianLoginPopUp(User user, Function onLogin) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 21),
+        ClipOval(
+          child: Center(
+              child: SizedBox.fromSize(
+            size: const Size.fromRadius(48), // Image radius
+            child: Image.network(user.avatar!, fit: BoxFit.cover),
+          )),
+        ),
+        const SizedBox(height: 21),
+        Center(child: Text("${user.firstName} ${user.lastName}")),
+        const SizedBox(height: 21),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ItemNotifiable<String>(
+              notifier: _passwordErrorNotifier,
+              builder: (context, value) => LoginTextField(
+                controller: _passwordTextController,
+                hint: "Password",
+                errorText: value,
+                textInputAction: TextInputAction.next,
+              ),
+            ),
+            const SizedBox(height: 16)
+          ],
+        ),
+        const SizedBox(height: 21),
+        ItemNotifiable<bool>(
+          notifier: _showLoaderNotifier,
+          builder: (context, value) => RoundedRectangleActionButton(
+            title: 'Login',
+            borderColor: AppColors.successColor,
+            color: AppColors.successColor,
+            onPressed: () => {},
+            showLoader: value ?? false,
+          ),
+        )
+      ],
+    );
   }
 }
