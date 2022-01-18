@@ -39,7 +39,7 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
             children: [
               if (leadingButtons != null)
                 Row(children: [
-                  ...[SizedBox(width: 8)],
+                  ...[const SizedBox(width: 8)],
                   ..._resizeButtons(leadingButtons),
                 ]),
               if (trailingButtons != null) Row(children: _resizeButtons(trailingButtons)),
