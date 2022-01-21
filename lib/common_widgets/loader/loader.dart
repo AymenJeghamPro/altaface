@@ -14,7 +14,8 @@ class Loader {
         return WillPopScope(
             onWillPop: () async => false,
             child: AlertDialog(
-              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8.0))),
               backgroundColor: Colors.black87,
               content: _LoadingIndicator(text: text),
             ));
@@ -42,12 +43,19 @@ class _LoadingIndicator extends StatelessWidget {
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
-            children: [_getLoadingIndicator(), _getHeading(context), _getText(displayedText)]));
+            children: [
+              _getLoadingIndicator(),
+              _getHeading(context),
+              _getText(displayedText)
+            ]));
   }
 
   Padding _getLoadingIndicator() {
     return const Padding(
-        child: SizedBox(child: CircularProgressIndicator(strokeWidth: 3), width: 32, height: 32),
+        child: SizedBox(
+            child: CircularProgressIndicator(strokeWidth: 3),
+            width: 32,
+            height: 32),
         padding: EdgeInsets.only(bottom: 16));
   }
 

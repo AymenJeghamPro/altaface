@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_projects/_shared/constants/app_colors.dart';
@@ -53,30 +51,65 @@ class _UsersListScreenState extends State<UsersListScreen>
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: SimpleAppBar(title: 'Acceuil'),
       body: SafeArea(
         child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-          decoration: BoxDecoration(
-            color: AppColors.primaryContrastColor,
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+                colors: [
+                  Colors.transparent,
+                  Colors.transparent,
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: [0.0, 1.0],
+                tileMode: TileMode.clamp),
           ),
-          child: Column(children: [
-            _searchBar(),
-            ItemNotifiable<int>(
-                notifier: _viewSelectorNotifier,
-                builder: (context, value) {
-                  if (value == USERS_VIEW) {
-                    return Expanded(child: _getUsers());
-                  } else if (value == NO_USERS_VIEW) {
-                    return Expanded(child: _noUsersMessageView());
-                  } else if (value == NO_SEARCH_RESULTS_VIEW) {
-                    return Expanded(child: _noSearchResultsMessageView());
-                  }
-                  return Expanded(child: _buildErrorAndRetryView());
-                })
+          child: ListView(children: [
+            Container(
+              height: size.height,
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('assets/images/top1.png'),
+                      fit: BoxFit.fitHeight)),
+              child: Stack(
+                children: <Widget>[
+                  Positioned(
+                    child: Container(
+                        decoration: const BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage('assets/images/top2.png'),
+                                fit: BoxFit.fitHeight))),
+                  ),
+                  Positioned(
+                    width: size.width,
+                    height: size.height,
+                    child: Column(
+                      children: [
+                        _searchBar(),
+                        ItemNotifiable<int>(
+                            notifier: _viewSelectorNotifier,
+                            builder: (context, value) {
+                              if (value == USERS_VIEW) {
+                                return Expanded(child: _getUsers());
+                              } else if (value == NO_USERS_VIEW) {
+                                return Expanded(child: _noUsersMessageView());
+                              } else if (value == NO_SEARCH_RESULTS_VIEW) {
+                                return Expanded(
+                                    child: _noSearchResultsMessageView());
+                              }
+                              return Expanded(child: _buildErrorAndRetryView());
+                            })
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
             // _buildErrorAndRetryView()
           ]),
         ),
@@ -90,7 +123,7 @@ class _UsersListScreenState extends State<UsersListScreen>
       builder: (context, shouldShowSearchBar) {
         if (shouldShowSearchBar == true) {
           return SearchBarWithTitle(
-            title: 'Technicians',
+            title: 'Chercher un technicien',
             onChanged: (searchText) => presenter.performSearch(searchText),
           );
         } else {

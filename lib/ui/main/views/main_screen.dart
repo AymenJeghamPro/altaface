@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_projects/_shared/constants/app_colors.dart';
 import 'package:flutter_projects/common_widgets/screen_presenter/screen_presenter.dart';
-
 import 'package:flutter_projects/ui/companyLogin/views/company_login_screen.dart';
 import 'package:flutter_projects/ui/main/contracts/main_view.dart';
 import 'package:flutter_projects/ui/main/presenters/main_presenter.dart';
@@ -36,11 +34,13 @@ class _MainScreenState extends State<MainScreen> implements MainView {
 
   @override
   void showLoginScreen() {
-    ScreenPresenter.presentAndRemoveAllPreviousScreens(const CompanyLoginScreen(), context);
+    ScreenPresenter.presentAndRemoveAllPreviousScreens(
+        const CompanyLoginScreen(), context);
   }
 
   @override
   void goToUsersListScreen() {
-      ScreenPresenter.presentAndRemoveAllPreviousScreens(UsersListScreen(), context);
+    ScreenPresenter.presentAndRemoveAllPreviousScreens(
+        UsersListScreen(), context);
   }
 }

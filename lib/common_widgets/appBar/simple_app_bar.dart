@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_projects/common_widgets/buttons/circular_icon_button.dart';
-import 'package:flutter_projects/common_widgets/text/text_styles.dart';
 
 import 'app_bar_divider.dart';
-
 
 class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -27,8 +25,8 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       titleSpacing: 0,
       brightness: Brightness.light,
-      backgroundColor: Colors.white,
-      elevation: 0.0,
+      backgroundColor: Colors.green,
+      elevation: 5.0,
       bottom: showDivider ? const AppBarDivider() : null,
       // Don't show the default leading button
       automaticallyImplyLeading: false,
@@ -42,18 +40,25 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ...[const SizedBox(width: 8)],
                   ..._resizeButtons(leadingButtons),
                 ]),
-              if (trailingButtons != null) Row(children: _resizeButtons(trailingButtons)),
+              if (trailingButtons != null)
+                Row(children: _resizeButtons(trailingButtons)),
             ],
           ),
-          Positioned.fill(
-            child: Center(
-              child: Text(
-                title,
-                textAlign: TextAlign.center,
-                style: TextStyles.titleTextStyle.copyWith(fontSize: 18.0),
+          Expanded(
+            child: Container(
+              color: Colors.transparent,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 20.0,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );

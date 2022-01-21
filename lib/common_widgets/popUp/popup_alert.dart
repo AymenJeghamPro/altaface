@@ -2,8 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_projects/_shared/constants/app_colors.dart';
 
-void popupAlert(
-    {required BuildContext context, required Widget widget}) {
+void popupAlert({required BuildContext context, required Widget widget}) {
   showGeneralDialog(
     barrierLabel: "Label",
     barrierDismissible: true,

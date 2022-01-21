@@ -36,7 +36,6 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SafeArea(
@@ -72,37 +71,7 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
                                   fit: BoxFit.fill))),
                     ),
                     userIcon(),
-                    Stack(
-                      children: <Widget>[
-                        Positioned(
-                          left: 30,
-                          top: 40,
-                          width: 80,
-                          height: 150,
-                          child: Container(
-                            margin: const EdgeInsets.only(top: 50),
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                  image: DecorationImage(
-                                      image: AssetImage(
-                                          'assets/images/ic_altagem_logo.png'))),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          child: Container(
-                            margin: const EdgeInsets.only(top: 200, left: 40),
-                            child: const Text(
-                              "Altaface",
-                              style: TextStyle(
-                                  color: Colors.green,
-                                  fontSize: 40,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    loginIcon(),
                   ],
                 ),
               ),
@@ -110,8 +79,6 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
                   children: <Widget>[
-                    loginIcon(),
-                    const SizedBox(height: 40),
                     formUI(),
                     const SizedBox(height: 16),
                     _loginButton()
@@ -132,14 +99,35 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
         duration: const Duration(milliseconds: 100),
         margin: EdgeInsets.only(top: (showLogo ?? true) ? 0 : 0),
         curve: Curves.easeInOut,
-        width: double.infinity,
-        child: Positioned(
-          child: Container(
-            child: Container(
-              decoration: const BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage('assets/images/ic_altagem_logo.png'))),
-            ),
+        child: Padding(
+          padding: const EdgeInsets.only(
+            left: 20.0,
+            top: 140.0,
+          ),
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                child: SizedBox(
+                  height: (showLogo ?? true) ? 120 : 0,
+                  child: const Text(
+                    "Altaface",
+                    style: TextStyle(
+                        color: Colors.green,
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Positioned(
+                top: 20,
+                width: 80,
+                child: Container(
+                  height: (showLogo ?? true) ? 120 : 0,
+                  child: Image.asset('assets/images/ic_altagem_logo.png'),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -170,7 +158,6 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
 
   Widget formUI() {
     return Column(
-      mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         ItemNotifiable<String>(
           notifier: _keyErrorNotifier,
