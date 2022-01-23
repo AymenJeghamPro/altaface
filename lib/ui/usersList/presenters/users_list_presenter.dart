@@ -31,6 +31,22 @@ class UsersListPresenter {
     }
   }
 
+  Future<void> userLogin(String password) async {
+    _view.clearLoginErrors();
+    if (!_isInputValid(password)) return;
+
+    try {
+      _view.showLoggingLoader();
+      //service to auth
+      await Future.delayed(const Duration(milliseconds: 500));
+      _view.hideLoggingLoader();
+      _view.takePicture();
+    } on AFException catch (e) {
+      _view.hideLoggingLoader();
+      _view.onLoginFailed("Login Failed", e.userReadableMessage);
+    }
+  }
+
   selectUserAtIndex(int index) async {
     var _selectedUser = _filterList[index];
     selectUser(_selectedUser);
@@ -89,5 +105,21 @@ class UsersListPresenter {
 
   List<User> getCompanies() {
     return _users;
+  }
+
+  bool _isInputValid(String password) {
+    var isValid = true;
+
+    if (password.isEmpty) {
+      isValid = false;
+      _view.notifyInvalidPassword("Please insert password");
+    }
+
+    if (password.length < 4) {
+      isValid = false;
+      _view.notifyInvalidPassword("password must have at least 4 characters");
+    }
+
+    return isValid;
   }
 }

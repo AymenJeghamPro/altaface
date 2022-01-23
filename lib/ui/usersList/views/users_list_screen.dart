@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_projects/_shared/constants/app_colors.dart';
 import 'package:flutter_projects/af_core/entity/user/user.dart';
+import 'package:flutter_projects/common_widgets/alert/alert.dart';
 import 'package:flutter_projects/common_widgets/appBar/simple_app_bar.dart';
 import 'package:flutter_projects/common_widgets/buttons/rounded_action_button.dart';
 import 'package:flutter_projects/common_widgets/form_widgets/login_text_field.dart';
@@ -83,6 +84,8 @@ class _UsersListScreenState extends State<UsersListScreen>
       ),
     );
   }
+
+  // users_list_screen widgets
 
   Widget _searchBar() {
     return ItemNotifiable<bool>(
@@ -181,6 +184,60 @@ class _UsersListScreenState extends State<UsersListScreen>
         });
   }
 
+  Widget technicianLoginPopUp(User user, VoidCallback onLogin) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 21),
+        ClipOval(
+          child: Center(
+              child: SizedBox.fromSize(
+            size: const Size.fromRadius(48), // Image radius
+            child: Image.network(user.avatar!, fit: BoxFit.cover),
+          )),
+        ),
+        const SizedBox(height: 21),
+        Center(child: Text("${user.firstName} ${user.lastName}")),
+        const SizedBox(height: 21),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ItemNotifiable<String>(
+              notifier: _passwordErrorNotifier,
+              builder: (context, value) => LoginTextField(
+                controller: _passwordTextController,
+                hint: "Password",
+                errorText: value,
+                textInputAction: TextInputAction.next,
+              ),
+            ),
+            const SizedBox(height: 16)
+          ],
+        ),
+        const SizedBox(height: 21),
+        ItemNotifiable<bool>(
+          notifier: _showLoaderNotifier,
+          builder: (context, value) => RoundedRectangleActionButton(
+            title: 'Login',
+            borderColor: AppColors.successColor,
+            color: AppColors.successColor,
+            onPressed:  onLogin,
+            showLoader: value ?? false,
+          ),
+        )
+      ],
+    );
+  }
+
+  // login function
+  _performLogin() {
+    presenter.userLogin(
+      _passwordTextController.text,
+    );
+  }
+
+  // overridden methods
   @override
   void showUsersList(List<User> users) {
     _usersListNotifier.notify(users);
@@ -230,52 +287,40 @@ class _UsersListScreenState extends State<UsersListScreen>
 
   @override
   void onUserClicked(User user) {
-    popupAlert(context: context, widget: technicianLoginPopUp(user, () {}));
+    popupAlert(
+        context: context,
+        widget: technicianLoginPopUp(user,() => { _performLogin() })
+    );
   }
 
-  Widget technicianLoginPopUp(User user, Function onLogin) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 21),
-        ClipOval(
-          child: Center(
-              child: SizedBox.fromSize(
-            size: const Size.fromRadius(48), // Image radius
-            child: Image.network(user.avatar!, fit: BoxFit.cover),
-          )),
-        ),
-        const SizedBox(height: 21),
-        Center(child: Text("${user.firstName} ${user.lastName}")),
-        const SizedBox(height: 21),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ItemNotifiable<String>(
-              notifier: _passwordErrorNotifier,
-              builder: (context, value) => LoginTextField(
-                controller: _passwordTextController,
-                hint: "Password",
-                errorText: value,
-                textInputAction: TextInputAction.next,
-              ),
-            ),
-            const SizedBox(height: 16)
-          ],
-        ),
-        const SizedBox(height: 21),
-        ItemNotifiable<bool>(
-          notifier: _showLoaderNotifier,
-          builder: (context, value) => RoundedRectangleActionButton(
-            title: 'Login',
-            borderColor: AppColors.successColor,
-            color: AppColors.successColor,
-            onPressed: () => {},
-            showLoader: value ?? false,
-          ),
-        )
-      ],
-    );
+  @override
+  void clearLoginErrors() {
+    _passwordErrorNotifier.notify(null);
+  }
+
+  @override
+  void notifyInvalidPassword(String message) {
+    _passwordErrorNotifier.notify(message);
+  }
+
+  @override
+  void onLoginFailed(String title, String message) {
+    Alert.showSimpleAlert(context: context, title: title, message: message);
+  }
+
+  @override
+  void takePicture() {
+    // TODO: implement takePicture
+  }
+
+  @override
+  void showLoggingLoader() {
+    _passwordErrorNotifier.notify(null);
+    _showLoaderNotifier.notify(true);
+  }
+
+  @override
+  void hideLoggingLoader() {
+    _showLoaderNotifier.notify(false);
   }
 }

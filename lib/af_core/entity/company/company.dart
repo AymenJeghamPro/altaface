@@ -6,7 +6,7 @@ import 'package:sift/sift.dart';
 
 class Company extends JSONInitializable implements JSONConvertible {
 
-  String? _id;
+  late String _id;
   String? _name;
   String? _language;
   String? _timeZone;
@@ -49,7 +49,7 @@ class Company extends JSONInitializable implements JSONConvertible {
     return jsonMap;
   }
 
-  String? get id => _id;
+  String get id => _id;
 
   String? get name => _name;
 
