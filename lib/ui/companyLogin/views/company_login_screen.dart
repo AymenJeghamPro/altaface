@@ -123,6 +123,7 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
     );
   }
 
+  // login function
   void _performLogin() {
     presenter.login(
       _keyTextController.text,

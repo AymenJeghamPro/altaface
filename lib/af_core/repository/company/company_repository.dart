@@ -14,7 +14,6 @@ class CompanyRepository {
   }
 
   static CompanyRepository getInstance() {
-
     _singleton ??= CompanyRepository.withSharedPrefs(SecureSharedPrefs());
     return _singleton!;
   }
@@ -30,6 +29,7 @@ class CompanyRepository {
 
   void saveCompany(Company company) {
     _sharedPrefs.save('company', company);
+    _currentCompany = company;
   }
 
   Future<void> _readData() async {
@@ -38,6 +38,4 @@ class CompanyRepository {
       _currentCompany = Company.fromJson(json.decode(company));
     }
   }
-
-
 }

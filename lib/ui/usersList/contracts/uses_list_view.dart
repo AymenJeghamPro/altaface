@@ -21,4 +21,16 @@ abstract class UsersListView {
 
   void onUserClicked(User user);
 
+  void showLoggingLoader();
+
+  void hideLoggingLoader();
+
+  void clearLoginErrors();
+
+  void notifyInvalidPassword(String message);
+
+  void takePicture();
+
+  void onLoginFailed(String title, String message);
+
 }
