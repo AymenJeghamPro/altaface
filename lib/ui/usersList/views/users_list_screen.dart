@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_projects/_shared/constants/app_colors.dart';
@@ -17,7 +16,7 @@ import 'package:flutter_projects/common_widgets/search_bar/search_bar_with_title
 import 'package:flutter_projects/common_widgets/text/text_styles.dart';
 import 'package:flutter_projects/ui/companyLogin/views/user_card.dart';
 import 'package:flutter_projects/ui/imageCapture/Views/image_capture_screen.dart';
-import 'package:flutter_projects/ui/usersList/contracts/uses_list_view.dart';
+import 'package:flutter_projects/ui/usersList/contracts/users_list_view.dart';
 import 'package:flutter_projects/ui/usersList/presenters/user_login_presenter.dart';
 import 'package:flutter_projects/ui/usersList/presenters/users_list_presenter.dart';
 
@@ -114,7 +113,7 @@ class _UsersListScreenState extends State<UsersListScreen>
       builder: (context, value) => Container(
         padding: const EdgeInsets.only(top: 8, bottom: 8),
         child: RefreshIndicator(
-          onRefresh: () => presenter.getUsers(),
+          onRefresh: () => presenter.refreshUsers(),
           child: ListView.builder(
             physics: const BouncingScrollPhysics(
                 parent: AlwaysScrollableScrollPhysics()),
@@ -190,6 +189,58 @@ class _UsersListScreenState extends State<UsersListScreen>
         });
   }
 
+  Widget technicianLoginPopUp(User user, Function onLogin) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 21),
+        ClipOval(
+          child: Center(
+              child: SizedBox.fromSize(
+                size: const Size.fromRadius(48), // Image radius
+                child: Image.network(user.avatar!, fit: BoxFit.cover),
+              )),
+        ),
+        const SizedBox(height: 21),
+        Center(child: Text("${user.firstName} ${user.lastName}")),
+        const SizedBox(height: 21),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ItemNotifiable<String>(
+              notifier: _passwordErrorNotifier,
+              builder: (context, value) => LoginTextField(
+                controller: _passwordTextController,
+                hint: "Password",
+                errorText: value,
+                obscureText: true,
+                textInputAction: TextInputAction.next,
+              ),
+            ),
+            const SizedBox(height: 16)
+          ],
+        ),
+        const SizedBox(height: 21),
+        ItemNotifiable<bool>(
+          notifier: _showLoaderNotifier,
+          builder: (context, value) => RoundedRectangleActionButton(
+            title: 'Login',
+            borderColor: AppColors.successColor,
+            color: AppColors.successColor,
+            onPressed: () => _performLogin(
+                user.userName.toString(), _passwordTextController.text),
+            showLoader: value ?? false,
+          ),
+        )
+      ],
+    );
+  }
+
+  void _performLogin(String login, String password) {
+    loginPresenter.login(login, password);
+  }
+
   // overridden methods
   @override
   void showUsersList(List<User> users) {
@@ -259,11 +310,6 @@ class _UsersListScreenState extends State<UsersListScreen>
   }
 
   @override
-  void takePicture() {
-    // TODO: implement takePicture
-  }
-
-  @override
   void showLoggingLoader() {
     _passwordErrorNotifier.notify(null);
     _showLoaderNotifier.notify(true);
@@ -274,61 +320,9 @@ class _UsersListScreenState extends State<UsersListScreen>
     _showLoaderNotifier.notify(false);
   }
 
-  Widget technicianLoginPopUp(User user, Function onLogin) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 21),
-        ClipOval(
-          child: Center(
-              child: SizedBox.fromSize(
-            size: const Size.fromRadius(48), // Image radius
-            child: Image.network(user.avatar!, fit: BoxFit.cover),
-          )),
-        ),
-        const SizedBox(height: 21),
-        Center(child: Text("${user.firstName} ${user.lastName}")),
-        const SizedBox(height: 21),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ItemNotifiable<String>(
-              notifier: _passwordErrorNotifier,
-              builder: (context, value) => LoginTextField(
-                controller: _passwordTextController,
-                hint: "Password",
-                errorText: value,
-                textInputAction: TextInputAction.next,
-              ),
-            ),
-            const SizedBox(height: 16)
-          ],
-        ),
-        const SizedBox(height: 21),
-        ItemNotifiable<bool>(
-          notifier: _showLoaderNotifier,
-          builder: (context, value) => RoundedRectangleActionButton(
-            title: 'Login',
-            borderColor: AppColors.successColor,
-            color: AppColors.successColor,
-            onPressed: () => _performLogin(
-                user.userName.toString(), _passwordTextController.text),
-            showLoader: value ?? false,
-          ),
-        )
-      ],
-    );
-  }
-
-  @override
-  void _performLogin(String login, String password) {
-    loginPresenter.login(login, password);
-  }
-
   @override
   void goToImageCaptureScreen(User user) {
-    ScreenPresenter.presentAndRemoveAllPreviousScreens(
+    ScreenPresenter.present(
         ImageCaptureScreen(), context);
   }
 

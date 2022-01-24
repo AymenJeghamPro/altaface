@@ -1,11 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_projects/_shared/exceptions/af_exception.dart';
-import 'package:flutter_projects/af_core/entity/user/user.dart';
 import 'package:flutter_projects/af_core/service/user/user_login_provider..dart';
-import 'package:flutter_projects/common_widgets/alert/alert.dart';
-import 'package:flutter_projects/common_widgets/screen_presenter/screen_presenter.dart';
-import 'package:flutter_projects/ui/imageCapture/Views/image_capture_screen.dart';
-import 'package:flutter_projects/ui/usersList/contracts/uses_list_view.dart';
+import 'package:flutter_projects/ui/usersList/contracts/users_list_view.dart';
 
 class UserLoginPresenter {
   final UsersListView _view;
@@ -16,26 +11,27 @@ class UserLoginPresenter {
   UserLoginPresenter.initWith(this._view, this._currentUserProvider);
 
   Future<void> login(String login, String password) async {
+    _view.clearLoginErrors();
     if (!_isInputValid(password)) return;
     if (_currentUserProvider.isLoading) return;
 
     try {
-      _view.showLoader();
+      _view.showLoggingLoader();
       var user = await _currentUserProvider.login(login, password);
-      _view.hideLoader();
+      _view.hideLoggingLoader();
       _view.goToImageCaptureScreen(user!);
     } on AFException catch (e) {
-      _view.hideLoader();
+      _view.hideLoggingLoader();
       _view.onLoginFailed("Login Failed", e.userReadableMessage);
     }
   }
 
-  bool _isInputValid(String key) {
+  bool _isInputValid(String password) {
     var isValid = true;
 
-    if (key.isEmpty) {
+    if (password.isEmpty || password.length < 4 ) {
       isValid = false;
-      _view.notifyInvalidLogin('Login or Password invalid');
+      _view.notifyInvalidPassword("password must have at least 4 characters");
     }
 
     return isValid;

@@ -10,6 +10,8 @@ class LoginTextField extends StatelessWidget {
   final TextEditingController? controller;
   final TextInputAction? textInputAction;
   final ValueChanged<String>? onFieldSubmitted;
+  final bool enableSuggestion;
+  final bool autocorrect;
 
   LoginTextField({
     this.hint,
@@ -20,6 +22,8 @@ class LoginTextField extends StatelessWidget {
     this.controller,
     this.textInputAction,
     this.onFieldSubmitted,
+    this.enableSuggestion=false,
+    this.autocorrect =false
   });
 
   @override
@@ -33,10 +37,13 @@ class LoginTextField extends StatelessWidget {
         controller: controller,
         textInputAction: textInputAction,
         onFieldSubmitted: onFieldSubmitted,
+        enableSuggestions: enableSuggestion,
+        autocorrect: autocorrect,
         decoration: InputDecoration(
           fillColor: Colors.white,
           filled: true,
           hintText: hint,
+
           errorText: errorText,
           enabledBorder: OutlineInputBorder(
             borderRadius: const BorderRadius.all(Radius.circular(100.0)),
