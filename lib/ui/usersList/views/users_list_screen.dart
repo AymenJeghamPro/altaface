@@ -1,9 +1,10 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_projects/_shared/constants/app_colors.dart';
+import 'package:flutter_projects/af_core/entity/company/company.dart';
 import 'package:flutter_projects/af_core/entity/user/user.dart';
+import 'package:flutter_projects/af_core/service/company/current_company_provider.dart';
 import 'package:flutter_projects/common_widgets/alert/alert.dart';
 import 'package:flutter_projects/common_widgets/appBar/simple_app_bar.dart';
 import 'package:flutter_projects/common_widgets/buttons/rounded_action_button.dart';
@@ -11,10 +12,13 @@ import 'package:flutter_projects/common_widgets/form_widgets/login_text_field.da
 import 'package:flutter_projects/common_widgets/loader/loader.dart';
 import 'package:flutter_projects/common_widgets/notifiable/item_notifiable.dart';
 import 'package:flutter_projects/common_widgets/popUp/popup_alert.dart';
+import 'package:flutter_projects/common_widgets/screen_presenter/screen_presenter.dart';
 import 'package:flutter_projects/common_widgets/search_bar/search_bar_with_title.dart';
 import 'package:flutter_projects/common_widgets/text/text_styles.dart';
 import 'package:flutter_projects/ui/companyLogin/views/user_card.dart';
+import 'package:flutter_projects/ui/imageCapture/Views/image_capture_screen.dart';
 import 'package:flutter_projects/ui/usersList/contracts/uses_list_view.dart';
+import 'package:flutter_projects/ui/usersList/presenters/user_login_presenter.dart';
 import 'package:flutter_projects/ui/usersList/presenters/users_list_presenter.dart';
 
 class UsersListScreen extends StatefulWidget {
@@ -25,7 +29,7 @@ class UsersListScreen extends StatefulWidget {
 class _UsersListScreenState extends State<UsersListScreen>
     implements UsersListView {
   late UsersListPresenter presenter;
-
+  late UserLoginPresenter loginPresenter;
   final _searchBarVisibilityNotifier = ItemNotifier<bool>();
   final _showErrorNotifier = ItemNotifier<bool>();
   final _usersListNotifier = ItemNotifier<List<User>?>();
@@ -47,6 +51,7 @@ class _UsersListScreenState extends State<UsersListScreen>
   @override
   void initState() {
     presenter = UsersListPresenter(this);
+    loginPresenter = UserLoginPresenter(this);
     presenter.getUsers();
     loader = Loader(context);
     super.initState();
@@ -131,6 +136,7 @@ class _UsersListScreenState extends State<UsersListScreen>
   Widget _getUserCard(int index, List<User> usersList) {
     return UserCard(
       user: usersList[index],
+      company: CurrentCompanyProvider().getCurrentCompany() as Company,
       onPressed: () => {presenter.selectUserAtIndex(index)},
     );
   }
@@ -184,59 +190,6 @@ class _UsersListScreenState extends State<UsersListScreen>
         });
   }
 
-  Widget technicianLoginPopUp(User user, VoidCallback onLogin) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 21),
-        ClipOval(
-          child: Center(
-              child: SizedBox.fromSize(
-            size: const Size.fromRadius(48), // Image radius
-            child: Image.network(user.avatar!, fit: BoxFit.cover),
-          )),
-        ),
-        const SizedBox(height: 21),
-        Center(child: Text("${user.firstName} ${user.lastName}")),
-        const SizedBox(height: 21),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ItemNotifiable<String>(
-              notifier: _passwordErrorNotifier,
-              builder: (context, value) => LoginTextField(
-                controller: _passwordTextController,
-                hint: "Password",
-                errorText: value,
-                textInputAction: TextInputAction.next,
-              ),
-            ),
-            const SizedBox(height: 16)
-          ],
-        ),
-        const SizedBox(height: 21),
-        ItemNotifiable<bool>(
-          notifier: _showLoaderNotifier,
-          builder: (context, value) => RoundedRectangleActionButton(
-            title: 'Login',
-            borderColor: AppColors.successColor,
-            color: AppColors.successColor,
-            onPressed:  onLogin,
-            showLoader: value ?? false,
-          ),
-        )
-      ],
-    );
-  }
-
-  // login function
-  _performLogin() {
-    presenter.userLogin(
-      _passwordTextController.text,
-    );
-  }
-
   // overridden methods
   @override
   void showUsersList(List<User> users) {
@@ -287,10 +240,7 @@ class _UsersListScreenState extends State<UsersListScreen>
 
   @override
   void onUserClicked(User user) {
-    popupAlert(
-        context: context,
-        widget: technicianLoginPopUp(user,() => { _performLogin() })
-    );
+    popupAlert(context: context, widget: technicianLoginPopUp(user, () {}));
   }
 
   @override
@@ -322,5 +272,68 @@ class _UsersListScreenState extends State<UsersListScreen>
   @override
   void hideLoggingLoader() {
     _showLoaderNotifier.notify(false);
+  }
+
+  Widget technicianLoginPopUp(User user, Function onLogin) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 21),
+        ClipOval(
+          child: Center(
+              child: SizedBox.fromSize(
+            size: const Size.fromRadius(48), // Image radius
+            child: Image.network(user.avatar!, fit: BoxFit.cover),
+          )),
+        ),
+        const SizedBox(height: 21),
+        Center(child: Text("${user.firstName} ${user.lastName}")),
+        const SizedBox(height: 21),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ItemNotifiable<String>(
+              notifier: _passwordErrorNotifier,
+              builder: (context, value) => LoginTextField(
+                controller: _passwordTextController,
+                hint: "Password",
+                errorText: value,
+                textInputAction: TextInputAction.next,
+              ),
+            ),
+            const SizedBox(height: 16)
+          ],
+        ),
+        const SizedBox(height: 21),
+        ItemNotifiable<bool>(
+          notifier: _showLoaderNotifier,
+          builder: (context, value) => RoundedRectangleActionButton(
+            title: 'Login',
+            borderColor: AppColors.successColor,
+            color: AppColors.successColor,
+            onPressed: () => _performLogin(
+                user.userName.toString(), _passwordTextController.text),
+            showLoader: value ?? false,
+          ),
+        )
+      ],
+    );
+  }
+
+  @override
+  void _performLogin(String login, String password) {
+    loginPresenter.login(login, password);
+  }
+
+  @override
+  void goToImageCaptureScreen(User user) {
+    ScreenPresenter.presentAndRemoveAllPreviousScreens(
+        ImageCaptureScreen(), context);
+  }
+
+  @override
+  void notifyInvalidLogin(String message) {
+    _passwordErrorNotifier.notify(message);
   }
 }

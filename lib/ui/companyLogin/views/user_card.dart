@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_projects/_shared/constants/app_colors.dart';
+import 'package:flutter_projects/af_core/entity/company/company.dart';
 import 'package:flutter_projects/af_core/entity/user/user.dart';
 import 'package:flutter_projects/common_widgets/text/text_styles.dart';
 
 class UserCard extends StatelessWidget {
   final User user;
+  final Company company;
   final VoidCallback onPressed;
 
-  const UserCard({required this.user, required this.onPressed});
+  const UserCard(
+      {required this.user, required this.company, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

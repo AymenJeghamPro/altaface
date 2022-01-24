@@ -1,8 +1,5 @@
-
-
 import 'package:flutter_projects/af_core/af_api/entities/api_response.dart';
 import 'package:flutter_projects/af_core/af_api/exceptions/unexpected_response_format_exception.dart';
-
 
 class UserResponseProcessor {
   dynamic processResponse(APIResponse response) {
@@ -10,11 +7,10 @@ class UserResponseProcessor {
   }
 
   dynamic _parseResponseData(dynamic responseData) {
-    if (responseData is! List<dynamic>) {
+    if (responseData is! List<dynamic> && responseData is! dynamic) {
       throw UnexpectedResponseFormatException();
     }
 
     return responseData;
   }
-
 }

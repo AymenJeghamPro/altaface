@@ -6,6 +6,7 @@ class APIRequest {
   String url;
   Map<String, dynamic> parameters = Map<String, dynamic>();
   Map<String, String> headers = Map<String, String>();
+
   final String requestId;
 
   APIRequest(this.url) : requestId = Uuid().v1();
