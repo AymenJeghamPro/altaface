@@ -41,7 +41,9 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
       body: SafeArea(
         child: Container(
           decoration: const BoxDecoration(
-            image: DecorationImage(image: AssetImage("assets/icons/background1.png"), fit: BoxFit.cover),
+            image: DecorationImage(
+                image: AssetImage("assets/icons/background1.png"),
+                fit: BoxFit.cover),
           ),
           padding: const EdgeInsets.all(10.0),
           child: ListView(
@@ -80,16 +82,16 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
   }
 
   Widget userIcon() {
-    return  Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            SizedBox(
-              height: 120,
-              width: 120,
-              child: Image.asset('assets/logo/ic_altagem_logo.png'),
-            ),
-          ],
-        );
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        SizedBox(
+          height: 120,
+          width: 120,
+          child: Image.asset('assets/logo/ic_altagem_logo.png'),
+        ),
+      ],
+    );
   }
 
   Widget formUI() {

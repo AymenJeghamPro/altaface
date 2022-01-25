@@ -1,0 +1,5 @@
+REVIEWBOARD_URL = "https://rb.altagem.net"
+REPOSITORY = "Altaface"
+REPOSITORY_TYPE = "git"
+BRANCH = "FEATURE-add-login-service-and-unit-test"
+LAND_DEST_BRANCH = "FEATURE-add-login-service-and-unit-test"

@@ -10,9 +10,7 @@ class MockLoginView extends Mock implements CompanyLoginView {}
 
 class MockCompanyProvider extends Mock implements CurrentCompanyProvider {}
 
-
 class MockCompany extends Mock implements Company {}
-
 
 void main() {
   var view = MockLoginView();
@@ -25,51 +23,53 @@ void main() {
 
   test('logging in successfully', () async {
     //given
-    when(  () => provider.isLoading).thenReturn(false);
+    when(() => provider.isLoading).thenReturn(false);
     when(() => provider.login(any()))
-        .thenAnswer((_) =>Future.value(MockCompany()));
+        .thenAnswer((_) => Future.value(MockCompany()));
 
-    CompanyLoginPresenter presenter = CompanyLoginPresenter.initWith(view, provider);
+    CompanyLoginPresenter presenter =
+        CompanyLoginPresenter.initWith(view, provider);
 
     //when
     await presenter.login("key");
 
     //then
     verifyInOrder([
-          () => view.clearLoginErrors(),
-          () => provider.isLoading,
-          () => view.showLoader(),
-          () => provider.login(any()),
-          () => view.hideLoader(),
-          () => view.goToTechniciansListScreen(),
+      () => view.clearLoginErrors(),
+      () => provider.isLoading,
+      () => view.showLoader(),
+      () => provider.login(any()),
+      () => view.hideLoader(),
+      () => view.goToTechniciansListScreen(),
     ]);
     _verifyNoMoreInteractionsOnAllMocks();
   });
 
-
-    test('logging in with invalid key notifies the view', () async {
+  test('logging in with invalid key notifies the view', () async {
     //given
-    when(  () => provider.isLoading).thenReturn(false);
-    CompanyLoginPresenter presenter = CompanyLoginPresenter.initWith(view, provider);
+    when(() => provider.isLoading).thenReturn(false);
+    CompanyLoginPresenter presenter =
+        CompanyLoginPresenter.initWith(view, provider);
 
     //when
     await presenter.login("");
 
     //then
     verifyInOrder([
-          () => view.clearLoginErrors(),
-          () => view.notifyInvalidCompanyKey("Invalid key"),
+      () => view.clearLoginErrors(),
+      () => view.notifyInvalidCompanyKey("Invalid key"),
     ]);
     _verifyNoMoreInteractionsOnAllMocks();
   });
 
   test('logging in with valid credentials clears the errors', () async {
     //given
-    when( () => provider.isLoading).thenReturn(false);
+    when(() => provider.isLoading).thenReturn(false);
     when(() => provider.login(any()))
-        .thenAnswer((_) =>Future.value(MockCompany()));
+        .thenAnswer((_) => Future.value(MockCompany()));
 
-    CompanyLoginPresenter presenter = CompanyLoginPresenter.initWith(view, provider);
+    CompanyLoginPresenter presenter =
+        CompanyLoginPresenter.initWith(view, provider);
     await presenter.login("");
 
     //when
@@ -77,14 +77,14 @@ void main() {
 
     //then
     verifyInOrder([
-          () => view.clearLoginErrors(),
-          () =>  view.notifyInvalidCompanyKey("Invalid key"),
-          () => view.clearLoginErrors(),
-          () => provider.isLoading,
-          () => view.showLoader(),
-          () => provider.login(any()),
-          () => view.hideLoader(),
-          () => view.goToTechniciansListScreen(),
+      () => view.clearLoginErrors(),
+      () => view.notifyInvalidCompanyKey("Invalid key"),
+      () => view.clearLoginErrors(),
+      () => provider.isLoading,
+      () => view.showLoader(),
+      () => provider.login(any()),
+      () => view.hideLoader(),
+      () => view.goToTechniciansListScreen(),
     ]);
     _verifyNoMoreInteractionsOnAllMocks();
   });
@@ -92,38 +92,41 @@ void main() {
   test('logging in when the provider is loading does nothing', () async {
     //given
     when(() => provider.isLoading).thenReturn(true);
-    CompanyLoginPresenter presenter = CompanyLoginPresenter.initWith(view, provider);
+    CompanyLoginPresenter presenter =
+        CompanyLoginPresenter.initWith(view, provider);
 
     //when
     await presenter.login("key");
 
     //then
     verifyInOrder([
-          () => view.clearLoginErrors(),
-          () => provider.isLoading,
+      () => view.clearLoginErrors(),
+      () => provider.isLoading,
     ]);
     _verifyNoMoreInteractionsOnAllMocks();
   });
 
   test('failure to login successfully', () async {
     //given
-    when(  () => provider.isLoading).thenReturn(false);
-    when( () => provider.login(any())).thenAnswer(
+    when(() => provider.isLoading).thenReturn(false);
+    when(() => provider.login(any())).thenAnswer(
       (realInvocation) => Future.error(InvalidResponseException()),
     );
-    CompanyLoginPresenter presenter = CompanyLoginPresenter.initWith(view, provider);
+    CompanyLoginPresenter presenter =
+        CompanyLoginPresenter.initWith(view, provider);
 
     //when
     await presenter.login("key");
 
     //then
     verifyInOrder([
-          () => view.clearLoginErrors(),
-          () => provider.isLoading,
-          () => view.showLoader(),
-          () => provider.login(any()),
-          () => view.hideLoader(),
-          () => view.onLoginFailed("Login Failed", InvalidResponseException().userReadableMessage),
+      () => view.clearLoginErrors(),
+      () => provider.isLoading,
+      () => view.showLoader(),
+      () => provider.login(any()),
+      () => view.hideLoader(),
+      () => view.onLoginFailed(
+          "Login Failed", InvalidResponseException().userReadableMessage),
     ]);
     _verifyNoMoreInteractionsOnAllMocks();
   });

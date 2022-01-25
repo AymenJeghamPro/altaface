@@ -1,8 +1,6 @@
-
 import 'package:flutter_projects/af_core/entity/user/user.dart';
 
 abstract class UsersListView {
-
   void showLoader();
 
   void hideLoader();
@@ -10,6 +8,10 @@ abstract class UsersListView {
   void showSearchBar();
 
   void hideSearchBar();
+
+  void notifyInvalidLogin(String message);
+
+  void onLoginFailed(String title, String message);
 
   void showUsersList(List<User> users);
 
@@ -31,6 +33,5 @@ abstract class UsersListView {
 
   void takePicture();
 
-  void onLoginFailed(String title, String message);
-
+  void goToImageCaptureScreen(User user);
 }

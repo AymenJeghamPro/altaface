@@ -6,22 +6,24 @@ import 'package:flutter_projects/af_core/af_api/exceptions/http_exception.dart';
 import 'package:flutter_projects/af_core/af_api/exceptions/server_sent_exception.dart';
 import 'package:flutter_projects/af_core/af_api/services/af_api.dart';
 import 'package:flutter_projects/af_core/af_api/services/network_adapter.dart';
-import 'package:flutter_projects/af_core/service/company/current_company_provider.dart';
 import 'package:flutter_projects/af_core/constants/users_urls.dart';
 import 'package:flutter_projects/af_core/entity/user/user.dart';
 import 'package:flutter_projects/af_core/repository/user/user_repository.dart';
 import 'package:flutter_projects/af_core/repository/user/user_response_processor.dart';
+import 'package:flutter_projects/af_core/service/company/current_company_provider.dart';
 
-class UsersListProvider {
+import '../../repository/company/company_response_processor.dart';
+
+class UserLoginProvider {
   final CurrentCompanyProvider _currentCompanyProvider;
   final UsersRepository _usersRepository;
   final NetworkAdapter _networkAdapter;
   bool isLoading = false;
 
-  UsersListProvider.initWith(this._currentCompanyProvider,
+  UserLoginProvider.initWith(this._currentCompanyProvider,
       this._usersRepository, this._networkAdapter);
 
-  UsersListProvider()
+  UserLoginProvider()
       : _currentCompanyProvider = CurrentCompanyProvider(),
         _usersRepository = UsersRepository(),
         _networkAdapter = AFAPI();
@@ -30,18 +32,40 @@ class UsersListProvider {
     isLoading = false;
   }
 
-  Future<List<User>> getUsers() async {
-    var currentCompany = _currentCompanyProvider.getCurrentCompany();
-    var url = UsersManagementUrls.getUsersUrl();
+  bool isLoggedIn() {
+    return UsersRepository().getCurrentUser() != null;
+  }
 
-    Map<String, String> qParams = {'company_id': currentCompany!.id};
+  User? getCurrentUser() {
+    return _usersRepository.getCurrentUser();
+  }
+
+  Future<User?> login(String login, String password) async {
+    var url = UsersManagementUrls.postUsersUrl();
+    var companyyId = _currentCompanyProvider.getCurrentCompany();
+
+    Map<String, dynamic> qParams = {
+      'user': {
+        'login': login,
+        'password': password,
+        'company_id': companyyId!.id.toString()
+      },
+      'connection': {
+        'imei': '',
+        'mac_address': '8A:72:BF:CC:3C:2B',
+        'ip_address': '192.168.1.31',
+        'network_provider': '',
+        'phone_number': '',
+        'battery_level': '31.0'
+      }
+    };
+
     Uri uri = Uri.parse(url);
-    final finalUri = uri.replace(queryParameters: qParams);
-    var apiRequest = APIRequest(finalUri.toString());
+    var apiRequest = APIRequest(uri.toString());
     isLoading = true;
-
+    apiRequest.addParameters(qParams);
     try {
-      var apiResponse = await _networkAdapter.get(apiRequest);
+      var apiResponse = await _networkAdapter.post(apiRequest);
       var responseData = UserResponseProcessor().processResponse(apiResponse);
       var response =
           APIResponse(apiRequest, apiResponse.statusCode, responseData, {});
@@ -57,7 +81,7 @@ class UsersListProvider {
     }
   }
 
-  List<User> _processResponse(APIResponse apiResponse) {
+  User _processResponse(APIResponse apiResponse) {
     if (apiResponse.data == null) throw InvalidResponseException();
 
     var responseMapList = apiResponse.data;
@@ -65,14 +89,13 @@ class UsersListProvider {
     return _readItemsFromResponse(responseMapList);
   }
 
-  List<User> _readItemsFromResponse(List<dynamic> responseMapList) {
+  User _readItemsFromResponse(Map<String, dynamic> responseMap) {
     try {
-      var users = <User>[];
-      for (var responseMap in responseMapList) {
-        var user = User.fromJson(responseMap);
-        users.add(user);
-      }
-      return users;
+      var user = User.fromJson(responseMap);
+
+      _usersRepository.saveUser(user);
+
+      return user;
     } catch (e) {
       throw InvalidResponseException();
     }
