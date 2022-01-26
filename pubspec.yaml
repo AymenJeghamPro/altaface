@@ -10,6 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   cupertino_icons: ^1.0.4
   dartz: ^0.10.1
   uuid: ^3.0.5
@@ -35,6 +37,7 @@ dependencies:
   date_format: ^2.0.4
   file_picker: ^4.2.7
   collection: ^1.15.0-nullsafety.4
+  localization: ^2.0.0+1
 
 
 dev_dependencies:
@@ -52,6 +55,9 @@ flutter:
   assets:
     - assets/logo/
     - assets/icons/
+    - assets/lib/
+    - assets/lib/i18n/
+    - assets/lib/i18n/en_US.json
   fonts:
     - family: PTSans
       fonts:

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <!--layout dialog_choose/dialog_simple-->
+    <dimen name="cl_dialog_choose_elevation">12dp</dimen>
+    <dimen name="simple_dialog_buttons_height">50dp</dimen>
+    <dimen name="common_dialog_min_width">100dp</dimen>
+    <dimen name="dialog_choose_btn_height">35dp</dimen>
+    <dimen name="btn_ok_height">50dp</dimen>
+    <dimen name="iv_color_width">50dp</dimen>
+    <dimen name="iv_color_height">30dp</dimen>
+    <dimen name="btns_width">135dp</dimen>
+    <dimen name="btns_height">60dp</dimen>
+
+</resources>

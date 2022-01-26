@@ -9,6 +9,7 @@ import 'package:flutter_projects/common_widgets/screen_presenter/screen_presente
 import 'package:flutter_projects/ui/companyLogin/contracts/company_login_view.dart';
 import 'package:flutter_projects/ui/companyLogin/presenters/company_login_presenter.dart';
 import 'package:flutter_projects/ui/usersList/views/users_list_screen.dart';
+import 'package:localization/src/localization_extension.dart';
 
 class CompanyLoginScreen extends StatefulWidget {
   const CompanyLoginScreen({Key? key}) : super(key: key);
@@ -24,6 +25,8 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
   final _showLogoNotifier = ItemNotifier<bool>();
   final _showLoaderNotifier = ItemNotifier<bool>();
   final _keyTextController = TextEditingController();
+  String text = 'welcome-text'.i18n();
+
 
   @override
   void initState() {
@@ -100,7 +103,7 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
           notifier: _keyErrorNotifier,
           builder: (context, value) => LoginTextField(
             controller: _keyTextController,
-            hint: "Company key",
+            hint: text,
             errorText: value,
             textInputAction: TextInputAction.next,
           ),

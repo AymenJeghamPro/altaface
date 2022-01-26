@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#93C120</color>
+    <color name="colorPrimaryDark">#93C120</color>
+    <color name="colorAccent">#D81B60</color>
+
+    <color name="milano_red">#CC100C</color>
+    <color name="flamingo_red">#f3403f</color>
+    <color name="chestnut_red">#b94a48</color>
+
+    <color name="Razzmatazz_pink">#68D2658C</color>
+
+    <color name="mine_shaft_gray">#333030</color>
+    <color name="dove_gray">#636363</color>
+    <color name="silver_chalice_gray">#9E9E9E</color>
+    <color name="dusty_gray">#999999</color>
+    <color name="gray_chateau">#A0A2A7</color>
+    <color name="gray_chateau_transparent">#63A0A2A7</color>
+    <color name="silver_gray">#CCCCCC</color>
+    <color name="alto_gray">#E0E0E0</color>
+    <color name="mercury_gray">#e6e6e6</color>
+    <color name="alabaster_gray">#F8F8F8</color>
+    <color name="transparent">#00000000</color>
+
+
+    <color name="san_marino_blue">#3F51B5</color>
+    <color name="marino_blue">#1f75fe</color>
+    <color name="boston_blue">#3a87ad</color>
+    <color name="curious_blue">#168AE3</color>
+    <color name="marine_blue">#373e9f</color>
+    <color name="marine_blue_light">#FF009EFD</color>
+    <color name="cornflower_blue">#92C4EA</color>
+
+    <color name="orange">#FF5722</color>
+    <color name="blaze_orange">#FF6600</color>
+    <color name="california_orange">#f89406</color>
+
+
+    <color name="forest_green">#2b9422</color>
+    <color name="fruit_salad_green">#4CAF50</color>
+    <color name="citron_green">#93C120</color>
+    <color name="pistachio_green">#85C400</color>
+    <color name="yellow_green">#BCDD68</color>
+
+
+</resources>
