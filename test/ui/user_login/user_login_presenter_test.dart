@@ -85,7 +85,6 @@ void main() {
       () => view.showLoggingLoader(),
       () => mockUserLoginProvider.login(any(), any()),
       () => view.hideLoggingLoader(),
-      () => view.goToImageCaptureScreen(user1)
     ]);
     _verifyNoMoreInteractionsOnAllMocks();
   });

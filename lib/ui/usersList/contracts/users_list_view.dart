@@ -1,7 +1,6 @@
 import 'package:flutter_projects/af_core/entity/user/user.dart';
 
 abstract class UsersListView {
-
   void showLoader();
 
   void hideLoader();
@@ -32,5 +31,5 @@ abstract class UsersListView {
 
   void notifyInvalidPassword(String message);
 
-  void goToImageCaptureScreen(User user);
+  void showToast(String message);
 }

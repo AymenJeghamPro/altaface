@@ -11,14 +11,15 @@ import 'package:flutter_projects/common_widgets/form_widgets/login_text_field.da
 import 'package:flutter_projects/common_widgets/loader/loader.dart';
 import 'package:flutter_projects/common_widgets/notifiable/item_notifiable.dart';
 import 'package:flutter_projects/common_widgets/popUp/popup_alert.dart';
-import 'package:flutter_projects/common_widgets/screen_presenter/screen_presenter.dart';
 import 'package:flutter_projects/common_widgets/search_bar/search_bar_with_title.dart';
 import 'package:flutter_projects/common_widgets/text/text_styles.dart';
+import 'package:flutter_projects/common_widgets/toast/toast.dart';
 import 'package:flutter_projects/ui/companyLogin/views/user_card.dart';
-import 'package:flutter_projects/ui/imageCapture/Views/image_capture_screen.dart';
+import 'package:flutter_projects/ui/main.dart';
 import 'package:flutter_projects/ui/usersList/contracts/users_list_view.dart';
 import 'package:flutter_projects/ui/usersList/presenters/user_login_presenter.dart';
 import 'package:flutter_projects/ui/usersList/presenters/users_list_presenter.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class UsersListScreen extends StatefulWidget {
   @override
@@ -46,6 +47,7 @@ class _UsersListScreenState extends State<UsersListScreen>
   static const NO_SEARCH_RESULTS_VIEW = 3;
   static const ERROR_VIEW = 4;
   late Loader loader;
+  late FToast fToast;
 
   @override
   void initState() {
@@ -54,6 +56,8 @@ class _UsersListScreenState extends State<UsersListScreen>
     presenter.getUsers();
     loader = Loader(context);
     super.initState();
+    fToast = FToast();
+    fToast.init(context);
   }
 
   @override
@@ -198,9 +202,9 @@ class _UsersListScreenState extends State<UsersListScreen>
         ClipOval(
           child: Center(
               child: SizedBox.fromSize(
-                size: const Size.fromRadius(48), // Image radius
-                child: Image.network(user.avatar!, fit: BoxFit.cover),
-              )),
+            size: const Size.fromRadius(48), // Image radius
+            child: Image.network(user.avatar!, fit: BoxFit.cover),
+          )),
         ),
         const SizedBox(height: 21),
         Center(child: Text("${user.firstName} ${user.lastName}")),
@@ -321,13 +325,16 @@ class _UsersListScreenState extends State<UsersListScreen>
   }
 
   @override
-  void goToImageCaptureScreen(User user) {
-    ScreenPresenter.present(
-        ImageCaptureScreen(), context);
+  void notifyInvalidLogin(String message) {
+    _passwordErrorNotifier.notify(message);
   }
 
   @override
-  void notifyInvalidLogin(String message) {
-    _passwordErrorNotifier.notify(message);
+  void showToast(String message) {
+    fToast.showToast(
+      child: toast(message),
+      gravity: ToastGravity.BOTTOM,
+      toastDuration: Duration(seconds: 3),
+    );
   }
 }
