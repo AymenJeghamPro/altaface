@@ -2,7 +2,7 @@ import 'package:flutter_projects/_shared/exceptions/af_exception.dart';
 import 'package:flutter_projects/af_core/entity/user/user.dart';
 import 'package:flutter_projects/af_core/service/user/user_login_provider..dart';
 import 'package:flutter_projects/af_core/service/user/users_list_provider.dart';
-import 'package:flutter_projects/ui/usersList/contracts/uses_list_view.dart';
+import 'package:flutter_projects/ui/usersList/contracts/users_list_view.dart';
 import 'package:flutter_projects/ui/usersList/presenters/user_login_presenter.dart';
 
 class UsersListPresenter {
@@ -33,19 +33,16 @@ class UsersListPresenter {
     }
   }
 
-  Future<void> userLogin(String password) async {
-    _view.clearLoginErrors();
-    if (!_isInputValid(password)) return;
-
+  Future<void> refreshUsers() async {
+    if (_usersListProvider.isLoading) return;
+    _users.clear();
     try {
-      _view.showLoggingLoader();
-      //service to auth
-      await Future.delayed(const Duration(milliseconds: 500));
-      _view.hideLoggingLoader();
-      _view.takePicture();
+      var users = await _usersListProvider.getUsers();
+      _handleResponse(users);
     } on AFException catch (e) {
-      _view.hideLoggingLoader();
-      _view.onLoginFailed("Login Failed", e.userReadableMessage);
+      _clearSearchTextAndHideSearchBar();
+      _view.showErrorMessage("${e.userReadableMessage}\n\nTap here to reload.");
+      _view.hideLoader();
     }
   }
 
@@ -109,19 +106,5 @@ class UsersListPresenter {
     return _users;
   }
 
-  bool _isInputValid(String password) {
-    var isValid = true;
 
-    if (password.isEmpty) {
-      isValid = false;
-      _view.notifyInvalidPassword("Please insert password");
-    }
-
-    if (password.length < 4) {
-      isValid = false;
-      _view.notifyInvalidPassword("password must have at least 4 characters");
-    }
-
-    return isValid;
-  }
 }

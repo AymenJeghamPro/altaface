@@ -1,7 +1,7 @@
 import 'package:flutter_projects/_shared/exceptions/invalid_response_exception.dart';
 import 'package:flutter_projects/af_core/entity/user/user.dart';
 import 'package:flutter_projects/af_core/service/user/users_list_provider.dart';
-import 'package:flutter_projects/ui/usersList/contracts/uses_list_view.dart';
+import 'package:flutter_projects/ui/usersList/contracts/users_list_view.dart';
 import 'package:flutter_projects/ui/usersList/presenters/users_list_presenter.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -137,7 +137,6 @@ void main() {
     _verifyNoMoreInteractionsOnAllMocks();
   });
 
-
   test('search text is reset when search bar is hidden', () async {
     //given
     when(() => mockUsersListProvider.isLoading).thenReturn(false);
@@ -153,7 +152,7 @@ void main() {
     expect(presenter.getSearchText(), "");
   });
 
-  test('refresh the list of users', () async {
+  test('refresh the list of users when fetching users failed', () async {
     //given
     when(() => mockUsersListProvider.isLoading).thenReturn(false);
     when(() => mockUsersListProvider.getUsers()).thenAnswer((_) => Future.value(_usersList));
@@ -173,6 +172,27 @@ void main() {
           () => view.showSearchBar(),
           () => view.showUsersList(_usersList),
           () => view.hideLoader()
+    ]);
+    _verifyNoMoreInteractionsOnAllMocks();
+  });
+
+  test('dropdown refresh  the list of users', () async {
+    //given
+    when(() => mockUsersListProvider.isLoading).thenReturn(false);
+    when(() => mockUsersListProvider.getUsers()).thenAnswer((_) => Future.value(_usersList));
+
+    await presenter.getUsers();
+    _resetAllMockInteractions();
+
+    //when
+    await presenter.refreshUsers();
+
+    //then
+    verifyInOrder([
+          () => mockUsersListProvider.isLoading,
+          () => mockUsersListProvider.getUsers(),
+          () => view.showSearchBar(),
+          () => view.showUsersList(_usersList),
     ]);
     _verifyNoMoreInteractionsOnAllMocks();
   });

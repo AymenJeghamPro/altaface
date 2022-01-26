@@ -1,13 +1,10 @@
-import 'package:dartz/dartz.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_projects/_shared/exceptions/invalid_response_exception.dart';
 import 'package:flutter_projects/af_core/entity/user/user.dart';
 import 'package:flutter_projects/af_core/service/user/user_login_provider..dart';
 import 'package:flutter_projects/af_core/service/user/users_list_provider.dart';
-import 'package:flutter_projects/ui/usersList/contracts/uses_list_view.dart';
+import 'package:flutter_projects/ui/usersList/contracts/users_list_view.dart';
 import 'package:flutter_projects/ui/usersList/presenters/user_login_presenter.dart';
 import 'package:flutter_projects/ui/usersList/presenters/users_list_presenter.dart';
-import 'package:flutter_projects/ui/usersList/views/users_list_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -84,9 +81,10 @@ void main() {
 
     //then
     verifyInOrder([
-      () => view.showLoader(),
+      () => view.clearLoginErrors(),
+      () => view.showLoggingLoader(),
       () => mockUserLoginProvider.login(any(), any()),
-      () => view.hideLoader(),
+      () => view.hideLoggingLoader(),
       () => view.goToImageCaptureScreen(user1)
     ]);
     _verifyNoMoreInteractionsOnAllMocks();
@@ -103,9 +101,10 @@ void main() {
 
     //then
     verifyInOrder([
-      () => view.showLoader(),
+      () => view.clearLoginErrors(),
+      () => view.showLoggingLoader(),
       () => mockUserLoginProvider.login(any(), any()),
-      () => view.hideLoader(),
+      () => view.hideLoggingLoader(),
       () => view.onLoginFailed(
           "Login Failed", InvalidResponseException().userReadableMessage)
     ]);
@@ -123,7 +122,9 @@ void main() {
 
     //then
     verifyInOrder([
-      () => view.notifyInvalidLogin('Login or Password invalid'),
+      () => view.clearLoginErrors(),
+      () => view
+          .notifyInvalidPassword("password must have at least 4 characters"),
     ]);
     _verifyNoMoreInteractionsOnAllMocks();
   });
