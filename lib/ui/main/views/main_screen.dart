@@ -1,10 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_projects/_shared/constants/app_colors.dart';
 import 'package:flutter_projects/common_widgets/screen_presenter/screen_presenter.dart';
-
 import 'package:flutter_projects/ui/companyLogin/views/company_login_screen.dart';
-import 'package:flutter_projects/ui/imageCapture/Views/image_capture_screen.dart';
 import 'package:flutter_projects/ui/main/contracts/main_view.dart';
 import 'package:flutter_projects/ui/main/presenters/main_presenter.dart';
 import 'package:flutter_projects/ui/usersList/views/users_list_screen.dart';
@@ -45,11 +41,5 @@ class _MainScreenState extends State<MainScreen> implements MainView {
   void goToUsersListScreen() {
     ScreenPresenter.presentAndRemoveAllPreviousScreens(
         UsersListScreen(), context);
-  }
-
-  @override
-  void goToImageCaptureScreen() {
-    ScreenPresenter.presentAndRemoveAllPreviousScreens(
-        ImageCaptureScreen(), context);
   }
 }

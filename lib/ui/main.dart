@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_projects/af_core/repository/repository_initializer.dart';
 import 'main/views/main_screen.dart';
 
 void main() => runApp(const AltaFaceApp());
@@ -11,8 +10,7 @@ class AltaFaceApp extends StatefulWidget with WidgetsBindingObserver {
   _AltaFaceAppState createState() => _AltaFaceAppState();
 }
 
-class _AltaFaceAppState extends State<AltaFaceApp> with WidgetsBindingObserver{
-
+class _AltaFaceAppState extends State<AltaFaceApp> with WidgetsBindingObserver {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -22,5 +20,4 @@ class _AltaFaceAppState extends State<AltaFaceApp> with WidgetsBindingObserver{
       theme: ThemeData(fontFamily: 'PTSans'),
     );
   }
-
 }
