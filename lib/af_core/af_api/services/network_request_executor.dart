@@ -14,14 +14,14 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'network_adapter.dart';
 
 class NetworkRequestExecutor implements NetworkAdapter {
-  Dio dio = new Dio();
+  Dio dio = Dio();
 
   NetworkRequestExecutor() {
     dio.interceptors.add(PrettyDioLogger(
         requestHeader: true,
         requestBody: true,
         responseBody: true,
-        responseHeader: false,
+        responseHeader: true,
         error: true,
         compact: true,
         maxWidth: 90));
@@ -38,6 +38,11 @@ class NetworkRequestExecutor implements NetworkAdapter {
   }
 
   @override
+  Future<APIResponse> postMultipart(APIRequest apiRequest, FormData formData) {
+    return executeMultiPartRequest(apiRequest, formData);
+  }
+
+  @override
   Future<APIResponse> put(APIRequest apiRequest) async {
     return executeRequest(apiRequest, 'PUT');
   }
@@ -47,7 +52,8 @@ class NetworkRequestExecutor implements NetworkAdapter {
     return executeRequest(apiRequest, 'DELETE');
   }
 
-  Future<APIResponse> executeRequest(APIRequest apiRequest, String method) async {
+  Future<APIResponse> executeRequest(
+      APIRequest apiRequest, String method) async {
     if (await _isConnected() == false) throw NetworkFailureException();
 
     try {
@@ -60,6 +66,20 @@ class NetworkRequestExecutor implements NetworkAdapter {
           validateStatus: (status) => status == 200,
         ),
       );
+      return _processResponse(response, apiRequest);
+    } on DioError catch (error) {
+      throw _processError(error);
+    }
+  }
+
+  Future<APIResponse> executeMultiPartRequest(
+      APIRequest apiRequest, FormData formData) async {
+    if (await _isConnected() == false) throw NetworkFailureException();
+
+    try {
+      dio.options.contentType= "multipart/form-data";
+      Response<String> response =
+          await dio.post(apiRequest.url, data: formData);
       return _processResponse(response, apiRequest);
     } on DioError catch (error) {
       throw _processError(error);

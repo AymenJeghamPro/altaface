@@ -15,6 +15,7 @@ class User extends JSONInitializable implements JSONConvertible {
   bool? _isLocalized;
   String? _storeId;
   String? _avatar;
+  String? _authenticationToken;
   bool? _isArchived;
 
 
@@ -32,6 +33,8 @@ class User extends JSONInitializable implements JSONConvertible {
       _storeId = sift.readStringFromMap(jsonMap, 'store_id');
       _avatar = sift.readStringFromMap(jsonMap, 'avatar');
       _isArchived = sift.readBooleanFromMap(jsonMap, 'is_archived');
+      _authenticationToken = sift.readStringFromMapWithDefaultValue(jsonMap, 'authentication_token',null);
+
     } on SiftException catch (e) {
       throw MappingException(
           'Failed to cast Company response. Error message - ${e.errorMessage}');
@@ -52,7 +55,8 @@ class User extends JSONInitializable implements JSONConvertible {
       'is_localized': _isLocalized,
       'store_id': _storeId,
       'avatar': _avatar,
-      'is_archived': _isArchived
+      'is_archived': _isArchived,
+      'authentication_token' : _authenticationToken
     };
     return jsonMap;
   }
@@ -78,4 +82,6 @@ class User extends JSONInitializable implements JSONConvertible {
   String? get avatar => _avatar;
 
   bool? get isArchived => _isArchived;
+
+  String? get authenticationToken => _authenticationToken;
 }

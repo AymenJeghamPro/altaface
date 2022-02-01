@@ -1,3 +1,6 @@
+
+import 'dart:io';
+
 import 'package:avatar_view/avatar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -18,6 +21,7 @@ import 'package:flutter_projects/ui/companyLogin/views/user_card.dart';
 import 'package:flutter_projects/ui/usersList/contracts/users_list_view.dart';
 import 'package:flutter_projects/ui/usersList/presenters/user_login_presenter.dart';
 import 'package:flutter_projects/ui/usersList/presenters/users_list_presenter.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class UsersListScreen extends StatefulWidget {
   @override
@@ -45,6 +49,7 @@ class _UsersListScreenState extends State<UsersListScreen>
   static const NO_SEARCH_RESULTS_VIEW = 3;
   static const ERROR_VIEW = 4;
   late Loader loader;
+  late FToast fToast;
 
   @override
   void initState() {
@@ -53,6 +58,8 @@ class _UsersListScreenState extends State<UsersListScreen>
     presenter.getUsers();
     loader = Loader(context);
     super.initState();
+    fToast = FToast();
+    fToast.init(context);
   }
 
   @override
@@ -322,7 +329,7 @@ class _UsersListScreenState extends State<UsersListScreen>
 
   @override
   void onUserClicked(User user) {
-    popupAlert(context: context, widget:technicianLoginPopUp(user, () {}));
+    popupAlert(context: context, widget: technicianLoginPopUp(user, () {}));
   }
 
   @override
@@ -352,18 +359,34 @@ class _UsersListScreenState extends State<UsersListScreen>
   }
 
   @override
-  void goToImageCaptureScreen(User user) {
-  //  ScreenPresenter.present(ImageCaptureScreen(), context);
-    _pop();
-  }
-
-  @override
   void notifyInvalidLogin(String message) {
     _passwordErrorNotifier.notify(message);
   }
 
   @override
-  void showToast(String message) {
-    // TODO: implement showToast
+  void onCameraFailed(String title, String message) {
+    Alert.showSimpleAlert(context: context, title: title, message: message);
+  }
+
+
+  @override
+  void onLoginSuccessful(User user) {
+   loginPresenter.getImageCamera(user);
+   _pop();
+  }
+
+  @override
+  void onCameraSuccessful(File imageFile,User user) {
+    loginPresenter.uploadImage(imageFile,user);
+  }
+
+  @override
+  void onUploadImageSuccessful() {
+    // TODO: implement onUploadImageSuccessful
+  }
+
+  @override
+  void onUploadImageFailed(String title, String message) {
+    // TODO: implement onUploadImageFailed
   }
 }

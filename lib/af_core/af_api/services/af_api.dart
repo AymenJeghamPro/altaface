@@ -1,6 +1,6 @@
-
 import 'dart:convert';
 
+import 'package:dio/src/form_data.dart';
 import 'package:flutter_projects/_shared/constants/app_id.dart';
 import 'package:flutter_projects/_shared/constants/device_info.dart';
 import 'package:flutter_projects/af_core/af_api/entities/api_request.dart';
@@ -12,20 +12,22 @@ import '../exceptions/http_exception.dart';
 import 'network_adapter.dart';
 import 'network_request_executor.dart';
 
-class AFAPI implements NetworkAdapter {
+class AltaFaceAPI implements NetworkAdapter {
   late DeviceInfoProvider _deviceInfo;
   late NetworkAdapter _networkAdapter;
 
-  AFAPI() {
+  AltaFaceAPI() {
     _deviceInfo = DeviceInfoProvider();
     _networkAdapter = NetworkRequestExecutor();
   }
 
-  AFAPI.initWith(this._deviceInfo, this._networkAdapter);
+  AltaFaceAPI.initWith(this._deviceInfo, this._networkAdapter);
 
   @override
-  Future<APIResponse> get(APIRequest apiRequest, {bool forceRefresh = false}) async {
-    apiRequest.addHeaders(await _buildAFHeaders(forceRefresh: forceRefresh));
+  Future<APIResponse> get(APIRequest apiRequest,
+      {bool forceRefresh = false}) async {
+    apiRequest
+        .addHeaders(await _buildAltaFaceHeaders(forceRefresh: forceRefresh));
     try {
       var apiResponse = await _networkAdapter.get(apiRequest);
       return apiResponse;
@@ -39,11 +41,13 @@ class AFAPI implements NetworkAdapter {
   }
 
   @override
-  Future<APIResponse> put(APIRequest apiRequest, {bool forceRefresh = false}) async {
-    apiRequest.addHeaders(await _buildAFHeaders(forceRefresh: forceRefresh));
+  Future<APIResponse> put(APIRequest apiRequest,
+      {bool forceRefresh = false}) async {
+    apiRequest
+        .addHeaders(await _buildAltaFaceHeaders(forceRefresh: forceRefresh));
     try {
       var apiResponse = await _networkAdapter.put(apiRequest);
-      return _processResponse(apiResponse, apiRequest);
+      return apiResponse;
     } on APIException catch (exception) {
       if (_shouldRefreshTokenOnException(exception)) {
         return put(apiRequest, forceRefresh: true);
@@ -54,11 +58,13 @@ class AFAPI implements NetworkAdapter {
   }
 
   @override
-  Future<APIResponse> post(APIRequest apiRequest, {bool forceRefresh = false}) async {
-    apiRequest.addHeaders(await _buildAFHeaders(forceRefresh: forceRefresh));
+  Future<APIResponse> post(APIRequest apiRequest,
+      {bool forceRefresh = false}) async {
+    apiRequest
+        .addHeaders(await _buildAltaFaceHeaders(forceRefresh: forceRefresh));
     try {
       var apiResponse = await _networkAdapter.post(apiRequest);
-      return _processResponse(apiResponse, apiRequest);
+      return apiResponse;
     } on APIException catch (exception) {
       if (_shouldRefreshTokenOnException(exception)) {
         return post(apiRequest, forceRefresh: true);
@@ -69,11 +75,29 @@ class AFAPI implements NetworkAdapter {
   }
 
   @override
-  Future<APIResponse> delete(APIRequest apiRequest, {bool forceRefresh = false}) async {
-    apiRequest.addHeaders(await _buildAFHeaders(forceRefresh: forceRefresh));
+  Future<APIResponse> postMultipart(APIRequest apiRequest, FormData formData,
+      {bool forceRefresh = false}) async {
+    try {
+      var apiResponse =
+          await _networkAdapter.postMultipart(apiRequest, formData);
+      return apiResponse;
+    } on APIException catch (exception) {
+      if (_shouldRefreshTokenOnException(exception)) {
+        return postMultipart(apiRequest, formData, forceRefresh: true);
+      } else {
+        rethrow;
+      }
+    }
+  }
+
+  @override
+  Future<APIResponse> delete(APIRequest apiRequest,
+      {bool forceRefresh = false}) async {
+    apiRequest
+        .addHeaders(await _buildAltaFaceHeaders(forceRefresh: forceRefresh));
     try {
       var apiResponse = await _networkAdapter.delete(apiRequest);
-      return _processResponse(apiResponse, apiRequest);
+      return apiResponse;
     } on APIException catch (exception) {
       if (_shouldRefreshTokenOnException(exception)) {
         return delete(apiRequest, forceRefresh: true);
@@ -83,23 +107,15 @@ class AFAPI implements NetworkAdapter {
     }
   }
 
-  Future<Map<String, String>> _buildAFHeaders({bool forceRefresh = false}) async {
+  Future<Map<String, String>> _buildAltaFaceHeaders(
+      {bool forceRefresh = false,
+      String contentType = 'application/json'}) async {
     var headers = <String, String>{};
-    headers['Content-Type'] = 'application/json';
+    headers['Content-Type'] = contentType;
     headers['X-Device-ID'] = await _deviceInfo.getDeviceId();
     headers['X-App-ID'] = AppId.appId;
 
-   // var authToken = await _accessTokenProvider.getToken(forceRefresh: forceRefresh);
-   //  if (authToken != null) {
-   //    headers['Authorization'] = authToken;
-   //  }
     return headers;
-  }
-
-  APIResponse _processResponse(APIResponse response, APIRequest apiRequest) {
-    // var responseData = AFAPIResponseProcessor().processResponse(response);
-    // return APIResponse(apiRequest, response.statusCode, responseData, {});
-    return response;
   }
 
   bool _shouldRefreshTokenOnException(APIException apiException) {

@@ -26,7 +26,7 @@ class UserLoginProvider {
   UserLoginProvider()
       : _currentCompanyProvider = CurrentCompanyProvider(),
         _usersRepository = UsersRepository(),
-        _networkAdapter = AFAPI();
+        _networkAdapter = AltaFaceAPI();
 
   void reset() {
     isLoading = false;
@@ -40,15 +40,15 @@ class UserLoginProvider {
     return _usersRepository.getCurrentUser();
   }
 
-  Future<User?> login(String login, String password) async {
+  Future<User> login(String login, String password) async {
     var url = UsersManagementUrls.postUsersUrl();
-    var companyyId = _currentCompanyProvider.getCurrentCompany();
+    var companyId = _currentCompanyProvider.getCurrentCompany();
 
     Map<String, dynamic> qParams = {
       'user': {
         'login': login,
         'password': password,
-        'company_id': companyyId!.id.toString()
+        'company_id': companyId!.id.toString()
       },
       'connection': {
         'imei': '',
@@ -93,7 +93,7 @@ class UserLoginProvider {
     try {
       var user = User.fromJson(responseMap);
 
-      _usersRepository.saveUser(user);
+      //_usersRepository.saveUser(user);
 
       return user;
     } catch (e) {

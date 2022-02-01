@@ -50,7 +50,7 @@ class DeviceInfoProvider {
     var deviceIdMap = await sharedPrefs.getMap('deviceIdMap');
 
     if (deviceIdMap == null) {
-      var deviceId = Uuid().v1();
+      var deviceId = const Uuid().v1();
       sharedPrefs.saveMap('deviceIdMap', {'deviceId': deviceId});
       return deviceId;
     } else {
