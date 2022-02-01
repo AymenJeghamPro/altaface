@@ -36,6 +36,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.8.1"
+  avatar_view:
+    dependency: "direct main"
+    description:
+      name: avatar_view
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   back_button_interceptor:
     dependency: transitive
     description:

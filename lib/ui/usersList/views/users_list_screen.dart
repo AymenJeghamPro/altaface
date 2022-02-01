@@ -1,3 +1,4 @@
+import 'package:avatar_view/avatar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_projects/_shared/constants/app_colors.dart';
@@ -13,13 +14,10 @@ import 'package:flutter_projects/common_widgets/notifiable/item_notifiable.dart'
 import 'package:flutter_projects/common_widgets/popUp/popup_alert.dart';
 import 'package:flutter_projects/common_widgets/search_bar/search_bar_with_title.dart';
 import 'package:flutter_projects/common_widgets/text/text_styles.dart';
-import 'package:flutter_projects/common_widgets/toast/toast.dart';
 import 'package:flutter_projects/ui/companyLogin/views/user_card.dart';
-import 'package:flutter_projects/ui/main.dart';
 import 'package:flutter_projects/ui/usersList/contracts/users_list_view.dart';
 import 'package:flutter_projects/ui/usersList/presenters/user_login_presenter.dart';
 import 'package:flutter_projects/ui/usersList/presenters/users_list_presenter.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class UsersListScreen extends StatefulWidget {
   @override
@@ -47,7 +45,6 @@ class _UsersListScreenState extends State<UsersListScreen>
   static const NO_SEARCH_RESULTS_VIEW = 3;
   static const ERROR_VIEW = 4;
   late Loader loader;
-  late FToast fToast;
 
   @override
   void initState() {
@@ -56,8 +53,6 @@ class _UsersListScreenState extends State<UsersListScreen>
     presenter.getUsers();
     loader = Loader(context);
     super.initState();
-    fToast = FToast();
-    fToast.init(context);
   }
 
   @override
@@ -198,15 +193,23 @@ class _UsersListScreenState extends State<UsersListScreen>
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 21),
-        ClipOval(
-          child: Center(
-              child: SizedBox.fromSize(
-            size: const Size.fromRadius(48), // Image radius
-            child: Image.network(user.avatar!, fit: BoxFit.cover),
-          )),
+        const SizedBox(height: 10),
+        Center(
+          child: AvatarView(
+            radius: 60,
+            avatarType: AvatarType.CIRCLE,
+            imagePath: user.avatar!,
+            placeHolder: const Icon(
+              Icons.person,
+              size: 50,
+            ),
+            errorWidget: const Icon(
+              Icons.error,
+              size: 50,
+            ),
+          ),
         ),
-        const SizedBox(height: 21),
+        const SizedBox(height: 10),
         Center(child: Text("${user.firstName} ${user.lastName}")),
         const SizedBox(height: 21),
         Column(
@@ -225,17 +228,37 @@ class _UsersListScreenState extends State<UsersListScreen>
             const SizedBox(height: 16)
           ],
         ),
-        const SizedBox(height: 21),
-        ItemNotifiable<bool>(
-          notifier: _showLoaderNotifier,
-          builder: (context, value) => RoundedRectangleActionButton(
-            title: 'Login',
-            borderColor: AppColors.successColor,
-            color: AppColors.successColor,
-            onPressed: () => _performLogin(
-                user.userName.toString(), _passwordTextController.text),
-            showLoader: value ?? false,
-          ),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              width: 150,
+              child: RoundedRectangleActionButton(
+                title: 'Cancel',
+                borderColor: Colors.grey,
+                color: Colors.grey,
+                onPressed: () => {
+                  _pop(),
+                  _passwordTextController.clear()
+                },
+                showLoader: false,
+              ),
+            ),
+            SizedBox(
+              width: 150,
+              child: ItemNotifiable<bool>(
+                  notifier: _showLoaderNotifier,
+                  builder: (context, value) => RoundedRectangleActionButton(
+                    title: 'Login',
+                    borderColor: AppColors.successColor,
+                    color: AppColors.successColor,
+                    onPressed: () => _performLogin(
+                        user.userName.toString(), _passwordTextController.text),
+                    showLoader: value ?? false,
+                  ),
+                ))
+          ],
         )
       ],
     );
@@ -243,6 +266,10 @@ class _UsersListScreenState extends State<UsersListScreen>
 
   void _performLogin(String login, String password) {
     loginPresenter.login(login, password);
+  }
+
+  void _pop(){
+    Navigator.pop(context);
   }
 
   // overridden methods
@@ -295,7 +322,7 @@ class _UsersListScreenState extends State<UsersListScreen>
 
   @override
   void onUserClicked(User user) {
-    popupAlert(context: context, widget: technicianLoginPopUp(user, () {}));
+    popupAlert(context: context, widget:technicianLoginPopUp(user, () {}));
   }
 
   @override
@@ -325,16 +352,18 @@ class _UsersListScreenState extends State<UsersListScreen>
   }
 
   @override
+  void goToImageCaptureScreen(User user) {
+  //  ScreenPresenter.present(ImageCaptureScreen(), context);
+    _pop();
+  }
+
+  @override
   void notifyInvalidLogin(String message) {
     _passwordErrorNotifier.notify(message);
   }
 
   @override
   void showToast(String message) {
-    fToast.showToast(
-      child: toast(message),
-      gravity: ToastGravity.BOTTOM,
-      toastDuration: Duration(seconds: 3),
-    );
+    // TODO: implement showToast
   }
 }

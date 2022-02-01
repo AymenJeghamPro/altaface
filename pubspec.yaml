@@ -37,6 +37,7 @@ dependencies:
   collection: ^1.15.0-nullsafety.4
   fluttertoast: ^8.0.8
 
+  avatar_view: ^1.0.1
 
 
 dev_dependencies:
