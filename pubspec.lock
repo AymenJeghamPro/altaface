@@ -189,7 +189,7 @@ packages:
       name: dio
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.4"
+    version: "4.0.5-beta1"
   encrypt:
     dependency: "direct main"
     description:

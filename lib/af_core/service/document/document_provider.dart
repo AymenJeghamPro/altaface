@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter_projects/_shared/exceptions/invalid_response_exception.dart';
 import 'package:flutter_projects/af_core/af_api/entities/api_request.dart';
 import 'package:flutter_projects/af_core/af_api/entities/api_response.dart';
@@ -6,42 +9,48 @@ import 'package:flutter_projects/af_core/af_api/exceptions/http_exception.dart';
 import 'package:flutter_projects/af_core/af_api/exceptions/server_sent_exception.dart';
 import 'package:flutter_projects/af_core/af_api/services/af_api.dart';
 import 'package:flutter_projects/af_core/af_api/services/network_adapter.dart';
-import 'package:flutter_projects/af_core/service/company/current_company_provider.dart';
-import 'package:flutter_projects/af_core/constants/users_urls.dart';
+import 'package:flutter_projects/af_core/constants/document_urls.dart';
+import 'package:flutter_projects/af_core/entity/document/document.dart';
 import 'package:flutter_projects/af_core/entity/user/user.dart';
-import 'package:flutter_projects/af_core/repository/user/user_repository.dart';
 import 'package:flutter_projects/af_core/repository/user/user_response_processor.dart';
 
-class UsersListProvider {
-  final CurrentCompanyProvider _currentCompanyProvider;
-  final UsersRepository _usersRepository;
+class DocumentProvider {
   final NetworkAdapter _networkAdapter;
   bool isLoading = false;
+  Dio dio = Dio();
 
-  UsersListProvider.initWith(this._currentCompanyProvider,
-      this._usersRepository, this._networkAdapter);
+  DocumentProvider.initWith(this._networkAdapter);
 
-  UsersListProvider()
-      : _currentCompanyProvider = CurrentCompanyProvider(),
-        _usersRepository = UsersRepository(),
-        _networkAdapter = AltaFaceAPI();
+  DocumentProvider() : _networkAdapter = AltaFaceAPI();
 
   void reset() {
     isLoading = false;
   }
 
-  Future<List<User>> getUsers() async {
-    var currentCompany = _currentCompanyProvider.getCurrentCompany();
-    var url = UsersManagementUrls.getUsersUrl();
+  Future<Document> uploadFile(String imageFilePath, User user) async {
+    var url = DocumentUrls.postFileUrl();
 
-    Map<String, String> qParams = {'company_id': currentCompany!.id};
+    var formData = FormData.fromMap({
+      'owner_id': user.id,
+      'related_object_id': user.id,
+      'related_object_type': "User",
+      'dokument_order': "0",
+      'file': await MultipartFile.fromFile(imageFilePath, filename: 'today-login')
+    });
+
+    Map<String, String> authParam = {
+      'authentication_token': user.authenticationToken!
+    };
+
+
     Uri uri = Uri.parse(url);
-    final finalUri = uri.replace(queryParameters: qParams);
+    final finalUri = uri.replace(queryParameters: authParam);
     var apiRequest = APIRequest(finalUri.toString());
     isLoading = true;
 
     try {
-      var apiResponse = await _networkAdapter.get(apiRequest);
+      var apiResponse =
+          await _networkAdapter.postMultipart(apiRequest, formData);
       var responseData = UserResponseProcessor().processResponse(apiResponse);
       var response =
           APIResponse(apiRequest, apiResponse.statusCode, responseData, {});
@@ -57,7 +66,7 @@ class UsersListProvider {
     }
   }
 
-  List<User> _processResponse(APIResponse apiResponse) {
+  Document _processResponse(APIResponse apiResponse) {
     if (apiResponse.data == null) throw InvalidResponseException();
 
     var responseMapList = apiResponse.data;
@@ -65,14 +74,10 @@ class UsersListProvider {
     return _readItemsFromResponse(responseMapList);
   }
 
-  List<User> _readItemsFromResponse(List<dynamic> responseMapList) {
+  Document _readItemsFromResponse(Map<String, dynamic> responseMap) {
     try {
-      var users = <User>[];
-      for (var responseMap in responseMapList) {
-        var user = User.fromJson(responseMap);
-        users.add(user);
-      }
-      return users;
+      var document = Document.fromJson(responseMap);
+      return document;
     } catch (e) {
       throw InvalidResponseException();
     }

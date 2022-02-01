@@ -4,12 +4,12 @@ import 'package:uuid/uuid.dart';
 
 class APIRequest {
   String url;
-  Map<String, dynamic> parameters = Map<String, dynamic>();
-  Map<String, String> headers = Map<String, String>();
+  Map<String, dynamic> parameters = <String, dynamic>{};
+  Map<String, String> headers = <String, String>{};
 
   final String requestId;
 
-  APIRequest(this.url) : requestId = Uuid().v1();
+  APIRequest(this.url) : requestId = const Uuid().v1();
 
   APIRequest.withId(this.url, this.requestId);
 

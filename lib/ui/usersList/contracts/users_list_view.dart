@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter_projects/af_core/entity/user/user.dart';
 
 abstract class UsersListView {
+
   void showLoader();
 
   void hideLoader();
@@ -10,6 +13,8 @@ abstract class UsersListView {
   void hideSearchBar();
 
   void notifyInvalidLogin(String message);
+
+  void onLoginSuccessful(User user);
 
   void onLoginFailed(String title, String message);
 
@@ -31,5 +36,12 @@ abstract class UsersListView {
 
   void notifyInvalidPassword(String message);
 
-  void showToast(String message);
+  void onCameraSuccessful(File imageFile, User user);
+
+  void onCameraFailed(String title,String message);
+
+  void onUploadImageSuccessful();
+
+  void onUploadImageFailed(String title,String message);
+
 }

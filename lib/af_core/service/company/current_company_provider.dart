@@ -22,7 +22,7 @@ class CurrentCompanyProvider {
 
   CurrentCompanyProvider()
       : _companyRepository = CompanyRepository.getInstance(),
-        _networkAdapter = AFAPI();
+        _networkAdapter = AltaFaceAPI();
 
   void reset() {
     isLoading = false;
