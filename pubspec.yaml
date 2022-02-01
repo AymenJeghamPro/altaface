@@ -38,6 +38,9 @@ dependencies:
   fluttertoast: ^8.0.8
 
   avatar_view: ^1.0.1
+  device_information: ^0.0.4
+  mobile_number: ^1.0.4
+  battery_info: ^1.0.8
 
 
 dev_dependencies:

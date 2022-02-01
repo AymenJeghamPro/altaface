@@ -1,3 +1,4 @@
+import 'package:battery_info/battery_info_plugin.dart';
 import 'package:flutter_projects/_shared/exceptions/invalid_response_exception.dart';
 import 'package:flutter_projects/af_core/af_api/entities/api_request.dart';
 import 'package:flutter_projects/af_core/af_api/entities/api_response.dart';
@@ -11,8 +12,7 @@ import 'package:flutter_projects/af_core/entity/user/user.dart';
 import 'package:flutter_projects/af_core/repository/user/user_repository.dart';
 import 'package:flutter_projects/af_core/repository/user/user_response_processor.dart';
 import 'package:flutter_projects/af_core/service/company/current_company_provider.dart';
-
-import '../../repository/company/company_response_processor.dart';
+import 'package:mobile_number/mobile_number.dart';
 
 class UserLoginProvider {
   final CurrentCompanyProvider _currentCompanyProvider;
@@ -43,6 +43,9 @@ class UserLoginProvider {
   Future<User> login(String login, String password) async {
     var url = UsersManagementUrls.postUsersUrl();
     var companyId = _currentCompanyProvider.getCurrentCompany();
+    var companyyId = _currentCompanyProvider.getCurrentCompany();
+    String? mobileNumber = await MobileNumber.mobileNumber;
+    var batteryInfo  = await BatteryInfoPlugin().iosBatteryInfo;
 
     Map<String, dynamic> qParams = {
       'user': {
@@ -55,8 +58,8 @@ class UserLoginProvider {
         'mac_address': '8A:72:BF:CC:3C:2B',
         'ip_address': '192.168.1.31',
         'network_provider': '',
-        'phone_number': '',
-        'battery_level': '31.0'
+        'phone_number': mobileNumber,
+        'battery_level': batteryInfo?.batteryLevel
       }
     };
 
