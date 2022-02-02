@@ -84,28 +84,23 @@ class _UsersListScreenState extends State<UsersListScreen>
                                 image: AssetImage('assets/images/top2.png'),
                                 fit: BoxFit.fitHeight))),
                   ),
-                  Positioned(
-                    width: size.width,
-                    height: size.height,
-                    child: Column(
-                      children: [
-                        _searchBar(),
-                        ItemNotifiable<int>(
-                            notifier: _viewSelectorNotifier,
-                            builder: (context, value) {
-                              if (value == USERS_VIEW) {
-                                return Expanded(child: _getUsers());
-                              } else if (value == NO_USERS_VIEW) {
-                                return Expanded(child: _noUsersMessageView());
-                              } else if (value == NO_SEARCH_RESULTS_VIEW) {
-                                return Expanded(
-                                    child: _noSearchResultsMessageView());
-                              }
-                              return Expanded(child: _buildErrorAndRetryView());
-                            })
-                      ],
-                    ),
-                  ),
+                  Column(children: [
+                    _searchBar(),
+                    ItemNotifiable<int>(
+                        notifier: _viewSelectorNotifier,
+                        builder: (context, value) {
+                          if (value == USERS_VIEW) {
+                            return Expanded(child: _getUsers());
+                          } else if (value == NO_USERS_VIEW) {
+                            return Expanded(child: _noUsersMessageView());
+                          } else if (value == NO_SEARCH_RESULTS_VIEW) {
+                            return Expanded(
+                                child: _noSearchResultsMessageView());
+                          }
+                          return Expanded(child: _buildErrorAndRetryView());
+                        })
+                    // _buildErrorAndRetryView()
+                  ]),
                 ],
               ),
             ),
@@ -123,7 +118,7 @@ class _UsersListScreenState extends State<UsersListScreen>
       builder: (context, shouldShowSearchBar) {
         if (shouldShowSearchBar == true) {
           return SearchBarWithTitle(
-            title: 'Chercher un technicien',
+            title: 'Chercher ',
             onChanged: (searchText) => presenter.performSearch(searchText),
           );
         } else {

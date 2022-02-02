@@ -16,7 +16,8 @@ class Loader {
             child: AlertDialog(
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(8.0))),
-              backgroundColor: Colors.black87,
+              backgroundColor:
+                  const Color.fromRGBO(38, 38, 38, 0.3411764705882353),
               content: _LoadingIndicator(text: text),
             ));
       },
@@ -39,7 +40,7 @@ class _LoadingIndicator extends StatelessWidget {
 
     return Container(
         padding: const EdgeInsets.all(16),
-        color: Colors.black87,
+        color: const Color.fromRGBO(38, 38, 38, 0.3411764705882353),
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
