@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'main/views/main_screen.dart';
+import 'package:flutter_projects/ui/main/views/main_screen.dart';
 
 void main() => runApp(const AltaFaceApp());
 

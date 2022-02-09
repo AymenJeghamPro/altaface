@@ -61,7 +61,7 @@ class UsersListProvider {
     if (apiResponse.data == null) throw InvalidResponseException();
 
     var responseMapList = apiResponse.data;
-
+    print(responseMapList);
     return _readItemsFromResponse(responseMapList);
   }
 

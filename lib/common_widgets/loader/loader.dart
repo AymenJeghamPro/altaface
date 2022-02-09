@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Loader {
   Loader(this.context);
@@ -11,12 +11,31 @@ class Loader {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return WillPopScope(
-            onWillPop: () async => false,
-            child: AlertDialog(
-              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
-              backgroundColor: Colors.black87,
-              content: _LoadingIndicator(text: text),
+        return Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Stack(
+              fit: StackFit.expand,
+              children: <Widget>[
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const <Widget>[
+                    SpinKitCircle(
+                      color: Colors.green,
+                      size: 120.0,
+                    ),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    Text(
+                      "   Loading....",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ],
             ));
       },
     );
@@ -42,12 +61,19 @@ class _LoadingIndicator extends StatelessWidget {
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
-            children: [_getLoadingIndicator(), _getHeading(context), _getText(displayedText)]));
+            children: [
+              _getLoadingIndicator(),
+              _getHeading(context),
+              _getText(displayedText)
+            ]));
   }
 
   Padding _getLoadingIndicator() {
     return const Padding(
-        child: SizedBox(child: CircularProgressIndicator(strokeWidth: 3), width: 32, height: 32),
+        child: SizedBox(
+            child: CircularProgressIndicator(strokeWidth: 3),
+            width: 32,
+            height: 32),
         padding: EdgeInsets.only(bottom: 16));
   }
 

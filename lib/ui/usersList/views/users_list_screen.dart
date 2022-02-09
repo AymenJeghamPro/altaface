@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:avatar_view/avatar_view.dart';
@@ -181,10 +180,23 @@ class _UsersListScreenState extends State<UsersListScreen>
                       child: Text(
                         _errorMessage,
                         textAlign: TextAlign.center,
-                        style: TextStyles.failureMessageTextStyle,
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.italic,
+                          fontSize: 20,
+                        ),
                       ),
                       onPressed: () => presenter.refresh(),
                     ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    const Icon(
+                      Icons.error,
+                      color: Colors.red,
+                      size: 35,
+                    )
                   ],
                 ),
               ),
@@ -245,16 +257,13 @@ class _UsersListScreenState extends State<UsersListScreen>
                 title: 'Cancel',
                 borderColor: Colors.grey,
                 color: Colors.grey,
-                onPressed: () => {
-                  _pop(),
-                  _passwordTextController.clear()
-                },
+                onPressed: () => {_pop(), _passwordTextController.clear()},
                 showLoader: false,
               ),
             ),
             SizedBox(
-              width: 150,
-              child: ItemNotifiable<bool>(
+                width: 150,
+                child: ItemNotifiable<bool>(
                   notifier: _showLoaderNotifier,
                   builder: (context, value) => RoundedRectangleActionButton(
                     title: 'Login',
@@ -275,7 +284,7 @@ class _UsersListScreenState extends State<UsersListScreen>
     loginPresenter.login(login, password);
   }
 
-  void _pop(){
+  void _pop() {
     Navigator.pop(context);
   }
 
@@ -368,16 +377,15 @@ class _UsersListScreenState extends State<UsersListScreen>
     Alert.showSimpleAlert(context: context, title: title, message: message);
   }
 
-
   @override
   void onLoginSuccessful(User user) {
-   loginPresenter.getImageCamera(user);
-   _pop();
+    loginPresenter.getImageCamera(user);
+    _pop();
   }
 
   @override
-  void onCameraSuccessful(File imageFile,User user) {
-    loginPresenter.uploadImage(imageFile,user);
+  void onCameraSuccessful(File imageFile, User user) {
+    loginPresenter.uploadImage(imageFile, user);
   }
 
   @override
