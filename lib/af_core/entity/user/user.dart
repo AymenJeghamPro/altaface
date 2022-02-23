@@ -17,7 +17,8 @@ class User extends JSONInitializable implements JSONConvertible {
   String? _avatar;
   String? _authenticationToken;
   bool? _isArchived;
-
+  String? _workDayId;
+  num _activitiesCount = 0;
 
   User.fromJson(Map<String, dynamic> jsonMap) : super.fromJson(jsonMap) {
     var sift = Sift();
@@ -34,6 +35,8 @@ class User extends JSONInitializable implements JSONConvertible {
       _avatar = sift.readStringFromMapWithDefaultValue(jsonMap, 'avatar',null);
       _isArchived = sift.readBooleanFromMap(jsonMap, 'is_archived');
       _authenticationToken = sift.readStringFromMapWithDefaultValue(jsonMap, 'authentication_token',null);
+      _workDayId = sift.readStringFromMapWithDefaultValue(jsonMap, 'workday_id',null);
+      _activitiesCount = sift.readNumberFromMap(jsonMap, 'current_activities_count');
 
     } on SiftException catch (e) {
       throw MappingException(
@@ -84,4 +87,8 @@ class User extends JSONInitializable implements JSONConvertible {
   bool? get isArchived => _isArchived;
 
   String? get authenticationToken => _authenticationToken;
+
+  String? get workDayID => _workDayId;
+
+  num get activitiesCount => _activitiesCount;
 }

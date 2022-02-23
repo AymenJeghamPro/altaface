@@ -1,4 +1,4 @@
-
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:avatar_view/avatar_view.dart';
@@ -22,6 +22,9 @@ import 'package:flutter_projects/ui/usersList/contracts/users_list_view.dart';
 import 'package:flutter_projects/ui/usersList/presenters/user_login_presenter.dart';
 import 'package:flutter_projects/ui/usersList/presenters/users_list_presenter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
+
+const kMainColor = Color(0xFF573851);
 
 class UsersListScreen extends StatefulWidget {
   @override
@@ -29,6 +32,7 @@ class UsersListScreen extends StatefulWidget {
 }
 
 class _UsersListScreenState extends State<UsersListScreen>
+    with SingleTickerProviderStateMixin
     implements UsersListView {
   late UsersListPresenter presenter;
   late UserLoginPresenter loginPresenter;
@@ -41,6 +45,8 @@ class _UsersListScreenState extends State<UsersListScreen>
   final _showLoaderNotifier = ItemNotifier<bool>();
   final _passwordTextController = TextEditingController();
 
+  late TabController _tabController;
+
   String _noUsersMessage = "";
   String _noSearchResultsMessage = "";
   String _errorMessage = "";
@@ -48,46 +54,207 @@ class _UsersListScreenState extends State<UsersListScreen>
   static const NO_USERS_VIEW = 2;
   static const NO_SEARCH_RESULTS_VIEW = 3;
   static const ERROR_VIEW = 4;
+
   late Loader loader;
   late FToast fToast;
+  late XFile? pickedImage;
+  final picker = ImagePicker();
+  late File selectedImage;
+  final ValueNotifier<bool> _isLoading = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> _isCountingDown = ValueNotifier<bool>(false);
 
   @override
   void initState() {
     presenter = UsersListPresenter(this);
     loginPresenter = UserLoginPresenter(this);
-    presenter.getUsers();
+    _tabController = TabController(vsync: this, length: 2);
+
+    presenter.getUsers(_tabController.index);
     loader = Loader(context);
     super.initState();
     fToast = FToast();
     fToast.init(context);
+    _tabController.addListener(() {
+      presenter.getUsers(_tabController.index);
+    });
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: SimpleAppBar(title: 'Acceuil'),
+      appBar: const SimpleAppBar(title: 'Acceuil'),
       body: SafeArea(
         child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-          decoration: BoxDecoration(
-            color: AppColors.primaryContrastColor,
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+                colors: [
+                  Colors.transparent,
+                  Colors.transparent,
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: [0.0, 1.0],
+                tileMode: TileMode.clamp),
           ),
           child: Column(children: [
-            _searchBar(),
-            ItemNotifiable<int>(
-                notifier: _viewSelectorNotifier,
-                builder: (context, value) {
-                  if (value == USERS_VIEW) {
-                    return Expanded(child: _getUsers());
-                  } else if (value == NO_USERS_VIEW) {
-                    return Expanded(child: _noUsersMessageView());
-                  } else if (value == NO_SEARCH_RESULTS_VIEW) {
-                    return Expanded(child: _noSearchResultsMessageView());
-                  }
-                  return Expanded(child: _buildErrorAndRetryView());
-                })
+            Expanded(
+              child: Container(
+                height: size.height,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('assets/images/top1.png'),
+                      fit: BoxFit.fill),
+                ),
+                child: Stack(
+                  children: <Widget>[
+                    Positioned(
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage('assets/images/top2.png'),
+                              fit: BoxFit.fill),
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 12),
+                          width: size.width * 1 / 3,
+                          decoration: const BoxDecoration(
+                            color: Color.fromRGBO(240, 240, 240, 0.75),
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                          child: DefaultTabController(
+                            initialIndex: 0,
+                            length: 2,
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 56,
+                                  child: TabBar(
+                                    controller: _tabController,
+                                    indicator: const UnderlineTabIndicator(
+                                      borderSide: BorderSide(
+                                          color: Colors.greenAccent,
+                                          width: 5.0),
+                                    ),
+                                    tabs: const <Widget>[
+                                      Tab(
+                                        child: Text(
+                                          'journées non commencés',
+                                          style: TextStyle(color: kMainColor),
+                                        ),
+                                      ),
+                                      Tab(
+                                        child: Text(
+                                          'journées commencés',
+                                          style: TextStyle(color: kMainColor),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  child: _getTechniciansList(),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        ValueListenableBuilder<bool>(
+                            valueListenable: _isLoading,
+                            builder: (BuildContext context, bool _loadingValue,
+                                Widget? child) {
+                              return Expanded(
+                                child: Container(
+                                    margin: const EdgeInsets.only(
+                                        right: 12, top: 12, bottom: 12),
+                                    child: _isLoading.value == true
+                                        ? ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            child: Image.file(
+                                              selectedImage,
+                                              fit: BoxFit.fitHeight,
+                                            ),
+                                          )
+                                        : ValueListenableBuilder<bool>(
+                                            valueListenable: _isCountingDown,
+                                            builder: (BuildContext context,
+                                                bool _isCountingDownValue,
+                                                Widget? child) {
+                                              return Stack(
+                                                children: [
+                                                  Container(
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            right: 12,
+                                                            top: 12,
+                                                            bottom: 12),
+                                                    // width: size.width * 2 / 3,
+                                                    decoration: BoxDecoration(
+                                                      image: _isCountingDownValue ==
+                                                              true
+                                                          ? const DecorationImage(
+                                                              image: AssetImage(
+                                                                  'assets/images/countdown.gif'),
+                                                              fit: BoxFit
+                                                                  .fitHeight,
+                                                            )
+                                                          : const DecorationImage(
+                                                              image: AssetImage(
+                                                                  'assets/icons/placeholder.png'),
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Align(
+                                                      alignment: Alignment
+                                                          .bottomCenter,
+                                                      child: TextButton(
+                                                          onPressed: () => {
+                                                                _isCountingDown
+                                                                        .value =
+                                                                    true,
+                                                                Future.delayed(
+                                                                    const Duration(
+                                                                        milliseconds:
+                                                                            2700),
+                                                                    openPicker),
+                                                                Future.delayed(
+                                                                    const Duration(
+                                                                        milliseconds:
+                                                                            2700),
+                                                                    setIsCountingToFalse),
+                                                              },
+                                                          child: const Text(
+                                                              "appuyez n'importe où pour prendre une photo")),
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            })),
+                              );
+                            }),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
             // _buildErrorAndRetryView()
           ]),
         ),
@@ -95,7 +262,34 @@ class _UsersListScreenState extends State<UsersListScreen>
     );
   }
 
-  // users_list_screen widgets
+  openPicker() async {
+    pickedImage = (await picker.pickImage(source: ImageSource.camera));
+    selectedImage = File(pickedImage!.path);
+    _isLoading.value = true;
+  }
+
+  setIsCountingToFalse() {
+    _isCountingDown.value = false;
+  }
+
+  Widget _getTechniciansList() {
+    return Column(children: [
+      _searchBar(),
+      ItemNotifiable<int>(
+          notifier: _viewSelectorNotifier,
+          builder: (context, value) {
+            if (value == USERS_VIEW) {
+              return Expanded(child: _getUsers());
+            } else if (value == NO_USERS_VIEW) {
+              return Expanded(child: _noUsersMessageView());
+            } else if (value == NO_SEARCH_RESULTS_VIEW) {
+              return Expanded(child: _noSearchResultsMessageView());
+            }
+            return Expanded(child: _buildErrorAndRetryView());
+          })
+      // _buildErrorAndRetryView()
+    ]);
+  }
 
   Widget _searchBar() {
     return ItemNotifiable<bool>(
@@ -103,7 +297,7 @@ class _UsersListScreenState extends State<UsersListScreen>
       builder: (context, shouldShowSearchBar) {
         if (shouldShowSearchBar == true) {
           return SearchBarWithTitle(
-            title: 'Technicians',
+            title: 'Chercher ',
             onChanged: (searchText) => presenter.performSearch(searchText),
           );
         } else {
@@ -148,7 +342,7 @@ class _UsersListScreenState extends State<UsersListScreen>
 
   Widget _noUsersMessageView() {
     return GestureDetector(
-        onTap: () => presenter.getUsers(),
+        onTap: () => presenter.getUsers(_tabController.index),
         child: Center(
             child: Text(
           _noUsersMessage,
@@ -183,7 +377,7 @@ class _UsersListScreenState extends State<UsersListScreen>
                         textAlign: TextAlign.center,
                         style: TextStyles.failureMessageTextStyle,
                       ),
-                      onPressed: () => presenter.refresh(),
+                      onPressed: () => presenter.refresh(_tabController.index),
                     ),
                   ],
                 ),
@@ -245,16 +439,13 @@ class _UsersListScreenState extends State<UsersListScreen>
                 title: 'Cancel',
                 borderColor: Colors.grey,
                 color: Colors.grey,
-                onPressed: () => {
-                  _pop(),
-                  _passwordTextController.clear()
-                },
+                onPressed: () => {_pop(), _passwordTextController.clear()},
                 showLoader: false,
               ),
             ),
             SizedBox(
-              width: 150,
-              child: ItemNotifiable<bool>(
+                width: 150,
+                child: ItemNotifiable<bool>(
                   notifier: _showLoaderNotifier,
                   builder: (context, value) => RoundedRectangleActionButton(
                     title: 'Login',
@@ -275,7 +466,7 @@ class _UsersListScreenState extends State<UsersListScreen>
     loginPresenter.login(login, password);
   }
 
-  void _pop(){
+  void _pop() {
     Navigator.pop(context);
   }
 
@@ -368,16 +559,15 @@ class _UsersListScreenState extends State<UsersListScreen>
     Alert.showSimpleAlert(context: context, title: title, message: message);
   }
 
-
   @override
   void onLoginSuccessful(User user) {
-   loginPresenter.getImageCamera(user);
-   _pop();
+    loginPresenter.getImageCamera(user);
+    _pop();
   }
 
   @override
-  void onCameraSuccessful(File imageFile,User user) {
-    loginPresenter.uploadImage(imageFile,user);
+  void onCameraSuccessful(File imageFile, User user) {
+    loginPresenter.uploadImage(imageFile, user);
   }
 
   @override
