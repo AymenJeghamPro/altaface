@@ -58,6 +58,7 @@ flutter:
   assets:
     - assets/logo/
     - assets/icons/
+    - assets/ca/
   fonts:
     - family: PTSans
       fonts:
