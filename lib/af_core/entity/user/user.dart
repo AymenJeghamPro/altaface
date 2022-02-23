@@ -25,13 +25,13 @@ class User extends JSONInitializable implements JSONConvertible {
       _id = sift.readStringFromMap(jsonMap, 'id');
       _type = sift.readStringFromMap(jsonMap, 'type');
       _teamId = sift.readStringFromMapWithDefaultValue(jsonMap, 'team_id',null);
-      _weeklyScheduleId = sift.readStringFromMap(jsonMap, 'weekly_schedule_id');
+      _weeklyScheduleId = sift.readStringFromMapWithDefaultValue(jsonMap, 'weekly_schedule_id',null);
       _firstName = sift.readStringFromMap(jsonMap, 'first_name');
       _lastName = sift.readStringFromMap(jsonMap, 'last_name');
       _userName = sift.readStringFromMap(jsonMap, 'username');
       _isLocalized = sift.readBooleanFromMap(jsonMap, 'is_localized');
-      _storeId = sift.readStringFromMap(jsonMap, 'store_id');
-      _avatar = sift.readStringFromMap(jsonMap, 'avatar');
+      _storeId = sift.readStringFromMapWithDefaultValue(jsonMap, 'store_id',null);
+      _avatar = sift.readStringFromMapWithDefaultValue(jsonMap, 'avatar',null);
       _isArchived = sift.readBooleanFromMap(jsonMap, 'is_archived');
       _authenticationToken = sift.readStringFromMapWithDefaultValue(jsonMap, 'authentication_token',null);
 
