@@ -16,7 +16,7 @@ class ItemNotifier<T> {
   }
 
   void notify(T? value) {
-    this._value = value;
+    _value = value;
     _listener?.call();
   }
 }
@@ -29,9 +29,7 @@ class ItemNotifiable<T> extends StatefulWidget {
     Key? key,
     required this.notifier,
     required this.builder,
-  })  : assert(notifier != null),
-        assert(builder != null),
-        super(key: key);
+  })  : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _ItemNotifiableState<T>();

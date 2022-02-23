@@ -66,13 +66,13 @@ class _UsersListScreenState extends State<UsersListScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: SimpleAppBar(title: 'Acceuil'),
+      appBar: const SimpleAppBar(title: 'Acceuil'),
       body: SafeArea(
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: AppColors.primaryContrastColor,
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
           child: Column(children: [
             _searchBar(),

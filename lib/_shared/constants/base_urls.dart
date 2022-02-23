@@ -1,11 +1,13 @@
+// ignore_for_file: unused_field
+
 class BaseUrls {
   //Environments
-  static const String _PRODUCTION = '';
-  static const String _STAGING = 'staging';
+  static const String _production = '';
+  static const String _staging = 'staging';
 
-  static const String _BASEURL = "https://app.altagem.info/api/v2/mobile/";
+  static const String baseurl = "https://app.altagem.info/api/v2/mobile/";
 
   static String baseUrlV2() {
-    return _BASEURL;
+    return baseurl;
   }
 }

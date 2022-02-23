@@ -30,7 +30,7 @@ class _SearchBarWithTitleState extends State<SearchBarWithTitle> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(left: 12),
+      padding: const EdgeInsets.only(left: 12),
       child: TextField(
         controller: _controller,
         focusNode: _focusNode,

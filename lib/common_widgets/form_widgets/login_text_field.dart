@@ -13,7 +13,7 @@ class LoginTextField extends StatelessWidget {
   final bool enableSuggestion;
   final bool autocorrect;
 
-  LoginTextField({
+  const LoginTextField({
     this.hint,
     this.obscureText = false,
     this.errorText,
@@ -53,7 +53,7 @@ class LoginTextField extends StatelessWidget {
             ),
           ),
           errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.all(const Radius.circular(100.0)),
+            borderRadius: const BorderRadius.all(Radius.circular(100.0)),
             borderSide: BorderSide(
               color: errorColor,
               width: 1,

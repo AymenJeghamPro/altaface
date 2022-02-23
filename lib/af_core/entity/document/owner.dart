@@ -40,18 +40,18 @@ class Owner {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['type'] = this.type;
-    data['team_id'] = this.teamId;
-    data['weekly_schedule_id'] = this.weeklyScheduleId;
-    data['first_name'] = this.firstName;
-    data['last_name'] = this.lastName;
-    data['username'] = this.username;
-    data['is_localized'] = this.isLocalized;
-    data['store_id'] = this.storeId;
-    data['is_archived'] = this.isArchived;
-    data['avatar'] = this.avatar;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['type'] = type;
+    data['team_id'] = teamId;
+    data['weekly_schedule_id'] = weeklyScheduleId;
+    data['first_name'] = firstName;
+    data['last_name'] = lastName;
+    data['username'] = username;
+    data['is_localized'] = isLocalized;
+    data['store_id'] = storeId;
+    data['is_archived'] = isArchived;
+    data['avatar'] = avatar;
     return data;
   }
 }

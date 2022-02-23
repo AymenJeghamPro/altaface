@@ -1,7 +1,6 @@
 
 
 import 'package:flutter_projects/af_core/af_api/entities/api_response.dart';
-import 'package:flutter_projects/af_core/af_api/exceptions/server_sent_exception.dart';
 import 'package:flutter_projects/af_core/af_api/exceptions/unexpected_response_format_exception.dart';
 
 import '../exceptions/malformed_response_exception.dart';

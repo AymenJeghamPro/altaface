@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_projects/common_widgets/buttons/circular_icon_button.dart';
 import 'package:flutter_projects/common_widgets/text/text_styles.dart';
 
@@ -14,7 +15,7 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   final Size preferredSize;
 
-  SimpleAppBar({
+  const SimpleAppBar({
     required this.title,
     this.leadingButtons = const [],
     this.trailingButtons = const [],
@@ -26,7 +27,6 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       centerTitle: true,
       titleSpacing: 0,
-      brightness: Brightness.light,
       backgroundColor: Colors.white,
       elevation: 0.0,
       bottom: showDivider ? const AppBarDivider() : null,
@@ -55,7 +55,7 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           )
         ],
-      ),
+      ), systemOverlayStyle: SystemUiOverlayStyle.dark,
     );
   }
 
@@ -63,7 +63,7 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
     List<Widget> resizedButtons = [];
     for (Widget button in buttons) {
       resizedButtons.add(_constraintWidgetToSize(button));
-      resizedButtons.add(SizedBox(width: 8));
+      resizedButtons.add(const SizedBox(width: 8));
     }
     return resizedButtons;
   }
