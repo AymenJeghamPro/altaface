@@ -10,10 +10,16 @@ class UserCard extends StatelessWidget {
   final VoidCallback onPressed;
 
   const UserCard(
-      {required this.user, required this.company, required this.onPressed});
+      {Key? key,
+      required this.user,
+      required this.company,
+      required this.onPressed})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final PageController controller = PageController();
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Card(
