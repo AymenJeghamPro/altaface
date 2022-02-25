@@ -65,70 +65,67 @@ class _UsersListScreenState extends State<UsersListScreen>
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: SimpleAppBar(title: 'Acceuil'),
+      appBar: const SimpleAppBar(title: 'Acceuil'),
       body: SafeArea(
         child: Row(
           children: [
-            Expanded(
-              // flexible
-              child: Container(
-                margin:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-                // width: MediaQuery.of(context).size.width * 1 / 3,
-                decoration: BoxDecoration(
-                  color: AppColors.primaryContrastColor,
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                ),
-                child: DefaultTabController(
-                  length: 2,
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        height: 56,
-                        child: TabBar(
-                          indicator: UnderlineTabIndicator(
-                            borderSide: BorderSide(
-                                color: Colors.greenAccent, width: 5.0),
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+              width: size.width * 1 / 3,
+              decoration: BoxDecoration(
+                color: AppColors.primaryContrastColor,
+                borderRadius: const BorderRadius.all(Radius.circular(10)),
+              ),
+              child: DefaultTabController(
+                length: 2,
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 56,
+                      child: TabBar(
+                        indicator: UnderlineTabIndicator(
+                          borderSide:
+                              BorderSide(color: Colors.greenAccent, width: 5.0),
+                        ),
+                        tabs: <Widget>[
+                          Tab(
+                            child: Text(
+                              'journées non commencés',
+                              style: TextStyle(color: kMainColor),
+                            ),
                           ),
-                          tabs: <Widget>[
-                            Tab(
-                              child: Text(
-                                'journées non commencés',
-                                style: TextStyle(color: kMainColor),
-                              ),
+                          Tab(
+                            child: Text(
+                              'journées commencés',
+                              style: TextStyle(color: kMainColor),
                             ),
-                            Tab(
-                              child: Text(
-                                'journées commencés',
-                                style: TextStyle(color: kMainColor),
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      Expanded(
-                        child: TabBarView(
-                          children: <Widget>[
-                            _getTechniciansList(),
-                            _getTechniciansList(),
-                          ],
-                        ),
+                    ),
+                    Expanded(
+                      child: TabBarView(
+                        children: <Widget>[
+                          _getTechniciansList(),
+                          _getTechniciansList(),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
+
             // TODO implements camera and place holder
-            // Expanded(
-            //   child: Container(
-            //     margin: const EdgeInsets.only(right: 12, top: 12, bottom: 12),
-            //     // width: MediaQuery.of(context).size.width * 2 / 3,
-            //     color: Colors.amber,
-            //   ),
-            // )
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.only(right: 12, top: 12, bottom: 12),
+                // width: size.width * 2 / 3,
+                color: Colors.amber,
+              ),
+            )
           ],
         ),
       ),
@@ -136,34 +133,73 @@ class _UsersListScreenState extends State<UsersListScreen>
   }
 
   Widget _getTechniciansList() {
-    return Center(
+    Size size = MediaQuery.of(context).size;
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+            colors: [
+              Colors.transparent,
+              Colors.transparent,
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            stops: [0.0, 1.0],
+            tileMode: TileMode.clamp),
+      ),
       child: Column(children: [
-        _searchBar(),
-        ItemNotifiable<int>(
-            notifier: _viewSelectorNotifier,
-            builder: (context, value) {
-              if (value == USERS_VIEW) {
-                return Expanded(child: _getUsers());
-              } else if (value == NO_USERS_VIEW) {
-                return Expanded(child: _noUsersMessageView());
-              } else if (value == NO_SEARCH_RESULTS_VIEW) {
-                return Expanded(child: _noSearchResultsMessageView());
-              }
-              return Expanded(child: _buildErrorAndRetryView());
-            })
+        Expanded(
+          child: Container(
+            height: size.height,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage('assets/images/top1.png'),
+                  fit: BoxFit.fitHeight),
+            ),
+            child: Stack(
+              children: <Widget>[
+                Positioned(
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage('assets/images/top2.png'),
+                          fit: BoxFit.fitHeight),
+                    ),
+                  ),
+                ),
+                Column(children: [
+                  _searchBar(),
+                  ItemNotifiable<int>(
+                      notifier: _viewSelectorNotifier,
+                      builder: (context, value) {
+                        if (value == USERS_VIEW) {
+                          return Expanded(child: _getUsers());
+                        } else if (value == NO_USERS_VIEW) {
+                          return Expanded(child: _noUsersMessageView());
+                        } else if (value == NO_SEARCH_RESULTS_VIEW) {
+                          return Expanded(child: _noSearchResultsMessageView());
+                        }
+                        return Expanded(child: _buildErrorAndRetryView());
+                      })
+                  // _buildErrorAndRetryView()
+                ]),
+              ],
+            ),
+          ),
+        ),
         // _buildErrorAndRetryView()
       ]),
     );
   }
 
   // users_list_screen widgets
+
   Widget _searchBar() {
     return ItemNotifiable<bool>(
       notifier: _searchBarVisibilityNotifier,
       builder: (context, shouldShowSearchBar) {
         if (shouldShowSearchBar == true) {
           return SearchBarWithTitle(
-            title: 'Technicians',
+            title: 'Chercher ',
             onChanged: (searchText) => presenter.performSearch(searchText),
           );
         } else {

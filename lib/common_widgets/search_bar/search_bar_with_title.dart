@@ -3,16 +3,17 @@ import 'package:flutter_projects/_shared/constants/app_colors.dart';
 import 'package:flutter_projects/common_widgets/text/text_styles.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-
 class SearchBarWithTitle extends StatefulWidget {
   final String title;
   final Function(String) onChanged;
   final TextEditingController? controller;
 
-  const SearchBarWithTitle({required this.title, required this.onChanged, this.controller});
+  const SearchBarWithTitle(
+      {required this.title, required this.onChanged, this.controller});
 
   @override
-  _SearchBarWithTitleState createState() => _SearchBarWithTitleState(controller);
+  _SearchBarWithTitleState createState() =>
+      _SearchBarWithTitleState(controller);
 }
 
 class _SearchBarWithTitleState extends State<SearchBarWithTitle> {
@@ -30,7 +31,7 @@ class _SearchBarWithTitleState extends State<SearchBarWithTitle> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(left: 12),
+      padding: const EdgeInsets.only(left: 12),
       child: TextField(
         controller: _controller,
         focusNode: _focusNode,
