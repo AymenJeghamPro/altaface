@@ -158,13 +158,13 @@ class _UsersListScreenState extends State<UsersListScreen>
                         ),
                         Expanded(
                           child: Container(
+                            margin: const EdgeInsets.only(
+                                right: 12, top: 12, bottom: 12),
                             child: _load == true
                                 ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(50),
+                                    borderRadius: BorderRadius.circular(20),
                                     child: Image.file(
                                       selectedImage,
-                                      width: 100,
-                                      height: 100,
                                       fit: BoxFit.fitHeight,
                                     ),
                                   )
@@ -214,12 +214,8 @@ class _UsersListScreenState extends State<UsersListScreen>
 
   openPicker(ImageSource source) async {
     pickedImage = (await picker.pickImage(source: source));
-    print("before popping of context");
-
-    Navigator.pop(context);
     setState(() {
       selectedImage = File(pickedImage!.path);
-      print(selectedImage.toString());
       _load = true;
     });
   }
