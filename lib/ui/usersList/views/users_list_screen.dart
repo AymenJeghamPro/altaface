@@ -21,6 +21,7 @@ import 'package:flutter_projects/ui/usersList/contracts/users_list_view.dart';
 import 'package:flutter_projects/ui/usersList/presenters/user_login_presenter.dart';
 import 'package:flutter_projects/ui/usersList/presenters/users_list_presenter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 
 const kMainColor = Color(0xFF573851);
 
@@ -51,6 +52,10 @@ class _UsersListScreenState extends State<UsersListScreen>
   static const ERROR_VIEW = 4;
   late Loader loader;
   late FToast fToast;
+  late XFile? pickedImage;
+  final picker = ImagePicker();
+  bool _load = false;
+  late File selectedImage;
 
   @override
   void initState() {
@@ -69,126 +74,173 @@ class _UsersListScreenState extends State<UsersListScreen>
     return Scaffold(
       appBar: const SimpleAppBar(title: 'Acceuil'),
       body: SafeArea(
-        child: Row(
-          children: [
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-              width: size.width * 1 / 3,
-              decoration: BoxDecoration(
-                color: AppColors.primaryContrastColor,
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
-              ),
-              child: DefaultTabController(
-                length: 2,
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 56,
-                      child: TabBar(
-                        indicator: UnderlineTabIndicator(
-                          borderSide:
-                              BorderSide(color: Colors.greenAccent, width: 5.0),
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+                colors: [
+                  Colors.transparent,
+                  Colors.transparent,
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: [0.0, 1.0],
+                tileMode: TileMode.clamp),
+          ),
+          child: Column(children: [
+            Expanded(
+              child: Container(
+                height: size.height,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('assets/images/top1.png'),
+                      fit: BoxFit.fill),
+                ),
+                child: Stack(
+                  children: <Widget>[
+                    Positioned(
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage('assets/images/top2.png'),
+                              fit: BoxFit.fill),
                         ),
-                        tabs: <Widget>[
-                          Tab(
-                            child: Text(
-                              'journées non commencés',
-                              style: TextStyle(color: kMainColor),
-                            ),
-                          ),
-                          Tab(
-                            child: Text(
-                              'journées commencés',
-                              style: TextStyle(color: kMainColor),
-                            ),
-                          ),
-                        ],
                       ),
                     ),
-                    Expanded(
-                      child: TabBarView(
-                        children: <Widget>[
-                          _getTechniciansList(),
-                          _getTechniciansList(),
-                        ],
-                      ),
+                    Row(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 12),
+                          width: size.width * 1 / 3,
+                          decoration: const BoxDecoration(
+                            color: Color.fromRGBO(240, 240, 240, 0.75),
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                          child: DefaultTabController(
+                            length: 2,
+                            child: Column(
+                              children: [
+                                const SizedBox(
+                                  height: 56,
+                                  child: TabBar(
+                                    indicator: UnderlineTabIndicator(
+                                      borderSide: BorderSide(
+                                          color: Colors.greenAccent,
+                                          width: 5.0),
+                                    ),
+                                    tabs: <Widget>[
+                                      Tab(
+                                        child: Text(
+                                          'journées non commencés',
+                                          style: TextStyle(color: kMainColor),
+                                        ),
+                                      ),
+                                      Tab(
+                                        child: Text(
+                                          'journées commencés',
+                                          style: TextStyle(color: kMainColor),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  child: TabBarView(
+                                    children: <Widget>[
+                                      _getTechniciansList(),
+                                      _getTechniciansList(),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            child: _load == true
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(50),
+                                    child: Image.file(
+                                      selectedImage,
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.fitHeight,
+                                    ),
+                                  )
+                                : Stack(
+                                    children: [
+                                      Container(
+                                        margin: const EdgeInsets.only(
+                                            right: 12, top: 12, bottom: 12),
+                                        // width: size.width * 2 / 3,
+                                        decoration: const BoxDecoration(
+                                          image: DecorationImage(
+                                            image: AssetImage(
+                                                'assets/icons/placeholder.png'),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Align(
+                                          alignment: Alignment.bottomCenter,
+                                          child: TextButton(
+                                              onPressed: () => {
+                                                    openPicker(
+                                                        ImageSource.camera)
+                                                  },
+                                              child: const Text(
+                                                  "appuyez n'importe où pour prendre une photo")),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
             ),
-
-            // TODO implements camera and place holder
-            Expanded(
-              child: Container(
-                margin: const EdgeInsets.only(right: 12, top: 12, bottom: 12),
-                // width: size.width * 2 / 3,
-                color: Colors.amber,
-              ),
-            )
-          ],
+            // _buildErrorAndRetryView()
+          ]),
         ),
       ),
     );
   }
 
+  openPicker(ImageSource source) async {
+    pickedImage = (await picker.pickImage(source: source));
+    print("before popping of context");
+
+    Navigator.pop(context);
+    setState(() {
+      selectedImage = File(pickedImage!.path);
+      print(selectedImage.toString());
+      _load = true;
+    });
+  }
+
   Widget _getTechniciansList() {
-    Size size = MediaQuery.of(context).size;
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-            colors: [
-              Colors.transparent,
-              Colors.transparent,
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            stops: [0.0, 1.0],
-            tileMode: TileMode.clamp),
-      ),
-      child: Column(children: [
-        Expanded(
-          child: Container(
-            height: size.height,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage('assets/images/top1.png'),
-                  fit: BoxFit.fitHeight),
-            ),
-            child: Stack(
-              children: <Widget>[
-                Positioned(
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage('assets/images/top2.png'),
-                          fit: BoxFit.fitHeight),
-                    ),
-                  ),
-                ),
-                Column(children: [
-                  _searchBar(),
-                  ItemNotifiable<int>(
-                      notifier: _viewSelectorNotifier,
-                      builder: (context, value) {
-                        if (value == USERS_VIEW) {
-                          return Expanded(child: _getUsers());
-                        } else if (value == NO_USERS_VIEW) {
-                          return Expanded(child: _noUsersMessageView());
-                        } else if (value == NO_SEARCH_RESULTS_VIEW) {
-                          return Expanded(child: _noSearchResultsMessageView());
-                        }
-                        return Expanded(child: _buildErrorAndRetryView());
-                      })
-                  // _buildErrorAndRetryView()
-                ]),
-              ],
-            ),
-          ),
-        ),
-        // _buildErrorAndRetryView()
-      ]),
-    );
+    return Column(children: [
+      _searchBar(),
+      ItemNotifiable<int>(
+          notifier: _viewSelectorNotifier,
+          builder: (context, value) {
+            if (value == USERS_VIEW) {
+              return Expanded(child: _getUsers());
+            } else if (value == NO_USERS_VIEW) {
+              return Expanded(child: _noUsersMessageView());
+            } else if (value == NO_SEARCH_RESULTS_VIEW) {
+              return Expanded(child: _noSearchResultsMessageView());
+            }
+            return Expanded(child: _buildErrorAndRetryView());
+          })
+      // _buildErrorAndRetryView()
+    ]);
   }
 
   // users_list_screen widgets

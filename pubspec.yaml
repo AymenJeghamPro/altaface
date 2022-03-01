@@ -36,7 +36,6 @@ dependencies:
   file_picker: ^4.2.7
   collection: ^1.15.0-nullsafety.4
   fluttertoast: ^8.0.8
-
   avatar_view: ^1.0.1
   device_information: ^0.0.4
   mobile_number: ^1.0.4

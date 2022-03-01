@@ -10,7 +10,11 @@ void main() async {
       await PlatformAssetBundle().load('assets/ca/lets-encrypt-r3.pem');
   SecurityContext.defaultContext
       .setTrustedCertificatesBytes(data.buffer.asUint8List());
-  runApp(const AltaFaceApp());
+  SystemChrome.setPreferredOrientations(
+          [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight])
+      .then((_) {
+    runApp(const AltaFaceApp());
+  });
 }
 
 class AltaFaceApp extends StatefulWidget with WidgetsBindingObserver {
