@@ -56,6 +56,7 @@ class _UsersListScreenState extends State<UsersListScreen>
   final picker = ImagePicker();
   bool _load = false;
   late File selectedImage;
+  bool _isCounting = false;
 
   @override
   void initState() {
@@ -174,12 +175,18 @@ class _UsersListScreenState extends State<UsersListScreen>
                                         margin: const EdgeInsets.only(
                                             right: 12, top: 12, bottom: 12),
                                         // width: size.width * 2 / 3,
-                                        decoration: const BoxDecoration(
-                                          image: DecorationImage(
-                                            image: AssetImage(
-                                                'assets/icons/placeholder.png'),
-                                            fit: BoxFit.cover,
-                                          ),
+                                        decoration: BoxDecoration(
+                                          image: _isCounting == true
+                                              ? const DecorationImage(
+                                                  image: AssetImage(
+                                                      'assets/images/countdown1.gif'),
+                                                  fit: BoxFit.fitHeight,
+                                                )
+                                              : const DecorationImage(
+                                                  image: AssetImage(
+                                                      'assets/icons/placeholder.png'),
+                                                  fit: BoxFit.cover,
+                                                ),
                                         ),
                                       ),
                                       Padding(
@@ -188,8 +195,18 @@ class _UsersListScreenState extends State<UsersListScreen>
                                           alignment: Alignment.bottomCenter,
                                           child: TextButton(
                                               onPressed: () => {
-                                                    openPicker(
-                                                        ImageSource.camera)
+                                                    setState(() {
+                                                      _isCounting = true;
+                                                      Future.delayed(
+                                                          const Duration(
+                                                              milliseconds:
+                                                                  2700),
+                                                          openPicker);
+                                                      Future.delayed(
+                                                          const Duration(
+                                                              seconds: 5),
+                                                          setIsCountingToFalse);
+                                                    }),
                                                   },
                                               child: const Text(
                                                   "appuyez n'importe où pour prendre une photo")),
@@ -212,11 +229,17 @@ class _UsersListScreenState extends State<UsersListScreen>
     );
   }
 
-  openPicker(ImageSource source) async {
-    pickedImage = (await picker.pickImage(source: source));
+  openPicker() async {
+    pickedImage = (await picker.pickImage(source: ImageSource.camera));
     setState(() {
       selectedImage = File(pickedImage!.path);
       _load = true;
+    });
+  }
+
+  setIsCountingToFalse() {
+    setState(() {
+      _isCounting = false;
     });
   }
 
