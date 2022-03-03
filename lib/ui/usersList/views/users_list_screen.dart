@@ -179,7 +179,7 @@ class _UsersListScreenState extends State<UsersListScreen>
                                           image: _isCounting == true
                                               ? const DecorationImage(
                                                   image: AssetImage(
-                                                      'assets/images/countdown1.gif'),
+                                                      'assets/images/countdown.gif'),
                                                   fit: BoxFit.fitHeight,
                                                 )
                                               : const DecorationImage(
@@ -204,7 +204,7 @@ class _UsersListScreenState extends State<UsersListScreen>
                                                           openPicker);
                                                       Future.delayed(
                                                           const Duration(
-                                                              seconds: 5),
+                                                              seconds: 4),
                                                           setIsCountingToFalse);
                                                     }),
                                                   },
