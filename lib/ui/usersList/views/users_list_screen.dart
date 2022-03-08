@@ -54,9 +54,9 @@ class _UsersListScreenState extends State<UsersListScreen>
   late FToast fToast;
   late XFile? pickedImage;
   final picker = ImagePicker();
-  bool _load = false;
   late File selectedImage;
-  bool _isCounting = false;
+  final ValueNotifier<bool> _isLoading = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> _isCountingDown = ValueNotifier<bool>(false);
 
   @override
   void initState() {
@@ -157,65 +157,85 @@ class _UsersListScreenState extends State<UsersListScreen>
                             ),
                           ),
                         ),
-                        Expanded(
-                          child: Container(
-                            margin: const EdgeInsets.only(
-                                right: 12, top: 12, bottom: 12),
-                            child: _load == true
-                                ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: Image.file(
-                                      selectedImage,
-                                      fit: BoxFit.fitHeight,
-                                    ),
-                                  )
-                                : Stack(
-                                    children: [
-                                      Container(
-                                        margin: const EdgeInsets.only(
-                                            right: 12, top: 12, bottom: 12),
-                                        // width: size.width * 2 / 3,
-                                        decoration: BoxDecoration(
-                                          image: _isCounting == true
-                                              ? const DecorationImage(
-                                                  image: AssetImage(
-                                                      'assets/images/countdown.gif'),
-                                                  fit: BoxFit.fitHeight,
-                                                )
-                                              : const DecorationImage(
-                                                  image: AssetImage(
-                                                      'assets/icons/placeholder.png'),
-                                                  fit: BoxFit.cover,
-                                                ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Align(
-                                          alignment: Alignment.bottomCenter,
-                                          child: TextButton(
-                                              onPressed: () => {
-                                                    setState(() {
-                                                      _isCounting = true;
-                                                      Future.delayed(
-                                                          const Duration(
-                                                              milliseconds:
-                                                                  2700),
-                                                          openPicker);
-                                                      Future.delayed(
-                                                          const Duration(
-                                                              seconds: 4),
-                                                          setIsCountingToFalse);
-                                                    }),
-                                                  },
-                                              child: const Text(
-                                                  "appuyez n'importe où pour prendre une photo")),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                          ),
-                        ),
+                        ValueListenableBuilder<bool>(
+                            valueListenable: _isLoading,
+                            builder: (BuildContext context, bool _loadingValue,
+                                Widget? child) {
+                              return Expanded(
+                                child: Container(
+                                    margin: const EdgeInsets.only(
+                                        right: 12, top: 12, bottom: 12),
+                                    child: _isLoading.value == true
+                                        ? ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            child: Image.file(
+                                              selectedImage,
+                                              fit: BoxFit.fitHeight,
+                                            ),
+                                          )
+                                        : ValueListenableBuilder<bool>(
+                                            valueListenable: _isCountingDown,
+                                            builder: (BuildContext context,
+                                                bool _isCountingDownValue,
+                                                Widget? child) {
+                                              return Stack(
+                                                children: [
+                                                  Container(
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            right: 12,
+                                                            top: 12,
+                                                            bottom: 12),
+                                                    // width: size.width * 2 / 3,
+                                                    decoration: BoxDecoration(
+                                                      image: _isCountingDownValue ==
+                                                              true
+                                                          ? const DecorationImage(
+                                                              image: AssetImage(
+                                                                  'assets/images/countdown.gif'),
+                                                              fit: BoxFit
+                                                                  .fitHeight,
+                                                            )
+                                                          : const DecorationImage(
+                                                              image: AssetImage(
+                                                                  'assets/icons/placeholder.png'),
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Align(
+                                                      alignment: Alignment
+                                                          .bottomCenter,
+                                                      child: TextButton(
+                                                          onPressed: () => {
+                                                                _isCountingDown
+                                                                        .value =
+                                                                    true,
+                                                                Future.delayed(
+                                                                    const Duration(
+                                                                        milliseconds:
+                                                                            2700),
+                                                                    openPicker),
+                                                                Future.delayed(
+                                                                    const Duration(
+                                                                        milliseconds:
+                                                                            2700),
+                                                                    setIsCountingToFalse),
+                                                              },
+                                                          child: const Text(
+                                                              "appuyez n'importe où pour prendre une photo")),
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            })),
+                              );
+                            }),
                       ],
                     ),
                   ],
@@ -231,16 +251,12 @@ class _UsersListScreenState extends State<UsersListScreen>
 
   openPicker() async {
     pickedImage = (await picker.pickImage(source: ImageSource.camera));
-    setState(() {
-      selectedImage = File(pickedImage!.path);
-      _load = true;
-    });
+    selectedImage = File(pickedImage!.path);
+    _isLoading.value = true;
   }
 
   setIsCountingToFalse() {
-    setState(() {
-      _isCounting = false;
-    });
+    _isCountingDown.value = false;
   }
 
   Widget _getTechniciansList() {
