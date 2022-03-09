@@ -11,6 +11,7 @@ import 'package:flutter_projects/af_core/constants/users_urls.dart';
 import 'package:flutter_projects/af_core/entity/user/user.dart';
 import 'package:flutter_projects/af_core/repository/user/user_repository.dart';
 import 'package:flutter_projects/af_core/repository/user/user_response_processor.dart';
+import 'package:sift/sift.dart';
 
 class UsersListProvider {
   final CurrentCompanyProvider _currentCompanyProvider;
@@ -65,10 +66,13 @@ class UsersListProvider {
     return _readItemsFromResponse(responseMapList);
   }
 
-  List<User> _readItemsFromResponse(List<dynamic> responseMapList) {
+  List<User> _readItemsFromResponse( Map<String, dynamic>  responseMapList) {
     try {
       var users = <User>[];
-      for (var responseMap in responseMapList) {
+      var sift = Sift();
+      var dataMap = sift.readMapFromMap(responseMapList, "data");
+      var usersResponse = sift.readMapListFromMap(dataMap, "users");
+      for (var responseMap in usersResponse) {
         var user = User.fromJson(responseMap);
         users.add(user);
       }

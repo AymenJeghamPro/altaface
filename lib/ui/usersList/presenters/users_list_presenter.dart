@@ -17,14 +17,29 @@ class UsersListPresenter {
 
   UsersListPresenter.initWith(this._view, this._usersListProvider);
 
-  Future<void> getUsers() async {
+  Future<void> getUsers(int index) async {
     if (_usersListProvider.isLoading) return;
     _users.clear();
     _view.showLoader();
 
     try {
       var users = await _usersListProvider.getUsers();
-      _handleResponse(users);
+
+      switch (index) {
+        case 0:
+          {
+           var usersNotStarted = users.where((user) => user.activitiesCount == 0).toList();
+            _handleResponse(usersNotStarted);
+          }
+          break;
+
+        case 1:
+          {
+            var usersStarted = users.where((user) => user.activitiesCount > 0).toList();
+            _handleResponse(usersStarted);
+          }
+          break;
+      }
       _view.hideLoader();
     } on AFException catch (e) {
       _clearSearchTextAndHideSearchBar();
@@ -93,9 +108,9 @@ class UsersListPresenter {
     _showFilteredUsers();
   }
 
-  refresh() {
+  refresh(int index) {
     _usersListProvider.reset();
-    getUsers();
+    getUsers(index);
   }
 
   String getSearchText() {
@@ -105,6 +120,4 @@ class UsersListPresenter {
   List<User> getCompanies() {
     return _users;
   }
-
-
 }
