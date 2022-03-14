@@ -25,21 +25,7 @@ class UsersListPresenter {
     try {
       var users = await _usersListProvider.getUsers();
 
-      switch (index) {
-        case 0:
-          {
-           var usersNotStarted = users.where((user) => user.activitiesCount == 0).toList();
-            _handleResponse(usersNotStarted);
-          }
-          break;
-
-        case 1:
-          {
-            var usersStarted = users.where((user) => user.activitiesCount > 0).toList();
-            _handleResponse(usersStarted);
-          }
-          break;
-      }
+      handleResponse(index, users);
       _view.hideLoader();
     } on AFException catch (e) {
       _clearSearchTextAndHideSearchBar();
@@ -48,12 +34,30 @@ class UsersListPresenter {
     }
   }
 
-  Future<void> refreshUsers() async {
+  void handleResponse(int index, List<User> users) {
+    switch (index) {
+      case 0:
+        {
+         var usersNotStarted = users.where((user) => user.activitiesCount == 0).toList();
+          _handleResponse(usersNotStarted);
+        }
+        break;
+
+      case 1:
+        {
+          var usersStarted = users.where((user) => user.activitiesCount > 0).toList();
+          _handleResponse(usersStarted);
+        }
+        break;
+    }
+  }
+
+  Future<void> refreshUsers(int index) async {
     if (_usersListProvider.isLoading) return;
     _users.clear();
     try {
       var users = await _usersListProvider.getUsers();
-      _handleResponse(users);
+      handleResponse(index, users);
     } on AFException catch (e) {
       _clearSearchTextAndHideSearchBar();
       _view.showErrorMessage("${e.userReadableMessage}\n\nTap here to reload.");

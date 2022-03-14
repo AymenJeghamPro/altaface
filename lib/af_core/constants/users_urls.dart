@@ -5,7 +5,11 @@ class UsersManagementUrls {
     return '${BaseUrls.baseUrlV2()}connection_altaface';
   }
 
-  static String postUsersUrl() {
+  static String loginUrl() {
     return '${BaseUrls.baseUrlV2()}sessions';
+  }
+
+  static String startWorkday() {
+    return '${BaseUrls.baseUrlV2()}upload';
   }
 }

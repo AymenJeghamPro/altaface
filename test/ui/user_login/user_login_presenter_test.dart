@@ -70,7 +70,7 @@ void main() {
     when(() => mockUsersListProvider.isLoading).thenReturn(false);
     when(() => mockUsersListProvider.getUsers())
         .thenAnswer((_) => Future.value(_usersList));
-    await presenter.getUsers();
+    await presenter.getUsers(0);
     _resetAllMockInteractions();
     //when
     await presenter.selectUserAtIndex(0);
@@ -97,7 +97,7 @@ void main() {
       () => view.showLoggingLoader(),
       () => mockUserLoginProvider.login(any(), any()),
       () => view.hideLoggingLoader(),
-      () => view.onLoginSuccessful(user1)
+      () => view.onWorkDayStartedSuccessful(user1)
     ]);
     _verifyNoMoreInteractionsOnAllMocks();
   });

@@ -1,4 +1,5 @@
-import 'package:battery_info/battery_info_plugin.dart';
+import 'dart:developer';
+
 import 'package:flutter_projects/_shared/exceptions/invalid_response_exception.dart';
 import 'package:flutter_projects/af_core/af_api/entities/api_request.dart';
 import 'package:flutter_projects/af_core/af_api/entities/api_response.dart';
@@ -12,7 +13,7 @@ import 'package:flutter_projects/af_core/entity/user/user.dart';
 import 'package:flutter_projects/af_core/repository/user/user_repository.dart';
 import 'package:flutter_projects/af_core/repository/user/user_response_processor.dart';
 import 'package:flutter_projects/af_core/service/company/current_company_provider.dart';
-import 'package:mobile_number/mobile_number.dart';
+import 'package:uuid/uuid.dart';
 
 class UserLoginProvider {
   final CurrentCompanyProvider _currentCompanyProvider;
@@ -40,38 +41,56 @@ class UserLoginProvider {
     return _usersRepository.getCurrentUser();
   }
 
-  Future<User> login(String login, String password) async {
-    var url = UsersManagementUrls.postUsersUrl();
-    var companyId = _currentCompanyProvider.getCurrentCompany();
-    var companyyId = _currentCompanyProvider.getCurrentCompany();
-    String? mobileNumber = await MobileNumber.mobileNumber;
-    var batteryInfo  = await BatteryInfoPlugin().iosBatteryInfo;
+  Future<bool> startWorkDay(String workDayID, String technicianId ) async {
+    var url = UsersManagementUrls.startWorkday();
+
+
+    log(workDayID);
 
     Map<String, dynamic> qParams = {
-      'user': {
-        'login': login,
-        'password': password,
-        'company_id': companyId!.id.toString()
-      },
-      'connection': {
-        'imei': '',
-        'mac_address': '8A:72:BF:CC:3C:2B',
-        'ip_address': '192.168.1.31',
-        'network_provider': '',
-        'phone_number': mobileNumber,
-        'battery_level': batteryInfo?.batteryLevel
-      }
+        "synchro": {
+          "activities": [
+            {
+              "activity_type_id": "a121f5c4-d6aa-4ed8-b566-9935c1fd07d0",
+              "started_at": DateTime.now().millisecondsSinceEpoch/1000.toInt(),
+              "technician_id": technicianId,
+              "work_day_id": workDayID,
+              "is_archived": false,
+              "id":const Uuid().v1()
+            }
+          ],
+          "declaratives": [
+            {
+             "settled_on": DateTime.now().millisecondsSinceEpoch/1000.toInt(),
+              "declarant_id": technicianId,
+              "trace_id": "f415d37c-1e73-4908-aaaf-61b4f901621x",
+              "id": const Uuid().v1()
+            }
+          ],
+          "work_days": [
+            {
+              "current_activities_count": 1,
+              "settled_on": DateTime.now().millisecondsSinceEpoch/1000.toInt(),
+              "state": "notyet_notyet",
+              "technician_id": technicianId,
+              "is_archived": false,
+              "id":workDayID
+            }
+          ]
+        }
     };
 
     Uri uri = Uri.parse(url);
+
     var apiRequest = APIRequest(uri.toString());
     isLoading = true;
     apiRequest.addParameters(qParams);
+    apiRequest.addHeader("Authorization", "qqArehPqM-pjueGPhJwk");
     try {
       var apiResponse = await _networkAdapter.post(apiRequest);
       var responseData = UserResponseProcessor().processResponse(apiResponse);
       var response =
-          APIResponse(apiRequest, apiResponse.statusCode, responseData, {});
+      APIResponse(apiRequest, apiResponse.statusCode, responseData, {});
       isLoading = false;
       return _processResponse(response);
     } on APIException catch (exception) {
@@ -84,23 +103,9 @@ class UserLoginProvider {
     }
   }
 
-  User _processResponse(APIResponse apiResponse) {
+   bool _processResponse(APIResponse apiResponse) {
     if (apiResponse.data == null) throw InvalidResponseException();
 
-    var responseMapList = apiResponse.data;
-
-    return _readItemsFromResponse(responseMapList);
-  }
-
-  User _readItemsFromResponse(Map<String, dynamic> responseMap) {
-    try {
-      var user = User.fromJson(responseMap);
-
-      //_usersRepository.saveUser(user);
-
-      return user;
-    } catch (e) {
-      throw InvalidResponseException();
-    }
+     return true ;
   }
 }

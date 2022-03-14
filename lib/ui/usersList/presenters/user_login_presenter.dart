@@ -26,20 +26,16 @@ class UserLoginPresenter {
     this._documentProvider,
   );
 
-
-  Future<void> login(String login, String password) async {
-    _view.clearLoginErrors();
-    if (!_isInputValid(password)) return;
-    if (_userLoginProvider.isLoading) return;
+  Future<void> startWorkday(String? workDayID, String? technicianID) async {
 
     try {
       _view.showLoggingLoader();
-      var user = await _userLoginProvider.login(login, password);
+      await _userLoginProvider.startWorkDay(workDayID!, technicianID!);
       _view.hideLoggingLoader();
-      _view.onLoginSuccessful(user);
+      _view.onWorkDayStartedSuccessful();
     } on AFException catch (e) {
       _view.hideLoggingLoader();
-      _view.onLoginFailed("Login Failed", e.userReadableMessage);
+      _view.onLoginFailed("start workday failed", e.userReadableMessage);
     }
   }
 
@@ -64,16 +60,5 @@ class UserLoginPresenter {
       _view.hideLoader();
       _view.onUploadImageFailed("Image upload Failed", e.userReadableMessage);
     }
-  }
-
-  bool _isInputValid(String password) {
-    var isValid = true;
-
-    if (password.isEmpty || password.length < 4) {
-      isValid = false;
-      _view.notifyInvalidPassword("password must have at least 4 characters");
-    }
-
-    return isValid;
   }
 }

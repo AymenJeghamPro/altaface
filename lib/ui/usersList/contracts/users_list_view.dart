@@ -14,7 +14,7 @@ abstract class UsersListView {
 
   void notifyInvalidLogin(String message);
 
-  void onLoginSuccessful(User user);
+  void onWorkDayStartedSuccessful();
 
   void onLoginFailed(String title, String message);
 
