@@ -15,11 +15,11 @@ class toast extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.check),
-          SizedBox(
+          const Icon(Icons.check),
+          const SizedBox(
             width: 12.0,
           ),
-          Text(this.message),
+          Text(message),
         ],
       ),
     );

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_projects/_shared/exceptions/invalid_response_exception.dart';
 import 'package:flutter_projects/af_core/af_api/entities/api_request.dart';
@@ -35,13 +33,13 @@ class DocumentProvider {
       'related_object_id': user.id,
       'related_object_type': "User",
       'dokument_order': "0",
-      'file': await MultipartFile.fromFile(imageFilePath, filename: 'today-login')
+      'file':
+          await MultipartFile.fromFile(imageFilePath, filename: 'today-login')
     });
 
     Map<String, String> authParam = {
       'authentication_token': user.authenticationToken!
     };
-
 
     Uri uri = Uri.parse(url);
     final finalUri = uri.replace(queryParameters: authParam);

@@ -37,13 +37,13 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              if (leadingButtons != null)
-                Row(children: [
-                  ...[const SizedBox(width: 8)],
-                  ..._resizeButtons(leadingButtons),
-                ]),
-              if (trailingButtons != null)
-                Row(children: _resizeButtons(trailingButtons)),
+              // if (leadingButtons != null)
+              Row(children: [
+                ...[const SizedBox(width: 8)],
+                ..._resizeButtons(leadingButtons),
+              ]),
+              // if (trailingButtons != null)
+              Row(children: _resizeButtons(trailingButtons)),
             ],
           ),
           Container(
@@ -68,19 +68,17 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
     List<Widget> resizedButtons = [];
     for (Widget button in buttons) {
       resizedButtons.add(_constraintWidgetToSize(button));
-      resizedButtons.add(SizedBox(width: 8));
+      resizedButtons.add(const SizedBox(width: 8));
     }
     return resizedButtons;
   }
 
   Widget _constraintWidgetToSize(Widget widget) {
-    return Container(
-      child: Center(
-        child: SizedBox(
-          width: 32,
-          height: 32,
-          child: widget,
-        ),
+    return Center(
+      child: SizedBox(
+        width: 32,
+        height: 32,
+        child: widget,
       ),
     );
   }

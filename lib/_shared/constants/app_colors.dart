@@ -22,7 +22,7 @@ class AppColors {
   static const Color failureColor = Color.fromRGBO(212, 28, 28, 1.0);
 
   //Contrast background color for views like search bar, chips, etc
-  static final Color primaryContrastColor = Color.fromRGBO(240, 240, 240, 1.0);
+  static const Color primaryContrastColor = Color.fromRGBO(240, 240, 240, 1.0);
 
   //Performance colors
   static final Color goodPerformanceColor = getColorFromHex('#2bba68');

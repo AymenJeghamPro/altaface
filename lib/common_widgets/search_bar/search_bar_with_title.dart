@@ -9,10 +9,12 @@ class SearchBarWithTitle extends StatefulWidget {
   final TextEditingController? controller;
 
   const SearchBarWithTitle(
-      {required this.title, required this.onChanged, this.controller});
+      {Key? key, required this.title, required this.onChanged, this.controller})
+      : super(key: key);
 
   @override
   _SearchBarWithTitleState createState() =>
+      // ignore: no_logic_in_create_state
       _SearchBarWithTitleState(controller);
 }
 

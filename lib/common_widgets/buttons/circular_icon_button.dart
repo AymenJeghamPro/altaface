@@ -10,24 +10,26 @@ class CircularIconButton extends StatelessWidget {
   final Color? color;
   final VoidCallback? onPressed;
 
-  CircularIconButton({
+  const CircularIconButton({
+    Key? key,
     required this.iconName,
     this.iconSize = 20,
     this.iconColor = Colors.white,
     this.buttonSize = 44,
     this.color,
     this.onPressed,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: buttonSize,
       height: buttonSize,
       child: FlatButton(
         color: color ?? AppColors.defaultColor,
-        padding: EdgeInsets.all(0),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100.0)),
+        padding: const EdgeInsets.all(0),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(100.0)),
         child: SvgPicture.asset(
           iconName,
           width: iconSize,

@@ -161,6 +161,9 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
   @override
   void goToTechniciansListScreen() {
     ScreenPresenter.presentAndRemoveAllPreviousScreens(
-        UsersListScreen(), context);
+        const UsersListScreen(
+          imageIsSent: false,
+        ),
+        context);
   }
 }
