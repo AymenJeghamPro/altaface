@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-class toast extends StatelessWidget {
+class Ttoast extends StatelessWidget {
   final String message;
-  const toast(this.message, {Key? key}) : super(key: key);
+  const Ttoast(this.message, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,11 +15,11 @@ class toast extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.check),
-          SizedBox(
+          const Icon(Icons.check),
+          const SizedBox(
             width: 12.0,
           ),
-          Text(this.message),
+          Text(message),
         ],
       ),
     );

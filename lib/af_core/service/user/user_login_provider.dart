@@ -43,9 +43,9 @@ class UserLoginProvider {
   Future<User> login(String login, String password) async {
     var url = UsersManagementUrls.postUsersUrl();
     var companyId = _currentCompanyProvider.getCurrentCompany();
-    var companyyId = _currentCompanyProvider.getCurrentCompany();
+    // var companyyId = _currentCompanyProvider.getCurrentCompany();
     String? mobileNumber = await MobileNumber.mobileNumber;
-    var batteryInfo  = await BatteryInfoPlugin().iosBatteryInfo;
+    var batteryInfo = await BatteryInfoPlugin().iosBatteryInfo;
 
     Map<String, dynamic> qParams = {
       'user': {

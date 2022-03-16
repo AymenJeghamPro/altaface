@@ -36,6 +36,7 @@ void main() {
     verifyNoMoreInteractions(view);
     verifyNoMoreInteractions(mockUsersListProvider);
   }
+
   void _resetAllMockInteractions() {
     clearInteractions(view);
     clearInteractions(mockUsersListProvider);
@@ -44,48 +45,51 @@ void main() {
   test('retrieving users successfully', () async {
     //given
     when(() => mockUsersListProvider.isLoading).thenReturn(false);
-    when(() => mockUsersListProvider.getUsers()).thenAnswer((_) => Future.value(_usersList));
+    when(() => mockUsersListProvider.getUsers())
+        .thenAnswer((_) => Future.value(_usersList));
 
     //when
     await presenter.getUsers();
 
     //then
     verifyInOrder([
-          () => mockUsersListProvider.isLoading,
-          () => view.showLoader(),
-          () => mockUsersListProvider.getUsers(),
-          () => view.showSearchBar(),
-          () => view.showUsersList(_usersList),
-          () => view.hideLoader()
+      () => mockUsersListProvider.isLoading,
+      () => view.showLoader(),
+      () => mockUsersListProvider.getUsers(),
+      () => view.showSearchBar(),
+      () => view.showUsersList(_usersList),
+      () => view.hideLoader()
     ]);
     _verifyNoMoreInteractionsOnAllMocks();
   });
-  
+
   test('retrieving users successfully with empty list', () async {
     //given
     when(() => mockUsersListProvider.isLoading).thenReturn(false);
-    when(() => mockUsersListProvider.getUsers()).thenAnswer((_) => Future.value(List.empty()));
+    when(() => mockUsersListProvider.getUsers())
+        .thenAnswer((_) => Future.value(List.empty()));
 
     //when
     await presenter.getUsers();
 
     //then
     verifyInOrder([
-          () => mockUsersListProvider.isLoading,
-          () => view.showLoader(),
-          () => mockUsersListProvider.getUsers(),
-          () => view.hideSearchBar(),
-          () => view.showNoUsersMessage("There are no users.\n\nTap here to reload"),
-          () => view.hideLoader()
+      () => mockUsersListProvider.isLoading,
+      () => view.showLoader(),
+      () => mockUsersListProvider.getUsers(),
+      () => view.hideSearchBar(),
+      () =>
+          view.showNoUsersMessage("There are no users.\n\nTap here to reload"),
+      () => view.hideLoader()
     ]);
     _verifyNoMoreInteractionsOnAllMocks();
   });
-  
+
   test('retrieving users failed', () async {
     //given
     when(() => mockUsersListProvider.isLoading).thenReturn(false);
     when(() => mockUsersListProvider.getUsers()).thenAnswer(
-          (realInvocation) => Future.error(InvalidResponseException()),
+      (realInvocation) => Future.error(InvalidResponseException()),
     );
 
     //when
@@ -93,12 +97,13 @@ void main() {
 
     //then
     verifyInOrder([
-          () => mockUsersListProvider.isLoading,
-          () => view.showLoader(),
-          () => mockUsersListProvider.getUsers(),
-          () => view.hideSearchBar(),
-          () => view.showErrorMessage("${InvalidResponseException().userReadableMessage}\n\nTap here to reload."),
-          () => view.hideLoader(),
+      () => mockUsersListProvider.isLoading,
+      () => view.showLoader(),
+      () => mockUsersListProvider.getUsers(),
+      () => view.hideSearchBar(),
+      () => view.showErrorMessage(
+          "${InvalidResponseException().userReadableMessage}\n\nTap here to reload."),
+      () => view.hideLoader(),
     ]);
     _verifyNoMoreInteractionsOnAllMocks();
   });
@@ -106,7 +111,8 @@ void main() {
   test('performing search successfully', () async {
     //given
     when(() => mockUsersListProvider.isLoading).thenReturn(false);
-    when(() => mockUsersListProvider.getUsers()).thenAnswer((_) => Future.value(_usersList));
+    when(() => mockUsersListProvider.getUsers())
+        .thenAnswer((_) => Future.value(_usersList));
     await presenter.getUsers();
     _resetAllMockInteractions();
 
@@ -115,7 +121,7 @@ void main() {
 
     //then
     verifyInOrder([
-          () => view.showUsersList([user2]),
+      () => view.showUsersList([user2]),
     ]);
     _verifyNoMoreInteractionsOnAllMocks();
   });
@@ -123,7 +129,8 @@ void main() {
   test('performing search with no successful results', () async {
     //given
     when(() => mockUsersListProvider.isLoading).thenReturn(false);
-    when(() => mockUsersListProvider.getUsers()).thenAnswer((_) => Future.value(_usersList));
+    when(() => mockUsersListProvider.getUsers())
+        .thenAnswer((_) => Future.value(_usersList));
     await presenter.getUsers();
     _resetAllMockInteractions();
 
@@ -132,7 +139,8 @@ void main() {
 
     //then
     verifyInOrder([
-          () => view.showNoSearchResultsMessage("There are no users for the  given search criteria."),
+      () => view.showNoSearchResultsMessage(
+          "There are no users for the  given search criteria."),
     ]);
     _verifyNoMoreInteractionsOnAllMocks();
   });
@@ -140,12 +148,13 @@ void main() {
   test('search text is reset when search bar is hidden', () async {
     //given
     when(() => mockUsersListProvider.isLoading).thenReturn(false);
-    when(() => mockUsersListProvider.getUsers()).thenAnswer((_) => Future.value(_usersList));
+    when(() => mockUsersListProvider.getUsers())
+        .thenAnswer((_) => Future.value(_usersList));
     presenter.performSearch("c1");
 
     //when
-    when(() => mockUsersListProvider.getUsers())
-        .thenAnswer((realInvocation) => Future.error(InvalidResponseException()));
+    when(() => mockUsersListProvider.getUsers()).thenAnswer(
+        (realInvocation) => Future.error(InvalidResponseException()));
     await presenter.getUsers();
 
     //then
@@ -155,7 +164,8 @@ void main() {
   test('refresh the list of users when fetching users failed', () async {
     //given
     when(() => mockUsersListProvider.isLoading).thenReturn(false);
-    when(() => mockUsersListProvider.getUsers()).thenAnswer((_) => Future.value(_usersList));
+    when(() => mockUsersListProvider.getUsers())
+        .thenAnswer((_) => Future.value(_usersList));
 
     await presenter.getUsers();
     _resetAllMockInteractions();
@@ -165,13 +175,13 @@ void main() {
 
     //then
     verifyInOrder([
-          () => mockUsersListProvider.reset(),
-          () => mockUsersListProvider.isLoading,
-          () => view.showLoader(),
-          () => mockUsersListProvider.getUsers(),
-          () => view.showSearchBar(),
-          () => view.showUsersList(_usersList),
-          () => view.hideLoader()
+      () => mockUsersListProvider.reset(),
+      () => mockUsersListProvider.isLoading,
+      () => view.showLoader(),
+      () => mockUsersListProvider.getUsers(),
+      () => view.showSearchBar(),
+      () => view.showUsersList(_usersList),
+      () => view.hideLoader()
     ]);
     _verifyNoMoreInteractionsOnAllMocks();
   });
@@ -179,7 +189,8 @@ void main() {
   test('dropdown refresh  the list of users', () async {
     //given
     when(() => mockUsersListProvider.isLoading).thenReturn(false);
-    when(() => mockUsersListProvider.getUsers()).thenAnswer((_) => Future.value(_usersList));
+    when(() => mockUsersListProvider.getUsers())
+        .thenAnswer((_) => Future.value(_usersList));
 
     await presenter.getUsers();
     _resetAllMockInteractions();
@@ -189,10 +200,10 @@ void main() {
 
     //then
     verifyInOrder([
-          () => mockUsersListProvider.isLoading,
-          () => mockUsersListProvider.getUsers(),
-          () => view.showSearchBar(),
-          () => view.showUsersList(_usersList),
+      () => mockUsersListProvider.isLoading,
+      () => mockUsersListProvider.getUsers(),
+      () => view.showSearchBar(),
+      () => view.showUsersList(_usersList),
     ]);
     _verifyNoMoreInteractionsOnAllMocks();
   });
@@ -200,7 +211,8 @@ void main() {
   test('select user from users list successfully', () async {
     //given
     when(() => mockUsersListProvider.isLoading).thenReturn(false);
-    when(() => mockUsersListProvider.getUsers()).thenAnswer((_) => Future.value(_usersList));
+    when(() => mockUsersListProvider.getUsers())
+        .thenAnswer((_) => Future.value(_usersList));
     await presenter.getUsers();
     _resetAllMockInteractions();
 
@@ -208,9 +220,7 @@ void main() {
     await presenter.selectUserAtIndex(0);
 
     //then
-    verifyInOrder([
-          () => view.onUserClicked(user1)
-    ]);
+    verifyInOrder([() => view.onUserClicked(user1)]);
     _verifyNoMoreInteractionsOnAllMocks();
   });
 }
