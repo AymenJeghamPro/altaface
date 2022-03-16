@@ -17,12 +17,14 @@ import 'package:flutter_projects/common_widgets/notifiable/item_notifiable.dart'
 import 'package:flutter_projects/common_widgets/popUp/popup_alert.dart';
 import 'package:flutter_projects/common_widgets/search_bar/search_bar_with_title.dart';
 import 'package:flutter_projects/common_widgets/text/text_styles.dart';
+import 'package:flutter_projects/common_widgets/toast/toast.dart';
 import 'package:flutter_projects/ui/companyLogin/views/user_card.dart';
 import 'package:flutter_projects/ui/usersList/contracts/users_list_view.dart';
 import 'package:flutter_projects/ui/usersList/presenters/user_login_presenter.dart';
 import 'package:flutter_projects/ui/usersList/presenters/users_list_presenter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 const kMainColor = Color(0xFF573851);
 
@@ -313,7 +315,7 @@ class _UsersListScreenState extends State<UsersListScreen>
       builder: (context, value) => Container(
         padding: const EdgeInsets.only(top: 8, bottom: 8),
         child: RefreshIndicator(
-          onRefresh: () => presenter.refreshUsers(),
+          onRefresh: () => presenter.refreshUsers(_tabController.index),
           child: ListView.builder(
             physics: const BouncingScrollPhysics(
                 parent: AlwaysScrollableScrollPhysics()),
@@ -399,7 +401,7 @@ class _UsersListScreenState extends State<UsersListScreen>
           child: AvatarView(
             radius: 60,
             avatarType: AvatarType.CIRCLE,
-            imagePath: user.avatar!,
+            imagePath: user.avatar ?? "https://altagem-s3.s3.eu-west-1.amazonaws.com//staging/com-and-dev/technician/avatar/1811e32c-9dc9-4463-8a2d-4aa5be56565e/small_0fbd37e3-c37f-4caf-a802-47017b8a5d31.jepg",
             placeHolder: const Icon(
               Icons.person,
               size: 50,
@@ -452,7 +454,7 @@ class _UsersListScreenState extends State<UsersListScreen>
                     borderColor: AppColors.successColor,
                     color: AppColors.successColor,
                     onPressed: () => _performLogin(
-                        user.userName.toString(), _passwordTextController.text),
+                        user.workDayID, user.id),
                     showLoader: value ?? false,
                   ),
                 ))
@@ -462,8 +464,8 @@ class _UsersListScreenState extends State<UsersListScreen>
     );
   }
 
-  void _performLogin(String login, String password) {
-    loginPresenter.login(login, password);
+  void _performLogin(String? workDayId, String? technicianID) {
+    loginPresenter.startWorkday(workDayId, technicianID);
   }
 
   void _pop() {
@@ -560,8 +562,12 @@ class _UsersListScreenState extends State<UsersListScreen>
   }
 
   @override
-  void onLoginSuccessful(User user) {
-    loginPresenter.getImageCamera(user);
+  void onWorkDayStartedSuccessful() {
+    fToast.showToast(
+      child: const toast("Workday successfully started"),
+      gravity: ToastGravity.BOTTOM,
+      toastDuration: const Duration(seconds: 3),
+    );
     _pop();
   }
 

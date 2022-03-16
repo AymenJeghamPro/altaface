@@ -47,7 +47,7 @@ void main() {
     when(() => mockUsersListProvider.getUsers()).thenAnswer((_) => Future.value(_usersList));
 
     //when
-    await presenter.getUsers();
+    await presenter.getUsers(0);
 
     //then
     verifyInOrder([
@@ -67,7 +67,7 @@ void main() {
     when(() => mockUsersListProvider.getUsers()).thenAnswer((_) => Future.value(List.empty()));
 
     //when
-    await presenter.getUsers();
+    await presenter.getUsers(0);
 
     //then
     verifyInOrder([
@@ -89,7 +89,7 @@ void main() {
     );
 
     //when
-    await presenter.getUsers();
+    await presenter.getUsers(0);
 
     //then
     verifyInOrder([
@@ -107,7 +107,7 @@ void main() {
     //given
     when(() => mockUsersListProvider.isLoading).thenReturn(false);
     when(() => mockUsersListProvider.getUsers()).thenAnswer((_) => Future.value(_usersList));
-    await presenter.getUsers();
+    await presenter.getUsers(0);
     _resetAllMockInteractions();
 
     //when
@@ -124,7 +124,7 @@ void main() {
     //given
     when(() => mockUsersListProvider.isLoading).thenReturn(false);
     when(() => mockUsersListProvider.getUsers()).thenAnswer((_) => Future.value(_usersList));
-    await presenter.getUsers();
+    await presenter.getUsers(0);
     _resetAllMockInteractions();
 
     //when
@@ -146,7 +146,7 @@ void main() {
     //when
     when(() => mockUsersListProvider.getUsers())
         .thenAnswer((realInvocation) => Future.error(InvalidResponseException()));
-    await presenter.getUsers();
+    await presenter.getUsers(0);
 
     //then
     expect(presenter.getSearchText(), "");
@@ -157,11 +157,11 @@ void main() {
     when(() => mockUsersListProvider.isLoading).thenReturn(false);
     when(() => mockUsersListProvider.getUsers()).thenAnswer((_) => Future.value(_usersList));
 
-    await presenter.getUsers();
+    await presenter.getUsers(0);
     _resetAllMockInteractions();
 
     //when
-    await presenter.refresh();
+    await presenter.refresh(0);
 
     //then
     verifyInOrder([
@@ -181,7 +181,7 @@ void main() {
     when(() => mockUsersListProvider.isLoading).thenReturn(false);
     when(() => mockUsersListProvider.getUsers()).thenAnswer((_) => Future.value(_usersList));
 
-    await presenter.getUsers();
+    await presenter.getUsers(0);
     _resetAllMockInteractions();
 
     //when
@@ -201,7 +201,7 @@ void main() {
     //given
     when(() => mockUsersListProvider.isLoading).thenReturn(false);
     when(() => mockUsersListProvider.getUsers()).thenAnswer((_) => Future.value(_usersList));
-    await presenter.getUsers();
+    await presenter.getUsers(0);
     _resetAllMockInteractions();
 
     //when
