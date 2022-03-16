@@ -194,11 +194,6 @@ class _UsersListScreenState extends State<UsersListScreen>
                                               return Stack(
                                                 children: [
                                                   Container(
-                                                    margin:
-                                                        const EdgeInsets.only(
-                                                            right: 12,
-                                                            top: 12,
-                                                            bottom: 12),
                                                     // width: size.width * 2 / 3,
                                                     decoration: BoxDecoration(
                                                       image: _isCountingDownValue ==
@@ -398,7 +393,9 @@ class _UsersListScreenState extends State<UsersListScreen>
           child: AvatarView(
             radius: 60,
             avatarType: AvatarType.CIRCLE,
-            imagePath: user.avatar!,
+            imagePath: user.avatar == null
+                ? "https://cdn-icons-png.flaticon.com/512/146/146031.png"
+                : user.avatar!,
             placeHolder: const Icon(
               Icons.person,
               size: 50,
