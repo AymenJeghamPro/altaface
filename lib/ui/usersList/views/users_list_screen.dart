@@ -27,6 +27,8 @@ import 'package:image_picker/image_picker.dart';
 const kMainColor = Color(0xFF573851);
 
 class UsersListScreen extends StatefulWidget {
+  const UsersListScreen({Key? key}) : super(key: key);
+
   @override
   _UsersListScreenState createState() => _UsersListScreenState();
 }
@@ -54,6 +56,7 @@ class _UsersListScreenState extends State<UsersListScreen>
   static const NO_USERS_VIEW = 2;
   static const NO_SEARCH_RESULTS_VIEW = 3;
   static const ERROR_VIEW = 4;
+  // int? _activeTabIndex;
 
   late Loader loader;
   late FToast fToast;
@@ -62,12 +65,17 @@ class _UsersListScreenState extends State<UsersListScreen>
   late File selectedImage;
   final ValueNotifier<bool> _isLoading = ValueNotifier<bool>(false);
   final ValueNotifier<bool> _isCountingDown = ValueNotifier<bool>(false);
+  final ValueNotifier<int> _activeTabIndex = ValueNotifier<int>(0);
+  void _setActiveTabIndex() {
+    _activeTabIndex.value = _tabController.index;
+  }
 
   @override
   void initState() {
     presenter = UsersListPresenter(this);
     loginPresenter = UserLoginPresenter(this);
     _tabController = TabController(vsync: this, length: 2);
+    _tabController.addListener(_setActiveTabIndex);
 
     presenter.getUsers(_tabController.index);
     loader = Loader(context);
@@ -216,27 +224,69 @@ class _UsersListScreenState extends State<UsersListScreen>
                                                     padding:
                                                         const EdgeInsets.all(
                                                             8.0),
-                                                    child: Align(
-                                                      alignment: Alignment
-                                                          .bottomCenter,
-                                                      child: TextButton(
-                                                          onPressed: () => {
-                                                                _isCountingDown
-                                                                        .value =
-                                                                    true,
-                                                                Future.delayed(
-                                                                    const Duration(
-                                                                        milliseconds:
-                                                                            2700),
-                                                                    openPicker),
-                                                                Future.delayed(
-                                                                    const Duration(
-                                                                        milliseconds:
-                                                                            2700),
-                                                                    setIsCountingToFalse),
-                                                              },
-                                                          child: const Text(
-                                                              "appuyez n'importe où pour prendre une photo")),
+                                                    child:
+                                                        ValueListenableBuilder<
+                                                            int>(
+                                                      valueListenable:
+                                                          _activeTabIndex,
+                                                      builder: (BuildContext
+                                                              context,
+                                                          int _activeTabIndex,
+                                                          Widget? child) {
+                                                        return Align(
+                                                          alignment: Alignment
+                                                              .bottomCenter,
+                                                          child:
+                                                              _activeTabIndex ==
+                                                                      0
+                                                                  ? TextButton(
+                                                                      onPressed:
+                                                                          () =>
+                                                                              {
+                                                                        _isCountingDown.value =
+                                                                            true,
+                                                                        Future.delayed(
+                                                                            const Duration(milliseconds: 2700),
+                                                                            openPicker),
+                                                                        Future.delayed(
+                                                                            const Duration(milliseconds: 2700),
+                                                                            setIsCountingToFalse),
+                                                                      },
+                                                                      style: TextButton
+                                                                          .styleFrom(
+                                                                        backgroundColor:
+                                                                            Colors.green[600],
+                                                                        primary:
+                                                                            Colors.white,
+                                                                      ),
+                                                                      child: const Text(
+                                                                          "Commencer journée"),
+                                                                    )
+                                                                  : TextButton(
+                                                                      onPressed:
+                                                                          () =>
+                                                                              {
+                                                                        _isCountingDown.value =
+                                                                            true,
+                                                                        Future.delayed(
+                                                                            const Duration(milliseconds: 2700),
+                                                                            openPicker),
+                                                                        Future.delayed(
+                                                                            const Duration(milliseconds: 2700),
+                                                                            setIsCountingToFalse),
+                                                                      },
+                                                                      style: TextButton
+                                                                          .styleFrom(
+                                                                        backgroundColor:
+                                                                            Colors.red[600],
+                                                                        primary:
+                                                                            Colors.white,
+                                                                      ),
+                                                                      child: const Text(
+                                                                          "Cloturer journée"),
+                                                                    ),
+                                                        );
+                                                      },
                                                     ),
                                                   ),
                                                 ],
