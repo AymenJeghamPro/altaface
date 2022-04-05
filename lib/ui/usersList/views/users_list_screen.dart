@@ -205,28 +205,29 @@ class _UsersListScreenState extends State<UsersListScreen>
                                           builder: (BuildContext context,
                                               bool _isCountingDownValue,
                                               Widget? child) {
-                                            return Stack(
-                                              children: [
-                                                Container(
-                                                  // width: size.width * 2 / 3,
-                                                  decoration: BoxDecoration(
-                                                    image: _isCountingDownValue ==
-                                                            true
-                                                        ? const DecorationImage(
-                                                            image: AssetImage(
-                                                                'assets/images/countdown.gif'),
-                                                            fit: BoxFit
-                                                                .fitHeight,
-                                                          )
-                                                        : const DecorationImage(
-                                                            image: AssetImage(
-                                                                'assets/icons/placeholder.png'),
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                  ),
-                                                ),
-                                              ],
-                                            );
+                                            return const CameraScreen();
+                                            //   Stack(
+                                            //   children: [
+                                            //     Container(
+                                            //       // width: size.width * 2 / 3,
+                                            //       decoration: BoxDecoration(
+                                            //         image: _isCountingDownValue ==
+                                            //                 true
+                                            //             ? const DecorationImage(
+                                            //                 image: AssetImage(
+                                            //                     'assets/images/countdown.gif'),
+                                            //                 fit: BoxFit
+                                            //                     .fitHeight,
+                                            //               )
+                                            //             : const DecorationImage(
+                                            //                 image: AssetImage(
+                                            //                     'assets/icons/placeholder.png'),
+                                            //                 fit: BoxFit.cover,
+                                            //               ),
+                                            //       ),
+                                            //     ),
+                                            //   ],
+                                            // );
                                           },
                                         ),
                                 ),
@@ -243,15 +244,16 @@ class _UsersListScreenState extends State<UsersListScreen>
                                               widget.imageIsSent == false
                                           ? TextButton(
                                               onPressed: () => {
-                                                _isCountingDown.value = true,
-                                                Future.delayed(
-                                                    const Duration(
-                                                        milliseconds: 2700),
-                                                    openCamera),
-                                                Future.delayed(
-                                                    const Duration(
-                                                        milliseconds: 2700),
-                                                    setIsCountingToFalse),
+                                                openCamera()
+                                               // _isCountingDown.value = true,
+                                               //  Future.delayed(
+                                               //      const Duration(
+                                               //          milliseconds: 2700),
+                                               //      openCamera),
+                                               //  Future.delayed(
+                                               //      const Duration(
+                                               //          milliseconds: 2700),
+                                               //      setIsCountingToFalse),
                                               },
                                               style: TextButton.styleFrom(
                                                 backgroundColor:
