@@ -1,7 +1,5 @@
-
-
 import 'package:flutter_projects/af_core/af_api/entities/api_response.dart';
-import 'package:flutter_projects/af_core/af_api/exceptions/server_sent_exception.dart';
+// import 'package:flutter_projects/af_core/af_api/exceptions/server_sent_exception.dart';
 import 'package:flutter_projects/af_core/af_api/exceptions/unexpected_response_format_exception.dart';
 
 import '../exceptions/malformed_response_exception.dart';
@@ -12,7 +10,7 @@ class AFAPIResponseProcessor {
   }
 
   dynamic _parseResponseData(dynamic responseData) {
-    if (responseData is! List< dynamic>) {
+    if (responseData is! List<dynamic>) {
       throw UnexpectedResponseFormatException();
     }
 
@@ -23,7 +21,7 @@ class AFAPIResponseProcessor {
     return _readAFResponseDataFromResponse(responseData);
   }
 
-  bool _isResponseProperlyFormed(List< dynamic>responseMap) {
+  bool _isResponseProperlyFormed(List<dynamic> responseMap) {
     // if (responseMap.containsKey('status')) {
     //   if (responseMap['status'] == 'success') {
     //     return responseMap.containsKey('data');
@@ -34,7 +32,7 @@ class AFAPIResponseProcessor {
     return true;
   }
 
-  dynamic _readAFResponseDataFromResponse(List< dynamic> responseMap) {
+  dynamic _readAFResponseDataFromResponse(List<dynamic> responseMap) {
     // if (responseMap['status'] != 'success') {
     //   throw ServerSentException(responseMap['message'], responseMap['errorCode'] ?? 0);
     // }
@@ -42,8 +40,8 @@ class AFAPIResponseProcessor {
     // if ((responseMap['data'] is List<dynamic>)) {
     //   return _parseDataList(responseMap['data']);
     // } else {
-      return responseMap;
-   // }
+    return responseMap;
+    // }
   }
 
   List<Map<String, dynamic>> _parseDataList(List<dynamic> responseDataList) {

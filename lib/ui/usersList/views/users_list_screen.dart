@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:avatar_view/avatar_view.dart';
@@ -18,17 +17,23 @@ import 'package:flutter_projects/common_widgets/popUp/popup_alert.dart';
 import 'package:flutter_projects/common_widgets/search_bar/search_bar_with_title.dart';
 import 'package:flutter_projects/common_widgets/text/text_styles.dart';
 import 'package:flutter_projects/common_widgets/toast/toast.dart';
+import 'package:flutter_projects/ui/cameraScreens/camera_screen.dart';
 import 'package:flutter_projects/ui/companyLogin/views/user_card.dart';
 import 'package:flutter_projects/ui/usersList/contracts/users_list_view.dart';
 import 'package:flutter_projects/ui/usersList/presenters/user_login_presenter.dart';
 import 'package:flutter_projects/ui/usersList/presenters/users_list_presenter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:uuid/uuid.dart';
 
 const kMainColor = Color(0xFF573851);
 
 class UsersListScreen extends StatefulWidget {
+  final File? selectedImage;
+  final bool imageIsSent;
+  const UsersListScreen(
+      {Key? key, this.selectedImage, required this.imageIsSent})
+      : super(key: key);
+
   @override
   _UsersListScreenState createState() => _UsersListScreenState();
 }
@@ -56,20 +61,26 @@ class _UsersListScreenState extends State<UsersListScreen>
   static const NO_USERS_VIEW = 2;
   static const NO_SEARCH_RESULTS_VIEW = 3;
   static const ERROR_VIEW = 4;
+  // int? _activeTabIndex;
 
   late Loader loader;
   late FToast fToast;
   late XFile? pickedImage;
   final picker = ImagePicker();
-  late File selectedImage;
-  final ValueNotifier<bool> _isLoading = ValueNotifier<bool>(false);
+
+  // final ValueNotifier<bool> _isLoading = ValueNotifier<bool>(false);
   final ValueNotifier<bool> _isCountingDown = ValueNotifier<bool>(false);
+  final ValueNotifier<int> _activeTabIndex = ValueNotifier<int>(0);
+  void _setActiveTabIndex() {
+    _activeTabIndex.value = _tabController.index;
+  }
 
   @override
   void initState() {
     presenter = UsersListPresenter(this);
     loginPresenter = UserLoginPresenter(this);
     _tabController = TabController(vsync: this, length: 2);
+    _tabController.addListener(_setActiveTabIndex);
 
     presenter.getUsers(_tabController.index);
     loader = Loader(context);
@@ -172,85 +183,101 @@ class _UsersListScreenState extends State<UsersListScreen>
                             ),
                           ),
                         ),
-                        ValueListenableBuilder<bool>(
-                            valueListenable: _isLoading,
-                            builder: (BuildContext context, bool _loadingValue,
-                                Widget? child) {
-                              return Expanded(
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Expanded(
                                 child: Container(
-                                    margin: const EdgeInsets.only(
-                                        right: 12, top: 12, bottom: 12),
-                                    child: _isLoading.value == true
-                                        ? ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            child: Image.file(
-                                              selectedImage,
-                                              fit: BoxFit.fitHeight,
+                                  height: size.height * 0.80,
+                                  margin: const EdgeInsets.only(
+                                      right: 12, top: 12, bottom: 12),
+                                  child: widget.imageIsSent == true
+                                      ? ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          child: Image.file(
+                                            widget.selectedImage!,
+                                            fit: BoxFit.fitWidth,
+                                          ),
+                                        )
+                                      : ValueListenableBuilder<bool>(
+                                          valueListenable: _isCountingDown,
+                                          builder: (BuildContext context,
+                                              bool _isCountingDownValue,
+                                              Widget? child) {
+                                            return Stack(
+                                              children: [
+                                                Container(
+                                                  // width: size.width * 2 / 3,
+                                                  decoration: BoxDecoration(
+                                                    image: _isCountingDownValue ==
+                                                            true
+                                                        ? const DecorationImage(
+                                                            image: AssetImage(
+                                                                'assets/images/countdown.gif'),
+                                                            fit: BoxFit
+                                                                .fitHeight,
+                                                          )
+                                                        : const DecorationImage(
+                                                            image: AssetImage(
+                                                                'assets/icons/placeholder.png'),
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ValueListenableBuilder<int>(
+                                  valueListenable: _activeTabIndex,
+                                  builder: (BuildContext context,
+                                      int _activeTabIndex, Widget? child) {
+                                    return Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: _activeTabIndex == 0 &&
+                                              widget.imageIsSent == false
+                                          ? TextButton(
+                                              onPressed: () => {
+                                                _isCountingDown.value = true,
+                                                Future.delayed(
+                                                    const Duration(
+                                                        milliseconds: 2700),
+                                                    openCamera),
+                                                Future.delayed(
+                                                    const Duration(
+                                                        milliseconds: 2700),
+                                                    setIsCountingToFalse),
+                                              },
+                                              style: TextButton.styleFrom(
+                                                backgroundColor:
+                                                    Colors.green[600],
+                                                primary: Colors.white,
+                                              ),
+                                              child: const Text(
+                                                  "Commencer journée"),
+                                            )
+                                          : TextButton(
+                                              onPressed: () => {},
+                                              style: TextButton.styleFrom(
+                                                backgroundColor:
+                                                    Colors.red[600],
+                                                primary: Colors.white,
+                                              ),
+                                              child: const Text(
+                                                  "Cloturer journée"),
                                             ),
-                                          )
-                                        : ValueListenableBuilder<bool>(
-                                            valueListenable: _isCountingDown,
-                                            builder: (BuildContext context,
-                                                bool _isCountingDownValue,
-                                                Widget? child) {
-                                              return Stack(
-                                                children: [
-                                                  Container(
-                                                    margin:
-                                                        const EdgeInsets.only(
-                                                            right: 12,
-                                                            top: 12,
-                                                            bottom: 12),
-                                                    // width: size.width * 2 / 3,
-                                                    decoration: BoxDecoration(
-                                                      image: _isCountingDownValue ==
-                                                              true
-                                                          ? const DecorationImage(
-                                                              image: AssetImage(
-                                                                  'assets/images/countdown.gif'),
-                                                              fit: BoxFit
-                                                                  .fitHeight,
-                                                            )
-                                                          : const DecorationImage(
-                                                              image: AssetImage(
-                                                                  'assets/icons/placeholder.png'),
-                                                              fit: BoxFit.cover,
-                                                            ),
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Align(
-                                                      alignment: Alignment
-                                                          .bottomCenter,
-                                                      child: TextButton(
-                                                          onPressed: () => {
-                                                                _isCountingDown
-                                                                        .value =
-                                                                    true,
-                                                                Future.delayed(
-                                                                    const Duration(
-                                                                        milliseconds:
-                                                                            2700),
-                                                                    openPicker),
-                                                                Future.delayed(
-                                                                    const Duration(
-                                                                        milliseconds:
-                                                                            2700),
-                                                                    setIsCountingToFalse),
-                                                              },
-                                                          child: const Text(
-                                                              "appuyez n'importe où pour prendre une photo")),
-                                                    ),
-                                                  ),
-                                                ],
-                                              );
-                                            })),
-                              );
-                            }),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ],
@@ -264,10 +291,18 @@ class _UsersListScreenState extends State<UsersListScreen>
     );
   }
 
-  openPicker() async {
-    pickedImage = (await picker.pickImage(source: ImageSource.camera));
-    selectedImage = File(pickedImage!.path);
-    _isLoading.value = true;
+  // openPicker() async {
+  //   pickedImage = (await picker.pickImage(source: ImageSource.camera));
+  //   selectedImage = File(pickedImage!.path);
+  //   _isLoading.value = true;
+  // }
+
+  openCamera() async {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => const CameraScreen(),
+      ),
+    );
   }
 
   setIsCountingToFalse() {
@@ -401,7 +436,8 @@ class _UsersListScreenState extends State<UsersListScreen>
           child: AvatarView(
             radius: 60,
             avatarType: AvatarType.CIRCLE,
-            imagePath: user.avatar ?? "https://altagem-s3.s3.eu-west-1.amazonaws.com//staging/com-and-dev/technician/avatar/1811e32c-9dc9-4463-8a2d-4aa5be56565e/small_0fbd37e3-c37f-4caf-a802-47017b8a5d31.jepg",
+            imagePath: user.avatar ??
+                "https://cdn-icons-png.flaticon.com/512/146/146031.png",
             placeHolder: const Icon(
               Icons.person,
               size: 50,
@@ -453,8 +489,7 @@ class _UsersListScreenState extends State<UsersListScreen>
                     title: 'Login',
                     borderColor: AppColors.successColor,
                     color: AppColors.successColor,
-                    onPressed: () => _performLogin(
-                        user.workDayID, user.id),
+                    onPressed: () => _performLogin(user.workDayID, user.id),
                     showLoader: value ?? false,
                   ),
                 ))

@@ -185,7 +185,7 @@ void main() {
     _resetAllMockInteractions();
 
     //when
-    await presenter.refreshUsers();
+    await presenter.refreshUsers(0);
 
     //then
     verifyInOrder([

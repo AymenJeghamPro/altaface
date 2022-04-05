@@ -40,6 +40,9 @@ class _MainScreenState extends State<MainScreen> implements MainView {
   @override
   void goToUsersListScreen() {
     ScreenPresenter.presentAndRemoveAllPreviousScreens(
-        UsersListScreen(), context);
+        const UsersListScreen(
+          imageIsSent: false,
+        ),
+        context);
   }
 }

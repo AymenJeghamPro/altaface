@@ -13,18 +13,19 @@ class LoginTextField extends StatelessWidget {
   final bool enableSuggestion;
   final bool autocorrect;
 
-  LoginTextField({
-    this.hint,
-    this.obscureText = false,
-    this.errorText,
-    this.errorColor = AppColors.failureColor,
-    this.keyboardType = TextInputType.text,
-    this.controller,
-    this.textInputAction,
-    this.onFieldSubmitted,
-    this.enableSuggestion=false,
-    this.autocorrect =false
-  });
+  const LoginTextField(
+      {Key? key,
+      this.hint,
+      this.obscureText = false,
+      this.errorText,
+      this.errorColor = AppColors.failureColor,
+      this.keyboardType = TextInputType.text,
+      this.controller,
+      this.textInputAction,
+      this.onFieldSubmitted,
+      this.enableSuggestion = false,
+      this.autocorrect = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +44,6 @@ class LoginTextField extends StatelessWidget {
           fillColor: Colors.white,
           filled: true,
           hintText: hint,
-
           errorText: errorText,
           enabledBorder: OutlineInputBorder(
             borderRadius: const BorderRadius.all(Radius.circular(100.0)),
@@ -53,7 +53,7 @@ class LoginTextField extends StatelessWidget {
             ),
           ),
           errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.all(const Radius.circular(100.0)),
+            borderRadius: const BorderRadius.all(Radius.circular(100.0)),
             borderSide: BorderSide(
               color: errorColor,
               width: 1,
