@@ -244,16 +244,16 @@ class _UsersListScreenState extends State<UsersListScreen>
                                               widget.imageIsSent == false
                                           ? TextButton(
                                               onPressed: () => {
-                                                openCamera()
-                                               // _isCountingDown.value = true,
-                                               //  Future.delayed(
-                                               //      const Duration(
-                                               //          milliseconds: 2700),
-                                               //      openCamera),
-                                               //  Future.delayed(
-                                               //      const Duration(
-                                               //          milliseconds: 2700),
-                                               //      setIsCountingToFalse),
+                                                // openCamera()
+                                                // _isCountingDown.value = true,
+                                                //  Future.delayed(
+                                                //      const Duration(
+                                                //          milliseconds: 2700),
+                                                //      openCamera),
+                                                //  Future.delayed(
+                                                //      const Duration(
+                                                //          milliseconds: 2700),
+                                                //      setIsCountingToFalse),
                                               },
                                               style: TextButton.styleFrom(
                                                 backgroundColor:
