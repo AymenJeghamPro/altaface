@@ -87,7 +87,7 @@ class _CameraScreenState extends State<CameraScreen>
   @override
   void dispose() {
     _ambiguate(WidgetsBinding.instance)?.removeObserver(this);
-    _flashModeControlRowAnimationController.dispose();
+    // _flashModeControlRowAnimationController.dispose();
     super.dispose();
   }
 
