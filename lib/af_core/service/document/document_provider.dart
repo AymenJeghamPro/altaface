@@ -33,8 +33,7 @@ class DocumentProvider {
       'related_object_id': user.id,
       'related_object_type': "User",
       'dokument_order': "0",
-      'file':
-          await MultipartFile.fromFile(imageFilePath, filename: 'today-login')
+      'file': await MultipartFile.fromFile(imageFilePath, filename: 'today-login')
     });
 
     Map<String, String> authParam = {

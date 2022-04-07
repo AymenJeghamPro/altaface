@@ -1,21 +1,28 @@
+import 'dart:io';
+
 import 'package:flutter_projects/_shared/exceptions/af_exception.dart';
 import 'package:flutter_projects/af_core/entity/user/user.dart';
 import 'package:flutter_projects/af_core/service/user/user_login_provider.dart';
 import 'package:flutter_projects/af_core/service/user/users_list_provider.dart';
 import 'package:flutter_projects/ui/usersList/contracts/users_list_view.dart';
-import 'package:flutter_projects/ui/usersList/presenters/user_login_presenter.dart';
 
 class UsersListPresenter {
   final UsersListView _view;
   final UsersListProvider _usersListProvider;
+  final UserLoginProvider _userLoginProvider;
 
   final List<User> _users = [];
   final List<User> _filterList = [];
+  User? _selectedUser;
+
   var _searchText = "";
 
-  UsersListPresenter(this._view) : _usersListProvider = UsersListProvider();
+  UsersListPresenter(this._view)
+      : _usersListProvider = UsersListProvider(),
+        _userLoginProvider = UserLoginProvider();
 
-  UsersListPresenter.initWith(this._view, this._usersListProvider);
+  UsersListPresenter.initWith(
+      this._view, this._usersListProvider, this._userLoginProvider);
 
   Future<void> getUsers(int index) async {
     if (_usersListProvider.isLoading) return;
@@ -38,14 +45,16 @@ class UsersListPresenter {
     switch (index) {
       case 0:
         {
-         var usersNotStarted = users.where((user) => user.activitiesCount == 0).toList();
+          var usersNotStarted =
+              users.where((user) => user.activitiesCount == 0).toList();
           _handleResponse(usersNotStarted);
         }
         break;
 
       case 1:
         {
-          var usersStarted = users.where((user) => user.activitiesCount > 0).toList();
+          var usersStarted =
+              users.where((user) => user.activitiesCount > 0).toList();
           _handleResponse(usersStarted);
         }
         break;
@@ -65,9 +74,27 @@ class UsersListPresenter {
     }
   }
 
+  Future<void> startWorkday(File imageFile, User selectedUser) async {
+    try {
+      _view.showLoader();
+      await _userLoginProvider.startWorkDay(imageFile.path, selectedUser.id!);
+      _view.hideLoader();
+      _view.onUploadImageSuccessful();
+    } on AFException catch (e) {
+      _view.hideLoader();
+      _view.onUploadImageFailed("Login Failed", e.userReadableMessage);
+    }
+  }
+
   selectUserAtIndex(int index) async {
-    var _selectedUser = _filterList[index];
-    selectUser(_selectedUser);
+    _selectedUser = _filterList[index];
+    //selectUser(_selectedUser);
+  }
+
+  getSelectedUser() {
+    if(_selectedUser != null){
+      return _selectedUser;
+    }
   }
 
   selectUser(User user) async {
