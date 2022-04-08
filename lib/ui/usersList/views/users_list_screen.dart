@@ -1,6 +1,8 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:avatar_view/avatar_view.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_projects/_shared/constants/app_colors.dart';
@@ -29,9 +31,11 @@ const kMainColor = Color(0xFF573851);
 
 class UsersListScreen extends StatefulWidget {
   final File? selectedImage;
+  final User? selectedUser;
   final bool imageIsSent;
+
   const UsersListScreen(
-      {Key? key, this.selectedImage, required this.imageIsSent})
+      {Key? key, this.selectedImage, required this.imageIsSent, this.selectedUser})
       : super(key: key);
 
   @override
@@ -61,6 +65,9 @@ class _UsersListScreenState extends State<UsersListScreen>
   static const NO_USERS_VIEW = 2;
   static const NO_SEARCH_RESULTS_VIEW = 3;
   static const ERROR_VIEW = 4;
+
+  int selectedIndex = -1;
+
   // int? _activeTabIndex;
 
   late Loader loader;
@@ -71,6 +78,8 @@ class _UsersListScreenState extends State<UsersListScreen>
   // final ValueNotifier<bool> _isLoading = ValueNotifier<bool>(false);
   final ValueNotifier<bool> _isCountingDown = ValueNotifier<bool>(false);
   final ValueNotifier<int> _activeTabIndex = ValueNotifier<int>(0);
+
+
   void _setActiveTabIndex() {
     _activeTabIndex.value = _tabController.index;
   }
@@ -88,7 +97,13 @@ class _UsersListScreenState extends State<UsersListScreen>
     fToast = FToast();
     fToast.init(context);
     _tabController.addListener(() {
+      _activeTabIndex.value = _tabController.index;
       presenter.getUsers(_tabController.index);
+      selectedIndex = -1;
+      setState(() {
+        // future change by an itemNotifier
+        selectedIndex = -1;
+      });
     });
   }
 
@@ -205,7 +220,10 @@ class _UsersListScreenState extends State<UsersListScreen>
                                           builder: (BuildContext context,
                                               bool _isCountingDownValue,
                                               Widget? child) {
-                                            return const CameraScreen();
+                                            return CameraScreen(
+                                                selectedIndex: selectedIndex,
+                                                selectedUser: presenter
+                                                    .getSelectedUser());
                                             //   Stack(
                                             //   children: [
                                             //     Container(
@@ -232,51 +250,91 @@ class _UsersListScreenState extends State<UsersListScreen>
                                         ),
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: ValueListenableBuilder<int>(
-                                  valueListenable: _activeTabIndex,
-                                  builder: (BuildContext context,
-                                      int _activeTabIndex, Widget? child) {
-                                    return Align(
-                                      alignment: Alignment.bottomCenter,
-                                      child: _activeTabIndex == 0 &&
-                                              widget.imageIsSent == false
-                                          ? TextButton(
-                                              onPressed: () => {
-                                                // openCamera()
-                                                // _isCountingDown.value = true,
-                                                //  Future.delayed(
-                                                //      const Duration(
-                                                //          milliseconds: 2700),
-                                                //      openCamera),
-                                                //  Future.delayed(
-                                                //      const Duration(
-                                                //          milliseconds: 2700),
-                                                //      setIsCountingToFalse),
-                                              },
-                                              style: TextButton.styleFrom(
-                                                backgroundColor:
-                                                    Colors.green[600],
-                                                primary: Colors.white,
+                              widget.imageIsSent == true
+                                  ? ValueListenableBuilder<int>(
+                                      valueListenable: _activeTabIndex,
+                                      builder: (BuildContext context,
+                                          int _activeTabIndex, Widget? child) {
+                                        return Align(
+                                            alignment: Alignment.bottomCenter,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Container(
+                                                child: _activeTabIndex == 0
+                                                    ? TextButton(
+                                                        onPressed: () {
+                                                          presenter.startWorkday(
+                                                              widget.selectedImage!,widget.selectedUser!);
+                                                        },
+                                                        style: TextButton
+                                                            .styleFrom(
+                                                          backgroundColor:
+                                                              Colors.green[600],
+                                                          primary: Colors.white,
+                                                        ),
+                                                        child: const Text(
+                                                            "Commencer journée"),
+                                                      )
+                                                    : TextButton(
+                                                        onPressed: () => {},
+                                                        style: TextButton
+                                                            .styleFrom(
+                                                          backgroundColor:
+                                                              Colors.red[600],
+                                                          primary: Colors.white,
+                                                        ),
+                                                        child: const Text(
+                                                            "Cloturer journée"),
+                                                      ),
                                               ),
-                                              child: const Text(
-                                                  "Commencer journée"),
-                                            )
-                                          : TextButton(
-                                              onPressed: () => {},
-                                              style: TextButton.styleFrom(
-                                                backgroundColor:
-                                                    Colors.red[600],
-                                                primary: Colors.white,
-                                              ),
-                                              child: const Text(
-                                                  "Cloturer journée"),
-                                            ),
-                                    );
-                                  },
-                                ),
-                              ),
+
+                                              // ValueListenableBuilder<int>(
+                                              //   valueListenable: _activeTabIndex,
+                                              //   builder: (BuildContext context,
+                                              //       int _activeTabIndex, Widget? child) {
+                                              //     return Align(
+                                              //       alignment: Alignment.bottomCenter,
+                                              //       child:
+                                              //       _activeTabIndex == 0 &&
+                                              //               widget.imageIsSent == false
+                                              //           ? TextButton(
+                                              //               onPressed: () => {
+                                              //                 // openCamera()
+                                              //                 // _isCountingDown.value = true,
+                                              //                 //  Future.delayed(
+                                              //                 //      const Duration(
+                                              //                 //          milliseconds: 2700),
+                                              //                 //      openCamera),
+                                              //                 //  Future.delayed(
+                                              //                 //      const Duration(
+                                              //                 //          milliseconds: 2700),
+                                              //                 //      setIsCountingToFalse),
+                                              //               },
+                                              //               style: TextButton.styleFrom(
+                                              //                 backgroundColor:
+                                              //                     Colors.green[600],
+                                              //                 primary: Colors.white,
+                                              //               ),
+                                              //               child: const Text(
+                                              //                   "Commencer journée"),
+                                              //             )
+                                              //           : TextButton(
+                                              //               onPressed: () => {},
+                                              //               style: TextButton.styleFrom(
+                                              //                 backgroundColor:
+                                              //                     Colors.red[600],
+                                              //                 primary: Colors.white,
+                                              //               ),
+                                              //               child: const Text(
+                                              //                   "Cloturer journée"),
+                                              //             ),
+                                              //     );
+                                              //   },
+                                              // ),
+                                            ));
+                                      })
+                                  : Container(),
                             ],
                           ),
                         ),
@@ -299,13 +357,13 @@ class _UsersListScreenState extends State<UsersListScreen>
   //   _isLoading.value = true;
   // }
 
-  openCamera() async {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => const CameraScreen(),
-      ),
-    );
-  }
+  // openCamera() async {
+  //   Navigator.of(context).pushReplacement(
+  //     MaterialPageRoute(
+  //       builder: (context) => const CameraScreen(),
+  //     ),
+  //   );
+  // }
 
   setIsCountingToFalse() {
     _isCountingDown.value = false;
@@ -360,7 +418,14 @@ class _UsersListScreenState extends State<UsersListScreen>
             itemCount: value?.length,
             itemBuilder: (context, index) {
               if (value != null) {
-                return _getUserCard(index, value);
+                return _getUserCard(
+                    index, value, selectedIndex == index ? true : false,
+                    (int i) {
+                  setState(() {
+                    // future change by an itemNotifier
+                    selectedIndex = i;
+                  });
+                });
               } else {
                 return Container();
               }
@@ -371,11 +436,13 @@ class _UsersListScreenState extends State<UsersListScreen>
     );
   }
 
-  Widget _getUserCard(int index, List<User> usersList) {
+  Widget _getUserCard(int index, List<User> usersList, bool selected,
+      Function(int index) pressed) {
     return UserCard(
       user: usersList[index],
       company: CurrentCompanyProvider().getCurrentCompany() as Company,
-      onPressed: () => {presenter.selectUserAtIndex(index)},
+      onPressed: () => {presenter.selectUserAtIndex(index), pressed(index)},
+      selected: selected,
     );
   }
 
@@ -615,7 +682,7 @@ class _UsersListScreenState extends State<UsersListScreen>
 
   @override
   void onUploadImageSuccessful() {
-    // TODO: implement onUploadImageSuccessful
+    presenter.refreshUsers(_tabController.index);
   }
 
   @override

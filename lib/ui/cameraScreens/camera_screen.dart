@@ -6,12 +6,18 @@ import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_projects/ui/cameraScreens/preview_screen.dart';
 import 'package:flutter_projects/ui/main.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../af_core/entity/user/user.dart';
+import '../usersList/views/users_list_screen.dart';
+
 class CameraScreen extends StatefulWidget {
-  const CameraScreen({Key? key}) : super(key: key);
+  final int selectedIndex;
+  final User? selectedUser;
+
+  const CameraScreen({Key? key, required this.selectedIndex, this.selectedUser})
+      : super(key: key);
 
   @override
   _CameraScreenState createState() {
@@ -45,6 +51,7 @@ class _CameraScreenState extends State<CameraScreen>
     with WidgetsBindingObserver, TickerProviderStateMixin {
   CameraController? controller;
   XFile? _imageFile;
+
   // List<XFile> allFileList = [];
   late AnimationController _flashModeControlRowAnimationController;
   double _minAvailableZoom = 1.0;
@@ -56,6 +63,7 @@ class _CameraScreenState extends State<CameraScreen>
   bool _isCameraPermissionGranted = false;
   final resolutionPresets = ResolutionPreset.values;
   ResolutionPreset currentResolutionPreset = ResolutionPreset.high;
+
   // Counting pointers (number of user fingers on screen)
   int _pointers = 0;
 
@@ -150,13 +158,13 @@ class _CameraScreenState extends State<CameraScreen>
                         ),
                       ),
                       // captured image preview
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Align(
-                          alignment: Alignment.bottomRight,
-                          child: _thumbnailWidget(),
-                        ),
-                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.all(8.0),
+                      //   child: Align(
+                      //     alignment: Alignment.bottomRight,
+                      //     child: _thumbnailWidget(),
+                      //   ),
+                      // ),
                       // swap between front and back cameras
                       Padding(
                         padding: const EdgeInsets.only(top: 15, left: 10),
@@ -251,21 +259,21 @@ class _CameraScreenState extends State<CameraScreen>
                     ),
                   ),
                   const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: () {
-                      getPermissionStatus();
-                    },
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        'Give permission',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                        ),
-                      ),
-                    ),
-                  ),
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     getPermissionStatus();
+                  //   },
+                  //   child: const Padding(
+                  //     padding: EdgeInsets.all(8.0),
+                  //     child: Text(
+                  //       'Give permission',
+                  //       style: TextStyle(
+                  //         color: Colors.white,
+                  //         fontSize: 24,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
       ),
@@ -332,11 +340,16 @@ class _CameraScreenState extends State<CameraScreen>
                 ? () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => PreviewScreen(
-                          imageFile: File(_imageFile!.path),
-                          // fileList: allFileList,
-                        ),
-                      ),
+                          builder: (context) => UsersListScreen(
+                                selectedImage: File(_imageFile!.path),
+                                imageIsSent: true,
+                              )
+
+                          //     PreviewScreen(
+                          //   imageFile: File(_imageFile!.path),
+                          //   // fileList: allFileList,
+                          // ),
+                          ),
                     );
                   }
                 : null,
@@ -352,26 +365,29 @@ class _CameraScreenState extends State<CameraScreen>
   /// Display the control bar with buttons to take pictures and record videos.
   Widget _captureCircleWidget() {
     final CameraController? cameraController = controller;
-    return GestureDetector(
-      onTap: cameraController != null && cameraController.value.isInitialized
-          ? onTakePictureButtonPressed
-          : null,
-      child: Stack(
-        alignment: Alignment.center,
-        children: const [
-          Icon(
-            Icons.circle,
-            color: Colors.white38,
-            size: 80,
-          ),
-          Icon(
-            Icons.circle,
-            color: Colors.white,
-            size: 65,
-          ),
-        ],
-      ),
-    );
+    return widget.selectedIndex != -1
+        ? GestureDetector(
+            onTap:
+                cameraController != null && cameraController.value.isInitialized
+                    ? onTakePictureButtonPressed
+                    : null,
+            child: Stack(
+              alignment: Alignment.center,
+              children: const [
+                Icon(
+                  Icons.circle,
+                  color: Colors.white38,
+                  size: 80,
+                ),
+                Icon(
+                  Icons.circle,
+                  color: Colors.white,
+                  size: 65,
+                ),
+              ],
+            ),
+          )
+        : Container();
   }
 
   String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
@@ -463,6 +479,13 @@ class _CameraScreenState extends State<CameraScreen>
         });
         if (file != null) {
           showInSnackBar('Picture saved to ${file.path}');
+          Navigator.of(context).push(
+            MaterialPageRoute(
+                builder: (context) => UsersListScreen(
+                    selectedImage: File(_imageFile!.path),
+                    imageIsSent: true,
+                    selectedUser: widget.selectedUser)),
+          );
         }
       }
     });

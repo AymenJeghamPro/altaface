@@ -10,6 +10,6 @@ class UsersManagementUrls {
   }
 
   static String startWorkday() {
-    return '${BaseUrls.baseUrlV2()}upload';
+    return '${BaseUrls.baseUrlV2()}connection/workday_altaface';
   }
 }
