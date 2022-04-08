@@ -58,6 +58,7 @@ class _CameraScreenState extends State<CameraScreen>
   ResolutionPreset currentResolutionPreset = ResolutionPreset.high;
   // Counting pointers (number of user fingers on screen)
   int _pointers = 0;
+  final ValueNotifier<bool> _isCountingDown = ValueNotifier<bool>(false);
 
   getPermissionStatus() async {
     await Permission.camera.request();
@@ -73,6 +74,10 @@ class _CameraScreenState extends State<CameraScreen>
     } else {
       log('Camera Permission: DENIED');
     }
+  }
+
+  setIsCountingToFalse() {
+    _isCountingDown.value = false;
   }
 
   @override
@@ -111,6 +116,8 @@ class _CameraScreenState extends State<CameraScreen>
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
     return SafeArea(
       child: Scaffold(
         key: _scaffoldKey,
@@ -231,6 +238,37 @@ class _CameraScreenState extends State<CameraScreen>
                           ),
                         ),
                       ),
+                      ValueListenableBuilder<bool>(
+                        valueListenable: _isCountingDown,
+                        builder: (BuildContext context,
+                            bool _isCountingDownValue, Widget? child) {
+                          return _isCountingDownValue == true
+                              ? Align(
+                                  alignment: Alignment.center,
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        width: size.width * 2 / 3,
+                                        decoration: const BoxDecoration(
+                                          // color: Colors.amber,
+                                          image: DecorationImage(
+                                            image: AssetImage(
+                                                'assets/images/countdown.gif'),
+                                            fit: BoxFit.fitHeight,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : const Center(
+                                  child: SizedBox(
+                                    width: 1,
+                                    height: 1,
+                                  ),
+                                );
+                        },
+                      )
                     ],
                   )
                 : const Center(
@@ -456,16 +494,24 @@ class _CameraScreenState extends State<CameraScreen>
   }
 
   void onTakePictureButtonPressed() {
-    takePicture().then((XFile? file) {
-      if (mounted) {
-        setState(() {
-          _imageFile = file;
+    _isCountingDown.value = true;
+    Future.delayed(
+      const Duration(seconds: 3),
+      () {
+        takePicture().then((XFile? file) {
+          if (mounted) {
+            setState(() {
+              _imageFile = file;
+            });
+            if (file != null) {
+              showInSnackBar('Picture saved to ${file.path}');
+            }
+          }
         });
-        if (file != null) {
-          showInSnackBar('Picture saved to ${file.path}');
-        }
-      }
-    });
+      },
+    );
+    Future.delayed(const Duration(seconds: 3000), setIsCountingToFalse);
+    // Future.delayed(const Duration(seconds: 3000), setIsCountingToFalse);
   }
 
   void onFlashModeButtonPressed() {

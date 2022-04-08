@@ -39,7 +39,7 @@ class UsersListScreen extends StatefulWidget {
 }
 
 class _UsersListScreenState extends State<UsersListScreen>
-    with SingleTickerProviderStateMixin
+    with WidgetsBindingObserver, SingleTickerProviderStateMixin
     implements UsersListView {
   late UsersListPresenter presenter;
   late UserLoginPresenter loginPresenter;
@@ -61,7 +61,6 @@ class _UsersListScreenState extends State<UsersListScreen>
   static const NO_USERS_VIEW = 2;
   static const NO_SEARCH_RESULTS_VIEW = 3;
   static const ERROR_VIEW = 4;
-  // int? _activeTabIndex;
 
   late Loader loader;
   late FToast fToast;
