@@ -79,6 +79,7 @@ class _UsersListScreenState extends State<UsersListScreen>
   final ValueNotifier<bool> _isCountingDown = ValueNotifier<bool>(false);
   final ValueNotifier<int> _activeTabIndex = ValueNotifier<int>(0);
 
+
   void _setActiveTabIndex() {
     _activeTabIndex.value = _tabController.index;
   }
@@ -681,7 +682,7 @@ class _UsersListScreenState extends State<UsersListScreen>
 
   @override
   void onUploadImageSuccessful() {
-    // TODO: implement onUploadImageSuccessful
+    presenter.refreshUsers(_tabController.index);
   }
 
   @override
