@@ -1,11 +1,6 @@
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:avatar_view/avatar_view.dart';
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_projects/_shared/constants/app_colors.dart';
 import 'package:flutter_projects/af_core/entity/company/company.dart';
 import 'package:flutter_projects/af_core/entity/user/user.dart';
@@ -19,19 +14,12 @@ import 'package:flutter_projects/common_widgets/notifiable/item_notifiable.dart'
 import 'package:flutter_projects/common_widgets/popUp/popup_alert.dart';
 import 'package:flutter_projects/common_widgets/search_bar/search_bar_with_title.dart';
 import 'package:flutter_projects/common_widgets/text/text_styles.dart';
-import 'package:flutter_projects/common_widgets/toast/toast.dart';
 import 'package:flutter_projects/ui/adminsList/contracts/admins_list_view.dart';
 import 'package:flutter_projects/ui/adminsList/presenters/admin_list_presenter.dart';
-import 'package:flutter_projects/ui/cameraScreens/camera_screen.dart';
 import 'package:flutter_projects/ui/companyLogin/views/user_card.dart';
-import 'package:flutter_projects/ui/usersList/contracts/users_list_view.dart';
-import 'package:flutter_projects/ui/usersList/presenters/users_list_presenter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import '../../../common_widgets/screen_presenter/screen_presenter.dart';
-import '../../main.dart';
 import '../../usersList/views/users_list_screen.dart';
 
 const kMainColor = Color(0xFF573851);
@@ -61,10 +49,10 @@ class _AdminsListScreenState extends State<AdminsListScreen>
   String _noAdminsMessage = "";
   String _noSearchResultsMessage = "";
   String _errorMessage = "";
-  static const ADMINS_VIEW = 1;
-  static const NO_ADMINS_VIEW = 2;
-  static const NO_SEARCH_RESULTS_VIEW = 3;
-  static const ERROR_VIEW = 4;
+  static const adminsView = 1;
+  static const noAdminsView = 2;
+  static const noSearchResultsView = 3;
+  static const errorView = 4;
 
   int selectedIndex = -1;
 
@@ -169,11 +157,11 @@ class _AdminsListScreenState extends State<AdminsListScreen>
       ItemNotifiable<int>(
           notifier: _viewSelectorNotifier,
           builder: (context, value) {
-            if (value == ADMINS_VIEW) {
+            if (value == adminsView) {
               return Expanded(child: _getUsers());
-            } else if (value == NO_ADMINS_VIEW) {
+            } else if (value == noAdminsView) {
               return Expanded(child: _noUsersMessageView());
-            } else if (value == NO_SEARCH_RESULTS_VIEW) {
+            } else if (value == noSearchResultsView) {
               return Expanded(child: _noSearchResultsMessageView());
             }
             return Expanded(child: _buildErrorAndRetryView());
@@ -380,7 +368,7 @@ class _AdminsListScreenState extends State<AdminsListScreen>
   void showErrorMessage(String message) {
     _errorMessage = message;
     _showErrorNotifier.notify(true);
-    _viewSelectorNotifier.notify(ERROR_VIEW);
+    _viewSelectorNotifier.notify(errorView);
   }
 
   @override
@@ -408,13 +396,12 @@ class _AdminsListScreenState extends State<AdminsListScreen>
   @override
   void showNoSearchResultsMessage(String message) {
     _noSearchResultsMessage = message;
-    _viewSelectorNotifier.notify(NO_SEARCH_RESULTS_VIEW);
+    _viewSelectorNotifier.notify(noSearchResultsView);
   }
 
-  @override
   void showNoUsersMessage(String message) {
     _noAdminsMessage = message;
-    _viewSelectorNotifier.notify(NO_ADMINS_VIEW);
+    _viewSelectorNotifier.notify(noAdminsView);
   }
 
   @override
@@ -456,13 +443,13 @@ class _AdminsListScreenState extends State<AdminsListScreen>
   @override
   void showAdminsList(List<User> users) {
     _adminsListNotifier.notify(users);
-    _viewSelectorNotifier.notify(ADMINS_VIEW);
+    _viewSelectorNotifier.notify(adminsView);
   }
 
   @override
   void showNoAdminsMessage(String message) {
     _noAdminsMessage = message;
-    _viewSelectorNotifier.notify(NO_ADMINS_VIEW);
+    _viewSelectorNotifier.notify(noAdminsView);
   }
 
   @override

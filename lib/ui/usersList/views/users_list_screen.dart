@@ -1,22 +1,19 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:avatar_view/avatar_view.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_projects/_shared/constants/app_colors.dart';
 import 'package:flutter_projects/af_core/entity/company/company.dart';
 import 'package:flutter_projects/af_core/entity/user/user.dart';
 import 'package:flutter_projects/af_core/service/company/current_company_provider.dart';
 import 'package:flutter_projects/common_widgets/alert/alert.dart';
 import 'package:flutter_projects/common_widgets/appBar/simple_app_bar.dart';
 import 'package:flutter_projects/common_widgets/buttons/rounded_action_button.dart';
-import 'package:flutter_projects/common_widgets/form_widgets/login_text_field.dart';
+import 'package:flutter_projects/common_widgets/count_down_timer/count_down_timer.dart';
 import 'package:flutter_projects/common_widgets/loader/loader.dart';
 import 'package:flutter_projects/common_widgets/notifiable/item_notifiable.dart';
-import 'package:flutter_projects/common_widgets/popUp/popup_alert.dart';
 import 'package:flutter_projects/common_widgets/search_bar/search_bar_with_title.dart';
 import 'package:flutter_projects/common_widgets/text/text_styles.dart';
 import 'package:flutter_projects/common_widgets/toast/toast.dart';
@@ -66,10 +63,10 @@ class _UsersListScreenState extends State<UsersListScreen>
   String _noUsersMessage = "";
   String _noSearchResultsMessage = "";
   String _errorMessage = "";
-  static const USERS_VIEW = 1;
-  static const NO_USERS_VIEW = 2;
-  static const NO_SEARCH_RESULTS_VIEW = 3;
-  static const ERROR_VIEW = 4;
+  static const usersView = 1;
+  static const noUsersView = 2;
+  static const noSearchResultsView = 3;
+  static const errorView = 4;
 
   int selectedIndex = -1;
 
@@ -301,10 +298,10 @@ class _UsersListScreenState extends State<UsersListScreen>
                                               alignment: Alignment.bottomCenter,
                                               child: Padding(
                                                 padding:
-                                                    const EdgeInsets.all(8.0),
+                                                    const EdgeInsets.all(20.0),
                                                 child: Container(
                                                     child: _activeTabIndex == 0
-                                                        ? Container(
+                                                        ? SizedBox(
                                                             width: 300,
                                                             child:
                                                                 RoundedRectangleActionButton(
@@ -323,7 +320,7 @@ class _UsersListScreenState extends State<UsersListScreen>
                                                               showLoader: false,
                                                             ),
                                                           )
-                                                        : Container(
+                                                        : SizedBox(
                                                             width: 300,
                                                             child:
                                                                 RoundedRectangleActionButton(
@@ -367,6 +364,7 @@ class _UsersListScreenState extends State<UsersListScreen>
   }
 
   Widget _camera() {
+    Size size = MediaQuery.of(context).size;
     return ItemNotifiable<bool>(
       notifier: _isCameraPermissionGrantedNotifier,
       builder: (context, permissionGranted) => permissionGranted == true
@@ -486,6 +484,29 @@ class _UsersListScreenState extends State<UsersListScreen>
                             ),
                           ),
                         ),
+                        ValueListenableBuilder<bool>(
+                          valueListenable: _isCountingDown,
+                          builder: (BuildContext context,
+                              bool _isCountingDownValue, Widget? child) {
+                            return _isCountingDownValue == true
+                                ? Center(
+                                    child: SizedBox(
+                                      width: size.width,
+                                      height: size.height / 2,
+                                      child: const Align(
+                                        alignment: Alignment.center,
+                                        child: CountDownTimer(),
+                                      ),
+                                    ),
+                                  )
+                                : const Center(
+                                    child: SizedBox(
+                                      width: 1,
+                                      height: 1,
+                                    ),
+                                  );
+                          },
+                        )
                       ],
                     )
                   : const Center(
@@ -647,13 +668,23 @@ class _UsersListScreenState extends State<UsersListScreen>
   }
 
   void onTakePictureButtonPressed() {
-    takePicture().then((XFile? file) {
-      if (mounted) {
-        if (file != null) {
-          _imageFileNotifier.notify(File(file.path));
-        }
-      }
-    });
+    _isCountingDown.value = true;
+    Future.delayed(
+      const Duration(seconds: 3),
+      () {
+        takePicture().then((XFile? file) {
+          if (mounted) {
+            setState(() {
+              _imageFile = file;
+            });
+            if (file != null) {
+              _imageFileNotifier.notify(File(file.path));
+            }
+          }
+        });
+      },
+    );
+    Future.delayed(const Duration(seconds: 3), setIsCountingToFalse);
   }
 
   void onFlashModeButtonPressed() {
@@ -720,11 +751,11 @@ class _UsersListScreenState extends State<UsersListScreen>
       ItemNotifiable<int>(
           notifier: _viewSelectorNotifier,
           builder: (context, value) {
-            if (value == USERS_VIEW) {
+            if (value == usersView) {
               return Expanded(child: _getUsers());
-            } else if (value == NO_USERS_VIEW) {
+            } else if (value == noUsersView) {
               return Expanded(child: _noUsersMessageView());
-            } else if (value == NO_SEARCH_RESULTS_VIEW) {
+            } else if (value == noSearchResultsView) {
               return Expanded(child: _noSearchResultsMessageView());
             }
             return Expanded(child: _buildErrorAndRetryView());
@@ -847,7 +878,7 @@ class _UsersListScreenState extends State<UsersListScreen>
 
   void onWorkDayStartedSuccessful(String toastMessage) {
     fToast.showToast(
-      child: toast(toastMessage),
+      child: ToastClass(toastMessage),
       gravity: ToastGravity.BOTTOM,
       toastDuration: const Duration(seconds: 3),
     );
@@ -857,14 +888,14 @@ class _UsersListScreenState extends State<UsersListScreen>
   @override
   void showUsersList(List<User> users) {
     _usersListNotifier.notify(users);
-    _viewSelectorNotifier.notify(USERS_VIEW);
+    _viewSelectorNotifier.notify(usersView);
   }
 
   @override
   void showErrorMessage(String message) {
     _errorMessage = message;
     _showErrorNotifier.notify(true);
-    _viewSelectorNotifier.notify(ERROR_VIEW);
+    _viewSelectorNotifier.notify(errorView);
   }
 
   @override
@@ -892,13 +923,13 @@ class _UsersListScreenState extends State<UsersListScreen>
   @override
   void showNoSearchResultsMessage(String message) {
     _noSearchResultsMessage = message;
-    _viewSelectorNotifier.notify(NO_SEARCH_RESULTS_VIEW);
+    _viewSelectorNotifier.notify(noSearchResultsView);
   }
 
   @override
   void showNoUsersMessage(String message) {
     _noUsersMessage = message;
-    _viewSelectorNotifier.notify(NO_USERS_VIEW);
+    _viewSelectorNotifier.notify(noUsersView);
   }
 
   @override

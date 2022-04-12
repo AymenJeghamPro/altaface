@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_projects/common_widgets/buttons/circular_icon_button.dart';
 
 import 'app_bar_divider.dart';
@@ -26,7 +27,6 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       centerTitle: true,
       titleSpacing: 0,
-      brightness: Brightness.light,
       backgroundColor: Colors.green,
       elevation: 5.0,
       bottom: showDivider ? const AppBarDivider() : null,
@@ -61,6 +61,7 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ],
       ),
+      systemOverlayStyle: SystemUiOverlayStyle.dark,
     );
   }
 

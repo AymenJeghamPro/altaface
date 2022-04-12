@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-class toast extends StatelessWidget {
+class ToastClass extends StatelessWidget {
   final String message;
-  const toast(this.message, {Key? key}) : super(key: key);
+  const ToastClass(this.message, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -9,7 +9,6 @@ import 'package:flutter_projects/common_widgets/screen_presenter/screen_presente
 import 'package:flutter_projects/ui/adminsList/views/admin_list_screen.dart';
 import 'package:flutter_projects/ui/companyLogin/contracts/company_login_view.dart';
 import 'package:flutter_projects/ui/companyLogin/presenters/company_login_presenter.dart';
-import 'package:flutter_projects/ui/usersList/views/users_list_screen.dart';
 
 class CompanyLoginScreen extends StatefulWidget {
   const CompanyLoginScreen({Key? key}) : super(key: key);

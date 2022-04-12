@@ -1,12 +1,7 @@
-import 'dart:developer';
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_projects/af_core/entity/company/company.dart';
 import 'package:flutter_projects/af_core/entity/user/user.dart';
 import 'package:flutter_projects/common_widgets/text/text_styles.dart';
-
-import '../../../common_widgets/notifiable/item_notifiable.dart';
 
 class UserCard extends StatefulWidget {
   final User user;
@@ -27,8 +22,6 @@ class UserCard extends StatefulWidget {
 }
 
 class _UserCardState extends State<UserCard> {
-
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -36,7 +29,7 @@ class _UserCardState extends State<UserCard> {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Card(
             elevation: 4,
-            color: widget.selected ?  Colors.green[200] : Colors.white ,
+            color: widget.selected ? Colors.green[200] : Colors.white,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             child: InkWell(

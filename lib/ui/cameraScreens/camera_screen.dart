@@ -1,9 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
-
 import 'package:camera/camera.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_projects/ui/main.dart';
@@ -330,38 +327,6 @@ class _CameraScreenState extends State<CameraScreen>
     await controller!.setZoomLevel(_currentScale);
   }
 
-  /// Display the thumbnail of the captured image or video.
-  Widget _thumbnailWidget() {
-    return _imageFile == null
-        ? Container()
-        : InkWell(
-            onTap: _imageFile != null
-                // ||_videoFile != null
-                ? () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) => const UsersListScreen(
-                                // selectedImage: File(_imageFile!.path),
-                                // imageIsSent: true,
-                              )
-
-                          //     PreviewScreen(
-                          //   imageFile: File(_imageFile!.path),
-                          //   // fileList: allFileList,
-                          // ),
-                          ),
-                    );
-                  }
-                : null,
-            child: SizedBox(
-              width: 125.0,
-              child: (kIsWeb
-                  ? Image.network(_imageFile!.path)
-                  : Image.file(File(_imageFile!.path))),
-            ),
-          );
-  }
-
   /// Display the control bar with buttons to take pictures and record videos.
   Widget _captureCircleWidget() {
     final CameraController? cameraController = controller;
@@ -458,12 +423,7 @@ class _CameraScreenState extends State<CameraScreen>
         });
         if (file != null) {
           Navigator.of(context).push(
-            MaterialPageRoute(
-                builder: (context) => UsersListScreen(
-                    // selectedImage: File(_imageFile!.path),
-                    // imageIsSent: true,
-                    // selectedUser: widget.selectedUser
-                )),
+            MaterialPageRoute(builder: (context) => const UsersListScreen()),
           );
         }
       }
