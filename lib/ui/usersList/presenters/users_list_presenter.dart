@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_projects/_shared/exceptions/af_exception.dart';
@@ -84,7 +85,7 @@ class UsersListPresenter {
   Future<void> startFinishWorkday(File imageFile,bool startWorkday) async {
     try {
       _view.showLoader();
-      await _userLoginProvider.startWorkDay(_selectedUser!.workDayId!, _selectedUser!.id!,startWorkday);
+      await _userLoginProvider.startFinishWorkDay(imageFile,_selectedUser!.workDayId!, _selectedUser!.id!,startWorkday);
       _view.hideLoader();
       _view.onStartFinishSuccessful(startWorkday);
     } on AFException catch (e) {
