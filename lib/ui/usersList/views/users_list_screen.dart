@@ -205,28 +205,6 @@ class _UsersListScreenState extends State<UsersListScreen>
                                               bool _isCountingDownValue,
                                               Widget? child) {
                                             return const CameraScreen();
-                                            //   Stack(
-                                            //   children: [
-                                            //     Container(
-                                            //       // width: size.width * 2 / 3,
-                                            //       decoration: BoxDecoration(
-                                            //         image: _isCountingDownValue ==
-                                            //                 true
-                                            //             ? const DecorationImage(
-                                            //                 image: AssetImage(
-                                            //                     'assets/images/countdown.gif'),
-                                            //                 fit: BoxFit
-                                            //                     .fitHeight,
-                                            //               )
-                                            //             : const DecorationImage(
-                                            //                 image: AssetImage(
-                                            //                     'assets/icons/placeholder.png'),
-                                            //                 fit: BoxFit.cover,
-                                            //               ),
-                                            //       ),
-                                            //     ),
-                                            //   ],
-                                            // );
                                           },
                                         ),
                                 ),

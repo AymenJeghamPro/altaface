@@ -6,6 +6,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_projects/common_widgets/count_down_timer/count_down_timer.dart';
 import 'package:flutter_projects/ui/cameraScreens/preview_screen.dart';
 import 'package:flutter_projects/ui/main.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -243,22 +244,14 @@ class _CameraScreenState extends State<CameraScreen>
                         builder: (BuildContext context,
                             bool _isCountingDownValue, Widget? child) {
                           return _isCountingDownValue == true
-                              ? Align(
-                                  alignment: Alignment.center,
-                                  child: Stack(
-                                    children: [
-                                      Container(
-                                        width: size.width * 2 / 3,
-                                        decoration: const BoxDecoration(
-                                          // color: Colors.amber,
-                                          image: DecorationImage(
-                                            image: AssetImage(
-                                                'assets/images/countdown.gif'),
-                                            fit: BoxFit.fitHeight,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                              ? Center(
+                                  child: Container(
+                                    width: size.width / 2,
+                                    height: 200,
+                                    child: const Align(
+                                      alignment: Alignment.center,
+                                      child: CountDownTimer(),
+                                    ),
                                   ),
                                 )
                               : const Center(
@@ -510,8 +503,10 @@ class _CameraScreenState extends State<CameraScreen>
         });
       },
     );
-    Future.delayed(const Duration(seconds: 3000), setIsCountingToFalse);
-    // Future.delayed(const Duration(seconds: 3000), setIsCountingToFalse);
+    Future.delayed(const Duration(seconds: 3), setIsCountingToFalse);
+    // Future.delayed(const Duration(seconds: 3), () {
+    //   _isCountingDown.value = false;
+    // });
   }
 
   void onFlashModeButtonPressed() {
