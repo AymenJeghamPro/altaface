@@ -36,7 +36,7 @@ class User extends JSONInitializable implements JSONConvertible {
       _isArchived = sift.readBooleanFromMap(jsonMap, 'is_archived');
       _authenticationToken = sift.readStringFromMapWithDefaultValue(jsonMap, 'authentication_token',null);
       _workDayId = sift.readStringFromMapWithDefaultValue(jsonMap, 'workday_id',null);
-      _activitiesCount = sift.readNumberFromMap(jsonMap, 'current_activities_count');
+      _activitiesCount = sift.readNumberFromMapWithDefaultValue(jsonMap, 'current_activities_count',0)!;
 
     } on SiftException catch (e) {
       throw MappingException(
@@ -88,7 +88,7 @@ class User extends JSONInitializable implements JSONConvertible {
 
   String? get authenticationToken => _authenticationToken;
 
-  String? get workDayID => _workDayId;
+  String? get workDayId => _workDayId;
 
   num get activitiesCount => _activitiesCount;
 }

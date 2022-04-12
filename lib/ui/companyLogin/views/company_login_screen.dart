@@ -6,6 +6,7 @@ import 'package:flutter_projects/common_widgets/buttons/rounded_action_button.da
 import 'package:flutter_projects/common_widgets/form_widgets/login_text_field.dart';
 import 'package:flutter_projects/common_widgets/notifiable/item_notifiable.dart';
 import 'package:flutter_projects/common_widgets/screen_presenter/screen_presenter.dart';
+import 'package:flutter_projects/ui/adminsList/views/admin_list_screen.dart';
 import 'package:flutter_projects/ui/companyLogin/contracts/company_login_view.dart';
 import 'package:flutter_projects/ui/companyLogin/presenters/company_login_presenter.dart';
 import 'package:flutter_projects/ui/usersList/views/users_list_screen.dart';
@@ -161,9 +162,6 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
   @override
   void goToTechniciansListScreen() {
     ScreenPresenter.presentAndRemoveAllPreviousScreens(
-        const UsersListScreen(
-          imageIsSent: false,
-        ),
-        context);
+        const AdminsListScreen(), context);
   }
 }
