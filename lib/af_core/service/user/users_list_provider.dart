@@ -24,16 +24,29 @@ class UsersListProvider {
 
   UsersListProvider()
       : _currentCompanyProvider = CurrentCompanyProvider(),
-        _usersRepository = UsersRepository(),
+        _usersRepository = UsersRepository.getInstance(),
         _networkAdapter = AltaFaceAPI();
 
   void reset() {
     isLoading = false;
   }
 
-  Future<List<User>> getUsers() async {
+  Future<List<User>> getUsers({bool isAdmin = false}) async {
     var currentCompany = _currentCompanyProvider.getCurrentCompany();
     var url = UsersManagementUrls.getUsersUrl();
+
+    switch (isAdmin) {
+      case true:
+        {
+          url = UsersManagementUrls.getAdminsUrl();
+          break;
+        }
+      case false:
+        {
+          url = UsersManagementUrls.getUsersUrl();
+          break;
+        }
+    }
 
     Map<String, String> qParams = {'company_id': currentCompany!.id};
     Uri uri = Uri.parse(url);
@@ -47,7 +60,7 @@ class UsersListProvider {
       var response =
           APIResponse(apiRequest, apiResponse.statusCode, responseData, {});
       isLoading = false;
-      return _processResponse(response);
+      return _processResponse(response,isAdmin);
     } on APIException catch (exception) {
       isLoading = false;
       if (exception is HTTPException && exception.httpCode == 401) {
@@ -58,21 +71,34 @@ class UsersListProvider {
     }
   }
 
-  List<User> _processResponse(APIResponse apiResponse) {
+  List<User> _processResponse(APIResponse apiResponse, bool isAdmin) {
     if (apiResponse.data == null) throw InvalidResponseException();
 
     var responseMapList = apiResponse.data;
 
-    return _readItemsFromResponse(responseMapList);
+    return isAdmin ?_readAdminItemsFromResponse(responseMapList) : _readItemsFromResponse(responseMapList);
   }
 
-  List<User> _readItemsFromResponse( Map<String, dynamic>  responseMapList) {
+  List<User> _readItemsFromResponse(Map<String, dynamic> responseMapList) {
     try {
       var users = <User>[];
       var sift = Sift();
       var dataMap = sift.readMapFromMap(responseMapList, "data");
       var usersResponse = sift.readMapListFromMap(dataMap, "users");
       for (var responseMap in usersResponse) {
+        var user = User.fromJson(responseMap);
+        users.add(user);
+      }
+      return users;
+    } catch (e) {
+      throw InvalidResponseException();
+    }
+  }
+
+  List<User> _readAdminItemsFromResponse(List responseList) {
+    try {
+      var users = <User>[];
+      for (var responseMap in responseList) {
         var user = User.fromJson(responseMap);
         users.add(user);
       }

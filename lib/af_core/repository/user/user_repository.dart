@@ -9,7 +9,11 @@ class UsersRepository {
 
   static UsersRepository? _singleton;
 
-  factory UsersRepository() {
+  static Future<void> initRepo() async {
+    await getInstance()._readDataUser();
+  }
+
+  static UsersRepository getInstance() {
     _singleton ??= UsersRepository.withSharedPrefs(SecureSharedPrefs());
     return _singleton!;
   }

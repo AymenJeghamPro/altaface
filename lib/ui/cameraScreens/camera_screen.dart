@@ -340,9 +340,9 @@ class _CameraScreenState extends State<CameraScreen>
                 ? () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                          builder: (context) => UsersListScreen(
-                                selectedImage: File(_imageFile!.path),
-                                imageIsSent: true,
+                          builder: (context) => const UsersListScreen(
+                                // selectedImage: File(_imageFile!.path),
+                                // imageIsSent: true,
                               )
 
                           //     PreviewScreen(
@@ -391,27 +391,6 @@ class _CameraScreenState extends State<CameraScreen>
   }
 
   String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
-
-  // refreshAlreadyCapturedImages() async {
-  //   final directory = await getApplicationDocumentsDirectory();
-  //   List<FileSystemEntity> fileList = await directory.list().toList();
-  //   allFileList.clear();
-  //   List<Map<int, dynamic>> fileNames = [];
-
-  //   for (var file in fileList) {
-  //     if (file.path.contains('.jpg') || file.path.contains('.mp4')) {
-  //       allFileList.add(File(file.path));
-
-  //       String name = file.path.split('/').last.split('.').first;
-  //       fileNames.add({0: int.parse(name), 1: file.path.split('/').last});
-  //     }
-  //   }
-  // }
-
-  void showInSnackBar(String message) {
-    // ignore: deprecated_member_use
-    _scaffoldKey.currentState?.showSnackBar(SnackBar(content: Text(message)));
-  }
 
   void onViewFinderTap(TapDownDetails details, BoxConstraints constraints) {
     if (controller == null) {
@@ -478,13 +457,13 @@ class _CameraScreenState extends State<CameraScreen>
           _imageFile = file;
         });
         if (file != null) {
-          showInSnackBar('Picture saved to ${file.path}');
           Navigator.of(context).push(
             MaterialPageRoute(
                 builder: (context) => UsersListScreen(
-                    selectedImage: File(_imageFile!.path),
-                    imageIsSent: true,
-                    selectedUser: widget.selectedUser)),
+                    // selectedImage: File(_imageFile!.path),
+                    // imageIsSent: true,
+                    // selectedUser: widget.selectedUser
+                )),
           );
         }
       }
@@ -504,7 +483,6 @@ class _CameraScreenState extends State<CameraScreen>
       if (mounted) {
         setState(() {});
       }
-      showInSnackBar('Focus mode set to ${mode.toString().split('.').last}');
     });
   }
 
@@ -537,7 +515,6 @@ class _CameraScreenState extends State<CameraScreen>
   Future<XFile?> takePicture() async {
     final CameraController? cameraController = controller;
     if (cameraController == null || !cameraController.value.isInitialized) {
-      showInSnackBar('Error: select a camera first.');
       return null;
     }
 
@@ -557,7 +534,6 @@ class _CameraScreenState extends State<CameraScreen>
 
   void _showCameraException(CameraException e) {
     logError(e.code, e.description);
-    showInSnackBar('Error: ${e.code}\n${e.description}');
   }
 }
 

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_projects/_shared/exceptions/af_exception.dart';
 import 'package:flutter_projects/af_core/entity/user/user.dart';
+import 'package:flutter_projects/af_core/repository/repository_initializer.dart';
 import 'package:flutter_projects/af_core/service/user/user_login_provider.dart';
 import 'package:flutter_projects/af_core/service/user/users_list_provider.dart';
 import 'package:flutter_projects/ui/usersList/contracts/users_list_view.dart';
@@ -10,6 +11,7 @@ class UsersListPresenter {
   final UsersListView _view;
   final UsersListProvider _usersListProvider;
   final UserLoginProvider _userLoginProvider;
+  final RepositoryInitializer _repositoryInitializer;
 
   final List<User> _users = [];
   final List<User> _filterList = [];
@@ -19,10 +21,15 @@ class UsersListPresenter {
 
   UsersListPresenter(this._view)
       : _usersListProvider = UsersListProvider(),
-        _userLoginProvider = UserLoginProvider();
+        _userLoginProvider = UserLoginProvider(),
+        _repositoryInitializer = RepositoryInitializer();
 
-  UsersListPresenter.initWith(
-      this._view, this._usersListProvider, this._userLoginProvider);
+  UsersListPresenter.initWith(this._view, this._usersListProvider,
+      this._userLoginProvider, this._repositoryInitializer);
+
+  Future<void> initializeRepos() async {
+    await _repositoryInitializer.initializeRepos();
+  }
 
   Future<void> getUsers(int index) async {
     if (_usersListProvider.isLoading) return;
@@ -74,15 +81,15 @@ class UsersListPresenter {
     }
   }
 
-  Future<void> startWorkday(File imageFile, User selectedUser) async {
+  Future<void> startFinishWorkday(File imageFile,bool startWorkday) async {
     try {
       _view.showLoader();
-      await _userLoginProvider.startWorkDay(imageFile.path, selectedUser.id!);
+      await _userLoginProvider.startWorkDay(_selectedUser!.workDayId!, _selectedUser!.id!,startWorkday);
       _view.hideLoader();
-      _view.onUploadImageSuccessful();
+      _view.onStartFinishSuccessful(startWorkday);
     } on AFException catch (e) {
       _view.hideLoader();
-      _view.onUploadImageFailed("Login Failed", e.userReadableMessage);
+      _view.onUploadImageFailed("Operation Failed", e.userReadableMessage);
     }
   }
 
@@ -92,13 +99,9 @@ class UsersListPresenter {
   }
 
   getSelectedUser() {
-    if(_selectedUser != null){
+    if (_selectedUser != null) {
       return _selectedUser;
     }
-  }
-
-  selectUser(User user) async {
-    _view.onUserClicked(user);
   }
 
   void _handleResponse(List<User> users) {

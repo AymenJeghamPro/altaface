@@ -28,8 +28,8 @@ class PreviewScreen extends StatelessWidget {
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => UsersListScreen(
-                      selectedImage: imageFile,
-                      imageIsSent: true,
+                      // selectedImage: imageFile,
+                      // imageIsSent: true,
                     ),
                   ),
                 );

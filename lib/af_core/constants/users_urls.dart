@@ -5,11 +5,15 @@ class UsersManagementUrls {
     return '${BaseUrls.baseUrlV2()}connection_altaface';
   }
 
+  static String getAdminsUrl() {
+    return '${BaseUrls.baseUrlV2()}connection';
+  }
+
   static String loginUrl() {
     return '${BaseUrls.baseUrlV2()}sessions';
   }
 
   static String startWorkday() {
-    return '${BaseUrls.baseUrlV2()}connection/workday_altaface';
+    return '${BaseUrls.baseUrlV2()}upload';
   }
 }
