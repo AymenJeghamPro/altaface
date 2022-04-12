@@ -246,8 +246,8 @@ class _CameraScreenState extends State<CameraScreen>
                           return _isCountingDownValue == true
                               ? Center(
                                   child: Container(
-                                    width: size.width / 2,
-                                    height: 200,
+                                    width: size.width,
+                                    height: size.height / 2,
                                     child: const Align(
                                       alignment: Alignment.center,
                                       child: CountDownTimer(),
