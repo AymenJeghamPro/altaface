@@ -12,7 +12,6 @@ import 'package:flutter_projects/af_core/constants/users_urls.dart';
 import 'package:flutter_projects/af_core/entity/user/user.dart';
 import 'package:flutter_projects/af_core/repository/user/user_repository.dart';
 import 'package:flutter_projects/af_core/service/company/current_company_provider.dart';
-import 'package:uuid/uuid.dart';
 import '../../../_shared/exceptions/invalid_response_exception.dart';
 import '../../repository/user/user_response_processor.dart';
 

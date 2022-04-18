@@ -25,11 +25,12 @@ class CircularIconButton extends StatelessWidget {
     return SizedBox(
       width: buttonSize,
       height: buttonSize,
-      child: FlatButton(
-        color: color ?? AppColors.defaultColor,
-        padding: const EdgeInsets.all(0),
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(100.0)),
+      child: TextButton(
+        style: TextButton.styleFrom(
+          backgroundColor: (color ?? AppColors.defaultColor),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(100.0)),
+        ),
         child: SvgPicture.asset(
           iconName,
           width: iconSize,

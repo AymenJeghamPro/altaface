@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -17,7 +18,6 @@ import 'package:flutter_projects/common_widgets/notifiable/item_notifiable.dart'
 import 'package:flutter_projects/common_widgets/search_bar/search_bar_with_title.dart';
 import 'package:flutter_projects/common_widgets/text/text_styles.dart';
 import 'package:flutter_projects/common_widgets/toast/toast.dart';
-import 'package:flutter_projects/ui/cameraScreens/camera_screen.dart';
 import 'package:flutter_projects/ui/companyLogin/views/user_card.dart';
 import 'package:flutter_projects/ui/usersList/contracts/users_list_view.dart';
 import 'package:flutter_projects/ui/usersList/presenters/users_list_presenter.dart';
@@ -47,9 +47,9 @@ class _UsersListScreenState extends State<UsersListScreen>
   final _usersListNotifier = ItemNotifier<List<User>?>();
   final _scrollController = ScrollController();
   final _viewSelectorNotifier = ItemNotifier<int>();
-  final _passwordErrorNotifier = ItemNotifier<String>();
-  final _showLoaderNotifier = ItemNotifier<bool>();
-  final _passwordTextController = TextEditingController();
+  // final _passwordErrorNotifier = ItemNotifier<String>();
+  // final _showLoaderNotifier = ItemNotifier<bool>();
+  // final _passwordTextController = TextEditingController();
   final _imageFileNotifier = ItemNotifier<File?>();
   final _selectedIndexNotifier = ItemNotifier<int>();
   final _captureButtonNotifier = ItemNotifier<bool>();
@@ -80,24 +80,18 @@ class _UsersListScreenState extends State<UsersListScreen>
   // final ValueNotifier<bool> _isLoading = ValueNotifier<bool>(false);
   final ValueNotifier<bool> _isCountingDown = ValueNotifier<bool>(false);
   final ValueNotifier<int> _activeTabIndex = ValueNotifier<int>(0);
+  final ValueNotifier<bool> _isTabSwitched = ValueNotifier<bool>(false);
 
   //Camera variables
   CameraController? controller;
-  XFile? _imageFile;
-
-  // List<XFile> allFileList = [];
   late AnimationController _flashModeControlRowAnimationController;
   double _minAvailableZoom = 1.0;
   double _maxAvailableZoom = 1.0;
   double _currentScale = 1.0;
   double _baseScale = 1.0;
-
   //bool _isRearCameraSelected = true;
-
   final resolutionPresets = ResolutionPreset.values;
-
   ResolutionPreset currentResolutionPreset = ResolutionPreset.high;
-
   // Counting pointers (number of user fingers on screen)
   int _pointers = 0;
 
@@ -137,7 +131,6 @@ class _UsersListScreenState extends State<UsersListScreen>
     _currentResolutionPresetNotifier.notify(ResolutionPreset.high);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     getPermissionStatus();
-    // refreshAlreadyCapturedImages();
     _ambiguate(WidgetsBinding.instance)?.addObserver(this);
     _tabController.addListener(() {
       _activeTabIndex.value = _tabController.index;
@@ -145,6 +138,7 @@ class _UsersListScreenState extends State<UsersListScreen>
       selectedIndex = -1;
       _selectedIndexNotifier.notify(-1);
       _captureButtonNotifier.notify(false);
+      _isTabSwitched.value = true;
     });
   }
 
@@ -260,89 +254,102 @@ class _UsersListScreenState extends State<UsersListScreen>
                           ),
                         ),
                         Expanded(
-                          child: ItemNotifiable<File?>(
-                            notifier: _imageFileNotifier,
-                            builder: (context, imageFile) => Column(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    height: size.height * 0.80,
-                                    margin: const EdgeInsets.only(
-                                        right: 12, top: 12, bottom: 12),
-                                    child: imageFile != null
-                                        ? ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            child: Image.file(
-                                              imageFile,
-                                              fit: BoxFit.fitWidth,
+                          child: ValueListenableBuilder<bool>(
+                            valueListenable: _isTabSwitched,
+                            builder: (BuildContext context,
+                                    bool _isTabSwitchedValue, Widget? child) =>
+                                ItemNotifiable<File?>(
+                              notifier: _imageFileNotifier,
+                              builder: (context, imageFile) => Column(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      height: size.height * 0.80,
+                                      margin: const EdgeInsets.only(
+                                          right: 12, top: 12, bottom: 12),
+                                      child: imageFile != null &&
+                                              _isTabSwitchedValue == false
+                                          ? ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              child: Image.file(
+                                                imageFile,
+                                                fit: BoxFit.fitWidth,
+                                              ),
+                                            )
+                                          : ValueListenableBuilder<bool>(
+                                              valueListenable: _isCountingDown,
+                                              builder: (BuildContext context,
+                                                      bool _isCountingDownValue,
+                                                      Widget? child) =>
+                                                  _camera(),
                                             ),
-                                          )
-                                        : ValueListenableBuilder<bool>(
-                                            valueListenable: _isCountingDown,
-                                            builder: (BuildContext context,
-                                                bool _isCountingDownValue,
-                                                Widget? child) {
-                                              return _camera();
-                                            },
-                                          ),
+                                    ),
                                   ),
-                                ),
-                                imageFile != null
-                                    ? ValueListenableBuilder<int>(
-                                        valueListenable: _activeTabIndex,
-                                        builder: (BuildContext context,
-                                            int _activeTabIndex,
-                                            Widget? child) {
-                                          return Align(
-                                              alignment: Alignment.bottomCenter,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(20.0),
-                                                child: Container(
-                                                    child: _activeTabIndex == 0
-                                                        ? SizedBox(
-                                                            width: 300,
-                                                            child:
-                                                                RoundedRectangleActionButton(
-                                                              title:
-                                                                  "Commencer journée",
-                                                              borderColor:
-                                                                  Colors.green,
-                                                              color: Colors
-                                                                  .green[600],
-                                                              onPressed: () => {
-                                                                presenter
-                                                                    .startFinishWorkday(
-                                                                        imageFile,
-                                                                        true)
-                                                              },
-                                                              showLoader: false,
-                                                            ),
-                                                          )
-                                                        : SizedBox(
-                                                            width: 300,
-                                                            child:
-                                                                RoundedRectangleActionButton(
-                                                              title:
-                                                                  "Cloturer journée",
-                                                              borderColor:
-                                                                  Colors.red,
-                                                              color: Colors
-                                                                  .red[600],
-                                                              onPressed: () => {
-                                                                presenter
-                                                                    .startFinishWorkday(
-                                                                        imageFile,
-                                                                        false)
-                                                              },
-                                                              showLoader: false,
-                                                            ),
-                                                          )),
-                                              ));
-                                        })
-                                    : Container(),
-                              ],
+                                  imageFile != null &&
+                                          _isTabSwitchedValue == false
+                                      ? ValueListenableBuilder<int>(
+                                          valueListenable: _activeTabIndex,
+                                          builder: (BuildContext context,
+                                              int _activeTabIndex,
+                                              Widget? child) {
+                                            return Align(
+                                                alignment:
+                                                    Alignment.bottomCenter,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      20.0),
+                                                  child: Container(
+                                                      child: _activeTabIndex ==
+                                                              0
+                                                          ? SizedBox(
+                                                              width: 300,
+                                                              child:
+                                                                  RoundedRectangleActionButton(
+                                                                title:
+                                                                    "Commencer journée",
+                                                                borderColor:
+                                                                    Colors
+                                                                        .green,
+                                                                color: Colors
+                                                                    .green[600],
+                                                                onPressed: () =>
+                                                                    {
+                                                                  presenter
+                                                                      .startFinishWorkday(
+                                                                          imageFile,
+                                                                          true)
+                                                                },
+                                                                showLoader:
+                                                                    false,
+                                                              ),
+                                                            )
+                                                          : SizedBox(
+                                                              width: 300,
+                                                              child:
+                                                                  RoundedRectangleActionButton(
+                                                                title:
+                                                                    "Cloturer journée",
+                                                                borderColor:
+                                                                    Colors.red,
+                                                                color: Colors
+                                                                    .red[600],
+                                                                onPressed: () =>
+                                                                    {
+                                                                  presenter
+                                                                      .startFinishWorkday(
+                                                                          imageFile,
+                                                                          false)
+                                                                },
+                                                                showLoader:
+                                                                    false,
+                                                              ),
+                                                            )),
+                                                ));
+                                          })
+                                      : Container(),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -659,7 +666,9 @@ class _UsersListScreenState extends State<UsersListScreen>
             .then((value) => _minAvailableZoom = value),
       ]);
     } on CameraException catch (e) {
-      print('Error initializing camera: $e');
+      if (kDebugMode) {
+        print('Error initializing camera: $e');
+      }
     }
 
     if (mounted) {
@@ -669,19 +678,19 @@ class _UsersListScreenState extends State<UsersListScreen>
 
   void onTakePictureButtonPressed() {
     _isCountingDown.value = true;
+    _isTabSwitched.value = false;
     Future.delayed(
       const Duration(seconds: 3),
       () {
-        takePicture().then((XFile? file) {
-          if (mounted) {
-            setState(() {
-              _imageFile = file;
-            });
-            if (file != null) {
-              _imageFileNotifier.notify(File(file.path));
+        takePicture().then(
+          (XFile? file) {
+            if (mounted) {
+              if (file != null) {
+                _imageFileNotifier.notify(File(file.path));
+              }
             }
-          }
-        });
+          },
+        );
       },
     );
     Future.delayed(const Duration(seconds: 3), setIsCountingToFalse);
@@ -874,6 +883,18 @@ class _UsersListScreenState extends State<UsersListScreen>
             return Container();
           }
         });
+  }
+
+  void logError(String code, String? message) {
+    if (message != null) {
+      if (kDebugMode) {
+        print('Error: $code\nError Message: $message');
+      }
+    } else {
+      if (kDebugMode) {
+        print('Error: $code');
+      }
+    }
   }
 
   void onWorkDayStartedSuccessful(String toastMessage) {
