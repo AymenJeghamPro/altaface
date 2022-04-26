@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:flutter_projects/_shared/exceptions/af_exception.dart';
-import 'package:flutter_projects/af_core/entity/user/user.dart';
-import 'package:flutter_projects/af_core/repository/repository_initializer.dart';
-import 'package:flutter_projects/af_core/service/user/user_login_provider.dart';
-import 'package:flutter_projects/af_core/service/user/users_list_provider.dart';
-import 'package:flutter_projects/ui/usersList/contracts/users_list_view.dart';
+import 'package:altaface/_shared/exceptions/af_exception.dart';
+import 'package:altaface/af_core/entity/user/user.dart';
+import 'package:altaface/af_core/repository/repository_initializer.dart';
+import 'package:altaface/af_core/service/user/user_login_provider.dart';
+import 'package:altaface/af_core/service/user/users_list_provider.dart';
+import 'package:altaface/ui/usersList/contracts/users_list_view.dart';
 
 class UsersListPresenter {
   final UsersListView _view;
@@ -43,7 +43,8 @@ class UsersListPresenter {
       _view.hideLoader();
     } on AFException catch (e) {
       _clearSearchTextAndHideSearchBar();
-      _view.showErrorMessage("${e.userReadableMessage}\n\nTap here to reload.");
+      _view.showErrorMessage(
+          "${e.userReadableMessage}\n\nAppuyez ici pour recharger.");
       _view.hideLoader();
     }
   }
@@ -76,7 +77,8 @@ class UsersListPresenter {
       handleResponse(index, users);
     } on AFException catch (e) {
       _clearSearchTextAndHideSearchBar();
-      _view.showErrorMessage("${e.userReadableMessage}\n\nTap here to reload.");
+      _view.showErrorMessage(
+          "${e.userReadableMessage}\n\nAppuyez ici pour recharger.");
       _view.hideLoader();
     }
   }

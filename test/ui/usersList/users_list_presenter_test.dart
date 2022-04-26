@@ -1,8 +1,8 @@
-// import 'package:flutter_projects/_shared/exceptions/invalid_response_exception.dart';
-// import 'package:flutter_projects/af_core/entity/user/user.dart';
-// import 'package:flutter_projects/af_core/service/user/users_list_provider.dart';
-// import 'package:flutter_projects/ui/usersList/contracts/users_list_view.dart';
-// import 'package:flutter_projects/ui/usersList/presenters/users_list_presenter.dart';
+// import 'package:altaface/_shared/exceptions/invalid_response_exception.dart';
+// import 'package:altaface/af_core/entity/user/user.dart';
+// import 'package:altaface/af_core/service/user/users_list_provider.dart';
+// import 'package:altaface/ui/usersList/contracts/users_list_view.dart';
+// import 'package:altaface/ui/usersList/presenters/users_list_presenter.dart';
 // import 'package:flutter_test/flutter_test.dart';
 // import 'package:mocktail/mocktail.dart';
 
@@ -97,7 +97,7 @@
 //           () => view.showLoader(),
 //           () => mockUsersListProvider.getUsers(),
 //           () => view.hideSearchBar(),
-//           () => view.showErrorMessage("${InvalidResponseException().userReadableMessage}\n\nTap here to reload."),
+//           () => view.showErrorMessage("${InvalidResponseException().userReadableMessage}\n\nAppuyez ici pour recharger."),
 //           () => view.hideLoader(),
 //     ]);
 //     _verifyNoMoreInteractionsOnAllMocks();

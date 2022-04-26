@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_projects/af_core/entity/company/company.dart';
-import 'package:flutter_projects/af_core/entity/user/user.dart';
-import 'package:flutter_projects/common_widgets/text/text_styles.dart';
+import 'package:altaface/af_core/entity/company/company.dart';
+import 'package:altaface/af_core/entity/user/user.dart';
+import 'package:altaface/common_widgets/text/text_styles.dart';
 
 class UserCard extends StatefulWidget {
   final User user;

@@ -62,7 +62,7 @@ class _LoadingIndicator extends StatelessWidget {
   Widget _getHeading(context) {
     return const Padding(
         child: Text(
-          'Please wait …',
+          'Chargement ...',
           style: TextStyle(color: Colors.white, fontSize: 16),
           textAlign: TextAlign.center,
         ),

@@ -1,22 +1,22 @@
 import 'package:avatar_view/avatar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_projects/_shared/constants/app_colors.dart';
-import 'package:flutter_projects/af_core/entity/company/company.dart';
-import 'package:flutter_projects/af_core/entity/user/user.dart';
-import 'package:flutter_projects/af_core/service/company/current_company_provider.dart';
-import 'package:flutter_projects/common_widgets/alert/alert.dart';
-import 'package:flutter_projects/common_widgets/appBar/simple_app_bar.dart';
-import 'package:flutter_projects/common_widgets/buttons/rounded_action_button.dart';
-import 'package:flutter_projects/common_widgets/form_widgets/login_text_field.dart';
-import 'package:flutter_projects/common_widgets/loader/loader.dart';
-import 'package:flutter_projects/common_widgets/notifiable/item_notifiable.dart';
-import 'package:flutter_projects/common_widgets/popUp/popup_alert.dart';
-import 'package:flutter_projects/common_widgets/search_bar/search_bar_with_title.dart';
-import 'package:flutter_projects/common_widgets/text/text_styles.dart';
-import 'package:flutter_projects/ui/adminsList/contracts/admins_list_view.dart';
-import 'package:flutter_projects/ui/adminsList/presenters/admin_list_presenter.dart';
-import 'package:flutter_projects/ui/companyLogin/views/user_card.dart';
+import 'package:altaface/_shared/constants/app_colors.dart';
+import 'package:altaface/af_core/entity/company/company.dart';
+import 'package:altaface/af_core/entity/user/user.dart';
+import 'package:altaface/af_core/service/company/current_company_provider.dart';
+import 'package:altaface/common_widgets/alert/alert.dart';
+import 'package:altaface/common_widgets/appBar/simple_app_bar.dart';
+import 'package:altaface/common_widgets/buttons/rounded_action_button.dart';
+import 'package:altaface/common_widgets/form_widgets/login_text_field.dart';
+import 'package:altaface/common_widgets/loader/loader.dart';
+import 'package:altaface/common_widgets/notifiable/item_notifiable.dart';
+import 'package:altaface/common_widgets/popUp/popup_alert.dart';
+import 'package:altaface/common_widgets/search_bar/search_bar_with_title.dart';
+import 'package:altaface/common_widgets/text/text_styles.dart';
+import 'package:altaface/ui/adminsList/contracts/admins_list_view.dart';
+import 'package:altaface/ui/adminsList/presenters/admin_list_presenter.dart';
+import 'package:altaface/ui/companyLogin/views/user_card.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../../common_widgets/screen_presenter/screen_presenter.dart';
@@ -82,7 +82,7 @@ class _AdminsListScreenState extends State<AdminsListScreen>
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       key: _scaffoldKey,
-      appBar: const SimpleAppBar(title: 'Admins'),
+      appBar: const SimpleAppBar(title: 'Liste Des Administrateurs'),
       body: SafeArea(
         child: Container(
           decoration: const BoxDecoration(
@@ -281,76 +281,79 @@ class _AdminsListScreenState extends State<AdminsListScreen>
   }
 
   Widget adminLoginPopUp(User user, Function onLogin) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 10),
-        Center(
-          child: AvatarView(
-            radius: 60,
-            avatarType: AvatarType.CIRCLE,
-            imagePath: user.avatar ??
-                "https://cdn-icons-png.flaticon.com/512/146/146031.png",
-            placeHolder: const Icon(
-              Icons.person,
-              size: 50,
-            ),
-            errorWidget: const Icon(
-              Icons.error,
-              size: 50,
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.5,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 10),
+          Center(
+            child: AvatarView(
+              radius: 60,
+              avatarType: AvatarType.CIRCLE,
+              imagePath: user.avatar ??
+                  "https://cdn-icons-png.flaticon.com/512/146/146031.png",
+              placeHolder: const Icon(
+                Icons.person,
+                size: 50,
+              ),
+              errorWidget: const Icon(
+                Icons.error,
+                size: 50,
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: 10),
-        Center(child: Text("${user.firstName} ${user.lastName}")),
-        const SizedBox(height: 21),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ItemNotifiable<String>(
-              notifier: _passwordErrorNotifier,
-              builder: (context, value) => LoginTextField(
-                controller: _passwordTextController,
-                hint: "Password",
-                errorText: value,
-                obscureText: true,
-                textInputAction: TextInputAction.next,
+          const SizedBox(height: 10),
+          Center(child: Text("${user.firstName} ${user.lastName}")),
+          const SizedBox(height: 21),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ItemNotifiable<String>(
+                notifier: _passwordErrorNotifier,
+                builder: (context, value) => LoginTextField(
+                  controller: _passwordTextController,
+                  hint: "Mot de passe",
+                  errorText: value,
+                  obscureText: true,
+                  textInputAction: TextInputAction.next,
+                ),
               ),
-            ),
-            const SizedBox(height: 16)
-          ],
-        ),
-        const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SizedBox(
-              width: 150,
-              child: RoundedRectangleActionButton(
-                title: 'Cancel',
-                borderColor: Colors.grey,
-                color: Colors.grey,
-                onPressed: () => {_pop(), _passwordTextController.clear()},
-                showLoader: false,
-              ),
-            ),
-            SizedBox(
+              const SizedBox(height: 16)
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
                 width: 150,
-                child: ItemNotifiable<bool>(
-                  notifier: _showLoaderNotifier,
-                  builder: (context, value) => RoundedRectangleActionButton(
-                    title: 'Login',
-                    borderColor: AppColors.successColor,
-                    color: AppColors.successColor,
-                    onPressed: () =>
-                        _performLogin(user, _passwordTextController.text),
-                    showLoader: value ?? false,
-                  ),
-                ))
-          ],
-        )
-      ],
+                child: RoundedRectangleActionButton(
+                  title: 'Annuler',
+                  borderColor: Colors.grey,
+                  color: Colors.grey,
+                  onPressed: () => {_pop(), _passwordTextController.clear()},
+                  showLoader: false,
+                ),
+              ),
+              SizedBox(
+                  width: 150,
+                  child: ItemNotifiable<bool>(
+                    notifier: _showLoaderNotifier,
+                    builder: (context, value) => RoundedRectangleActionButton(
+                      title: 'Se connecter',
+                      borderColor: AppColors.successColor,
+                      color: AppColors.successColor,
+                      onPressed: () =>
+                          _performLogin(user, _passwordTextController.text),
+                      showLoader: value ?? false,
+                    ),
+                  ))
+            ],
+          )
+        ],
+      ),
     );
   }
 
@@ -374,7 +377,7 @@ class _AdminsListScreenState extends State<AdminsListScreen>
   @override
   void showLoader() {
     SchedulerBinding.instance?.addPostFrameCallback((_) {
-      loader.showLoadingIndicator("Loading");
+      loader.showLoadingIndicator("Chargement");
     });
   }
 

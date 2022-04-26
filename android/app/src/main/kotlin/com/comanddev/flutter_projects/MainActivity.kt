@@ -1,4 +1,4 @@
-package com.comanddev.flutter_projects
+package com.comanddev.altaface
 
 import io.flutter.embedding.android.FlutterActivity
 

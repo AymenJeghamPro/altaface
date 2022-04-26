@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_projects/_shared/constants/app_colors.dart';
+import 'package:altaface/_shared/constants/app_colors.dart';
 
 class TextStyles {
   static get titleTextStyle => const TextStyle(

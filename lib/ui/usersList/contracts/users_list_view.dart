@@ -1,8 +1,6 @@
-
-import 'package:flutter_projects/af_core/entity/user/user.dart';
+import 'package:altaface/af_core/entity/user/user.dart';
 
 abstract class UsersListView {
-
   void showLoader();
 
   void hideLoader();
@@ -19,10 +17,9 @@ abstract class UsersListView {
 
   void showErrorMessage(String message);
 
-  void onCameraFailed(String title,String message);
+  void onCameraFailed(String title, String message);
 
   void onStartFinishSuccessful(bool started);
 
-  void onUploadImageFailed(String title,String message);
-
+  void onUploadImageFailed(String title, String message);
 }

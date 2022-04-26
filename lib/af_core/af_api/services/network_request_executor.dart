@@ -2,13 +2,13 @@ import 'dart:convert';
 
 import 'package:data_connection_checker_tv/data_connection_checker.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_projects/af_core/af_api/entities/api_request.dart';
-import 'package:flutter_projects/af_core/af_api/entities/api_response.dart';
-import 'package:flutter_projects/af_core/af_api/exceptions/api_exception.dart';
-import 'package:flutter_projects/af_core/af_api/exceptions/http_exception.dart';
-import 'package:flutter_projects/af_core/af_api/exceptions/network_failure_exception.dart';
-import 'package:flutter_projects/af_core/af_api/exceptions/request_exception.dart';
-import 'package:flutter_projects/af_core/af_api/exceptions/unexpected_response_format_exception.dart';
+import 'package:altaface/af_core/af_api/entities/api_request.dart';
+import 'package:altaface/af_core/af_api/entities/api_response.dart';
+import 'package:altaface/af_core/af_api/exceptions/api_exception.dart';
+import 'package:altaface/af_core/af_api/exceptions/http_exception.dart';
+import 'package:altaface/af_core/af_api/exceptions/network_failure_exception.dart';
+import 'package:altaface/af_core/af_api/exceptions/request_exception.dart';
+import 'package:altaface/af_core/af_api/exceptions/unexpected_response_format_exception.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import 'network_adapter.dart';
@@ -78,7 +78,7 @@ class NetworkRequestExecutor implements NetworkAdapter {
     if (await _isConnected() == false) throw NetworkFailureException();
 
     try {
-      dio.options.contentType= "multipart/form-data";
+      dio.options.contentType = "multipart/form-data";
       Response<String> response =
           await dio.post(apiRequest.url, data: formData);
       return _processResponse(response, apiRequest);

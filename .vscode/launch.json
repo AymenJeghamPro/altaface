@@ -8,7 +8,7 @@
       "name": "altaface",
       "request": "launch",
       "type": "dart",
-      "program": "lib/ui/main.dart"
+      "program": "lib/main.dart"
     },
     {
       "name": "altaface (profile mode)",

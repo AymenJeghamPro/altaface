@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:flutter_projects/_shared/local_storage/secure_shared_prefs.dart';
-import 'package:flutter_projects/af_core/entity/company/company.dart';
+import 'package:altaface/_shared/local_storage/secure_shared_prefs.dart';
+import 'package:altaface/af_core/entity/company/company.dart';
 
 class CompanyRepository {
   late SecureSharedPrefs _sharedPrefs;

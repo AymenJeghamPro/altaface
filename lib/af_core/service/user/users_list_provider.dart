@@ -1,16 +1,16 @@
-import 'package:flutter_projects/_shared/exceptions/invalid_response_exception.dart';
-import 'package:flutter_projects/af_core/af_api/entities/api_request.dart';
-import 'package:flutter_projects/af_core/af_api/entities/api_response.dart';
-import 'package:flutter_projects/af_core/af_api/exceptions/api_exception.dart';
-import 'package:flutter_projects/af_core/af_api/exceptions/http_exception.dart';
-import 'package:flutter_projects/af_core/af_api/exceptions/server_sent_exception.dart';
-import 'package:flutter_projects/af_core/af_api/services/af_api.dart';
-import 'package:flutter_projects/af_core/af_api/services/network_adapter.dart';
-import 'package:flutter_projects/af_core/service/company/current_company_provider.dart';
-import 'package:flutter_projects/af_core/constants/users_urls.dart';
-import 'package:flutter_projects/af_core/entity/user/user.dart';
-import 'package:flutter_projects/af_core/repository/user/user_repository.dart';
-import 'package:flutter_projects/af_core/repository/user/user_response_processor.dart';
+import 'package:altaface/_shared/exceptions/invalid_response_exception.dart';
+import 'package:altaface/af_core/af_api/entities/api_request.dart';
+import 'package:altaface/af_core/af_api/entities/api_response.dart';
+import 'package:altaface/af_core/af_api/exceptions/api_exception.dart';
+import 'package:altaface/af_core/af_api/exceptions/http_exception.dart';
+import 'package:altaface/af_core/af_api/exceptions/server_sent_exception.dart';
+import 'package:altaface/af_core/af_api/services/af_api.dart';
+import 'package:altaface/af_core/af_api/services/network_adapter.dart';
+import 'package:altaface/af_core/service/company/current_company_provider.dart';
+import 'package:altaface/af_core/constants/users_urls.dart';
+import 'package:altaface/af_core/entity/user/user.dart';
+import 'package:altaface/af_core/repository/user/user_repository.dart';
+import 'package:altaface/af_core/repository/user/user_response_processor.dart';
 import 'package:sift/sift.dart';
 
 class UsersListProvider {
@@ -60,7 +60,7 @@ class UsersListProvider {
       var response =
           APIResponse(apiRequest, apiResponse.statusCode, responseData, {});
       isLoading = false;
-      return _processResponse(response,isAdmin);
+      return _processResponse(response, isAdmin);
     } on APIException catch (exception) {
       isLoading = false;
       if (exception is HTTPException && exception.httpCode == 401) {
@@ -76,7 +76,9 @@ class UsersListProvider {
 
     var responseMapList = apiResponse.data;
 
-    return isAdmin ?_readAdminItemsFromResponse(responseMapList) : _readItemsFromResponse(responseMapList);
+    return isAdmin
+        ? _readAdminItemsFromResponse(responseMapList)
+        : _readItemsFromResponse(responseMapList);
   }
 
   List<User> _readItemsFromResponse(Map<String, dynamic> responseMapList) {

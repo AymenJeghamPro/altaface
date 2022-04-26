@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_projects/common_widgets/screen_presenter/screen_presenter.dart';
-import 'package:flutter_projects/ui/companyLogin/views/company_login_screen.dart';
-import 'package:flutter_projects/ui/main/contracts/main_view.dart';
-import 'package:flutter_projects/ui/main/presenters/main_presenter.dart';
-import 'package:flutter_projects/ui/usersList/views/users_list_screen.dart';
+import 'package:altaface/common_widgets/screen_presenter/screen_presenter.dart';
+import 'package:altaface/ui/companyLogin/views/company_login_screen.dart';
+import 'package:altaface/ui/main/contracts/main_view.dart';
+import 'package:altaface/ui/main/presenters/main_presenter.dart';
+import 'package:altaface/ui/usersList/views/users_list_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);

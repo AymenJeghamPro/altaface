@@ -1,4 +1,4 @@
-import 'package:flutter_projects/_shared/constants/base_urls.dart';
+import 'package:altaface/_shared/constants/base_urls.dart';
 
 class UsersManagementUrls {
   static String getUsersUrl() {

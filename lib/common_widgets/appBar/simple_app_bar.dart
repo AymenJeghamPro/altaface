@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_projects/common_widgets/buttons/circular_icon_button.dart';
+import 'package:altaface/common_widgets/buttons/circular_icon_button.dart';
 
 import 'app_bar_divider.dart';
 
@@ -46,15 +46,17 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
               Row(children: _resizeButtons(trailingButtons)),
             ],
           ),
-          Container(
-            color: Colors.transparent,
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 20.0,
-                  color: Colors.white,
+          Center(
+            child: Container(
+              color: Colors.transparent,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 20.0,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
@@ -85,8 +87,8 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 // import 'package:flutter/material.dart';
-// import 'package:flutter_projects/common_widgets/buttons/circular_icon_button.dart';
-// import 'package:flutter_projects/common_widgets/text/text_styles.dart';
+// import 'package:altaface/common_widgets/buttons/circular_icon_button.dart';
+// import 'package:altaface/common_widgets/text/text_styles.dart';
 
 // import 'app_bar_divider.dart';
 

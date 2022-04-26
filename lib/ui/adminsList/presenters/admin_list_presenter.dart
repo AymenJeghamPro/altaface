@@ -1,4 +1,4 @@
-import 'package:flutter_projects/af_core/service/user/user_login_provider.dart';
+import 'package:altaface/af_core/service/user/user_login_provider.dart';
 
 import '../../../_shared/exceptions/af_exception.dart';
 import '../../../af_core/entity/user/user.dart';
@@ -40,7 +40,8 @@ class AdminListPresenter {
       _view.hideLoader();
     } on AFException catch (e) {
       _clearSearchTextAndHideSearchBar();
-      _view.showErrorMessage("${e.userReadableMessage}\n\nTap here to reload.");
+      _view.showErrorMessage(
+          "${e.userReadableMessage}\n\nAppuyez ici pour recharger.");
       _view.hideLoader();
     }
   }
@@ -53,18 +54,19 @@ class AdminListPresenter {
       handleResponse(users);
     } on AFException catch (e) {
       _clearSearchTextAndHideSearchBar();
-      _view.showErrorMessage("${e.userReadableMessage}\n\nTap here to reload.");
+      _view.showErrorMessage(
+          "${e.userReadableMessage}\n\nAppuyez ici pour recharger.");
       _view.hideLoader();
     }
   }
 
-  Future<void> adminLogin(String userName ,String password) async {
+  Future<void> adminLogin(String userName, String password) async {
     _view.clearLoginErrors();
     if (!_isInputValid(password)) return;
 
     try {
       _view.showLoggingLoader();
-      await _userLoginProvider.login(userName,password);
+      await _userLoginProvider.login(userName, password);
       _view.hideLoggingLoader();
       _view.onLoginSuccessful();
     } on AFException catch (e) {

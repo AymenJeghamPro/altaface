@@ -1,14 +1,13 @@
-
-
-import 'package:flutter_projects/_shared/exceptions/af_exception.dart';
-import 'package:flutter_projects/af_core/service/company/current_company_provider.dart';
-import 'package:flutter_projects/ui/companyLogin/contracts/company_login_view.dart';
+import 'package:altaface/_shared/exceptions/af_exception.dart';
+import 'package:altaface/af_core/service/company/current_company_provider.dart';
+import 'package:altaface/ui/companyLogin/contracts/company_login_view.dart';
 
 class CompanyLoginPresenter {
   final CompanyLoginView _view;
   final CurrentCompanyProvider _currentCompanyProvider;
 
-  CompanyLoginPresenter(this._view) : _currentCompanyProvider = CurrentCompanyProvider();
+  CompanyLoginPresenter(this._view)
+      : _currentCompanyProvider = CurrentCompanyProvider();
 
   CompanyLoginPresenter.initWith(this._view, this._currentCompanyProvider);
 

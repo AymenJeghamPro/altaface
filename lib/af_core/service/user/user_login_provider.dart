@@ -1,17 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter_projects/af_core/af_api/entities/api_request.dart';
-import 'package:flutter_projects/af_core/af_api/entities/api_response.dart';
-import 'package:flutter_projects/af_core/af_api/exceptions/api_exception.dart';
-import 'package:flutter_projects/af_core/af_api/exceptions/http_exception.dart';
-import 'package:flutter_projects/af_core/af_api/exceptions/server_sent_exception.dart';
-import 'package:flutter_projects/af_core/af_api/services/af_api.dart';
-import 'package:flutter_projects/af_core/af_api/services/network_adapter.dart';
-import 'package:flutter_projects/af_core/constants/users_urls.dart';
-import 'package:flutter_projects/af_core/entity/user/user.dart';
-import 'package:flutter_projects/af_core/repository/user/user_repository.dart';
-import 'package:flutter_projects/af_core/service/company/current_company_provider.dart';
+import 'package:altaface/af_core/af_api/entities/api_request.dart';
+import 'package:altaface/af_core/af_api/entities/api_response.dart';
+import 'package:altaface/af_core/af_api/exceptions/api_exception.dart';
+import 'package:altaface/af_core/af_api/exceptions/http_exception.dart';
+import 'package:altaface/af_core/af_api/exceptions/server_sent_exception.dart';
+import 'package:altaface/af_core/af_api/services/af_api.dart';
+import 'package:altaface/af_core/af_api/services/network_adapter.dart';
+import 'package:altaface/af_core/constants/users_urls.dart';
+import 'package:altaface/af_core/entity/user/user.dart';
+import 'package:altaface/af_core/repository/user/user_repository.dart';
+import 'package:altaface/af_core/service/company/current_company_provider.dart';
 import '../../../_shared/exceptions/invalid_response_exception.dart';
 import '../../repository/user/user_response_processor.dart';
 
