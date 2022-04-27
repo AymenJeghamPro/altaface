@@ -1,7 +1,7 @@
-import 'package:flutter_projects/af_core/repository/repository_initializer.dart';
-import 'package:flutter_projects/af_core/service/company/current_company_provider.dart';
-import 'package:flutter_projects/af_core/service/user/user_login_provider.dart';
-import 'package:flutter_projects/ui/main/contracts/main_view.dart';
+import 'package:altaface/af_core/repository/repository_initializer.dart';
+import 'package:altaface/af_core/service/company/current_company_provider.dart';
+import 'package:altaface/af_core/service/user/user_login_provider.dart';
+import 'package:altaface/ui/main/contracts/main_view.dart';
 
 class MainPresenter {
   final MainView _view;

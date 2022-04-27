@@ -73,7 +73,7 @@ class _CountDownTimerState extends State<CountDownTimer>
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           const Text(
-                            "Count Down Timer",
+                            "La photo sera prise en",
                             style: TextStyle(
                                 fontSize: 40.0,
                                 color: Colors.white,

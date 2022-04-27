@@ -6,26 +6,26 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_projects/af_core/entity/company/company.dart';
-import 'package:flutter_projects/af_core/entity/user/user.dart';
-import 'package:flutter_projects/af_core/service/company/current_company_provider.dart';
-import 'package:flutter_projects/common_widgets/alert/alert.dart';
-import 'package:flutter_projects/common_widgets/appBar/simple_app_bar.dart';
-import 'package:flutter_projects/common_widgets/buttons/rounded_action_button.dart';
-import 'package:flutter_projects/common_widgets/count_down_timer/count_down_timer.dart';
-import 'package:flutter_projects/common_widgets/loader/loader.dart';
-import 'package:flutter_projects/common_widgets/notifiable/item_notifiable.dart';
-import 'package:flutter_projects/common_widgets/search_bar/search_bar_with_title.dart';
-import 'package:flutter_projects/common_widgets/text/text_styles.dart';
-import 'package:flutter_projects/common_widgets/toast/toast.dart';
-import 'package:flutter_projects/ui/companyLogin/views/user_card.dart';
-import 'package:flutter_projects/ui/usersList/contracts/users_list_view.dart';
-import 'package:flutter_projects/ui/usersList/presenters/users_list_presenter.dart';
+import 'package:altaface/af_core/entity/company/company.dart';
+import 'package:altaface/af_core/entity/user/user.dart';
+import 'package:altaface/af_core/service/company/current_company_provider.dart';
+import 'package:altaface/common_widgets/alert/alert.dart';
+import 'package:altaface/common_widgets/appBar/simple_app_bar.dart';
+import 'package:altaface/common_widgets/buttons/rounded_action_button.dart';
+import 'package:altaface/common_widgets/count_down_timer/count_down_timer.dart';
+import 'package:altaface/common_widgets/loader/loader.dart';
+import 'package:altaface/common_widgets/notifiable/item_notifiable.dart';
+import 'package:altaface/common_widgets/search_bar/search_bar_with_title.dart';
+import 'package:altaface/common_widgets/text/text_styles.dart';
+import 'package:altaface/common_widgets/toast/toast.dart';
+import 'package:altaface/ui/companyLogin/views/user_card.dart';
+import 'package:altaface/ui/usersList/contracts/users_list_view.dart';
+import 'package:altaface/ui/usersList/presenters/users_list_presenter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../main.dart';
+import '../../../main.dart';
 
 const kMainColor = Color(0xFF573851);
 
@@ -81,6 +81,7 @@ class _UsersListScreenState extends State<UsersListScreen>
   final ValueNotifier<bool> _isCountingDown = ValueNotifier<bool>(false);
   final ValueNotifier<int> _activeTabIndex = ValueNotifier<int>(0);
   final ValueNotifier<bool> _isTabSwitched = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> _isRetakingPicture = ValueNotifier<bool>(false);
 
   //Camera variables
   CameraController? controller;
@@ -138,7 +139,8 @@ class _UsersListScreenState extends State<UsersListScreen>
       selectedIndex = -1;
       _selectedIndexNotifier.notify(-1);
       _captureButtonNotifier.notify(false);
-      _isTabSwitched.value = true;
+      setIsTabSwitchedToTrue();
+      setIsRetakingPictureFalse();
     });
   }
 
@@ -262,6 +264,42 @@ class _UsersListScreenState extends State<UsersListScreen>
                               notifier: _imageFileNotifier,
                               builder: (context, imageFile) => Column(
                                 children: [
+                                  imageFile != null &&
+                                          _isTabSwitchedValue == false
+                                      ? Align(
+                                          alignment: Alignment.topRight,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 10, right: 16),
+                                            child: TextButton.icon(
+                                              icon: const Icon(
+                                                Icons.restart_alt,
+                                                size: 50,
+                                                color: Colors.grey,
+                                              ),
+                                              label: const Text(
+                                                'Prendre une autre photo',
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              onPressed: () {
+                                                setIsTabSwitchedToTrue();
+                                                _captureButtonNotifier
+                                                    .notify(false);
+                                                setIsRetakingPictureTrue();
+                                                Future.delayed(
+                                                    const Duration(
+                                                        microseconds: 1), () {
+                                                  imageFile = null;
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                        )
+                                      : const SizedBox(),
                                   Expanded(
                                     child: Container(
                                       height: size.height * 0.80,
@@ -273,7 +311,7 @@ class _UsersListScreenState extends State<UsersListScreen>
                                               borderRadius:
                                                   BorderRadius.circular(20),
                                               child: Image.file(
-                                                imageFile,
+                                                imageFile!,
                                                 fit: BoxFit.fitWidth,
                                               ),
                                             )
@@ -317,7 +355,7 @@ class _UsersListScreenState extends State<UsersListScreen>
                                                                     {
                                                                   presenter
                                                                       .startFinishWorkday(
-                                                                          imageFile,
+                                                                          imageFile!,
                                                                           true)
                                                                 },
                                                                 showLoader:
@@ -338,7 +376,7 @@ class _UsersListScreenState extends State<UsersListScreen>
                                                                     {
                                                                   presenter
                                                                       .startFinishWorkday(
-                                                                          imageFile,
+                                                                          imageFile!,
                                                                           false)
                                                                 },
                                                                 showLoader:
@@ -366,8 +404,24 @@ class _UsersListScreenState extends State<UsersListScreen>
     );
   }
 
-  setIsCountingToFalse() {
+  setIsCountingDownToFalse() {
     _isCountingDown.value = false;
+  }
+
+  setIsCountingToTrue() {
+    _isCountingDown.value = true;
+  }
+
+  setIsRetakingPictureTrue() {
+    _isRetakingPicture.value = true;
+  }
+
+  setIsRetakingPictureFalse() {
+    _isRetakingPicture.value = false;
+  }
+
+  setIsTabSwitchedToTrue() {
+    _isTabSwitched.value = true;
   }
 
   Widget _camera() {
@@ -491,6 +545,7 @@ class _UsersListScreenState extends State<UsersListScreen>
                             ),
                           ),
                         ),
+
                         ValueListenableBuilder<bool>(
                           valueListenable: _isCountingDown,
                           builder: (BuildContext context,
@@ -513,12 +568,12 @@ class _UsersListScreenState extends State<UsersListScreen>
                                     ),
                                   );
                           },
-                        )
+                        ),
                       ],
                     )
                   : const Center(
                       child: Text(
-                        'LOADING',
+                        'Chargement',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
@@ -528,7 +583,7 @@ class _UsersListScreenState extends State<UsersListScreen>
               children: [
                 Row(),
                 const Text(
-                  'Permission denied',
+                  'Permission refusée',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -545,7 +600,7 @@ class _UsersListScreenState extends State<UsersListScreen>
 
     if (cameraController == null || !cameraController.value.isInitialized) {
       return const Text(
-        'Tap a camera',
+        'Appuyez sur une caméra',
         style: TextStyle(
           color: Colors.white,
           fontSize: 24.0,
@@ -592,30 +647,41 @@ class _UsersListScreenState extends State<UsersListScreen>
   Widget _captureCircleWidget() {
     final CameraController? cameraController = controller;
     return ItemNotifiable<bool>(
-        notifier: _captureButtonNotifier,
-        builder: (context, show) => show == true
-            ? GestureDetector(
-                onTap: cameraController != null &&
-                        cameraController.value.isInitialized
-                    ? onTakePictureButtonPressed
-                    : null,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: const [
-                    Icon(
-                      Icons.circle,
-                      color: Colors.white38,
-                      size: 80,
-                    ),
-                    Icon(
-                      Icons.circle,
-                      color: Colors.white,
-                      size: 65,
-                    ),
-                  ],
+      notifier: _captureButtonNotifier,
+      builder: (context, show) =>
+          show == true || _isRetakingPicture.value == true
+              ? GestureDetector(
+                  onTap: cameraController != null &&
+                          cameraController.value.isInitialized
+                      ? onTakePictureButtonPressed
+                      : null,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: const [
+                      Icon(
+                        Icons.circle,
+                        color: Colors.white38,
+                        size: 80,
+                      ),
+                      Icon(
+                        Icons.circle,
+                        color: Colors.white,
+                        size: 65,
+                      ),
+                    ],
+                  ),
+                )
+              : const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text(
+                    "Merci de sélectionner votre nom",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500),
+                  ),
                 ),
-              )
-            : Container());
+    );
   }
 
   String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
@@ -677,7 +743,8 @@ class _UsersListScreenState extends State<UsersListScreen>
   }
 
   void onTakePictureButtonPressed() {
-    _isCountingDown.value = true;
+    _imageFileNotifier.notify(null);
+    setIsCountingToTrue();
     _isTabSwitched.value = false;
     Future.delayed(
       const Duration(seconds: 3),
@@ -693,7 +760,7 @@ class _UsersListScreenState extends State<UsersListScreen>
         );
       },
     );
-    Future.delayed(const Duration(seconds: 3), setIsCountingToFalse);
+    Future.delayed(const Duration(seconds: 3), setIsCountingDownToFalse);
   }
 
   void onFlashModeButtonPressed() {
@@ -922,7 +989,7 @@ class _UsersListScreenState extends State<UsersListScreen>
   @override
   void showLoader() {
     SchedulerBinding.instance?.addPostFrameCallback((_) {
-      loader.showLoadingIndicator("Loading");
+      loader.showLoadingIndicator("Patienter svp");
     });
   }
 
@@ -965,8 +1032,8 @@ class _UsersListScreenState extends State<UsersListScreen>
     _selectedIndexNotifier.notify(-1);
     _captureButtonNotifier.notify(false);
     onWorkDayStartedSuccessful(start == true
-        ? "Workday successfully started"
-        : "Workday successfully finished");
+        ? "La journée de travail a démarré avec succès"
+        : "Journée de travail terminée avec succès");
   }
 
   @override

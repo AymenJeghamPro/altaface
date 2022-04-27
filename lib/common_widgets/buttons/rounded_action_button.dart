@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_projects/_shared/constants/app_colors.dart';
+import 'package:altaface/_shared/constants/app_colors.dart';
 
 class RoundedRectangleActionButton extends StatelessWidget {
   final String? title;
@@ -26,7 +26,8 @@ class RoundedRectangleActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: (subtitle != null) ? 50 : 40,
+      width: MediaQuery.of(context).size.width * 0.33,
+      height: (subtitle != null) ? 50 : 50,
       child: MaterialButton(
         minWidth: 50,
         elevation: 0,

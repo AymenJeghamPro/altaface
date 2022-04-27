@@ -1,5 +1,4 @@
-
-import 'package:flutter_projects/_shared/exceptions/af_exception.dart';
+import 'package:altaface/_shared/exceptions/af_exception.dart';
 
 class APIException extends AFException {
   final dynamic responseData;

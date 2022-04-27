@@ -1,14 +1,14 @@
-import 'package:flutter_projects/_shared/exceptions/invalid_response_exception.dart';
-import 'package:flutter_projects/af_core/af_api/entities/api_request.dart';
-import 'package:flutter_projects/af_core/af_api/entities/api_response.dart';
-import 'package:flutter_projects/af_core/af_api/exceptions/api_exception.dart';
-import 'package:flutter_projects/af_core/af_api/exceptions/http_exception.dart';
-import 'package:flutter_projects/af_core/af_api/exceptions/server_sent_exception.dart';
-import 'package:flutter_projects/af_core/af_api/services/af_api.dart';
-import 'package:flutter_projects/af_core/af_api/services/network_adapter.dart';
-import 'package:flutter_projects/af_core/entity/company/company.dart';
-import 'package:flutter_projects/af_core/repository/company/company_repository.dart';
-import 'package:flutter_projects/af_core/constants/company_urls.dart';
+import 'package:altaface/_shared/exceptions/invalid_response_exception.dart';
+import 'package:altaface/af_core/af_api/entities/api_request.dart';
+import 'package:altaface/af_core/af_api/entities/api_response.dart';
+import 'package:altaface/af_core/af_api/exceptions/api_exception.dart';
+import 'package:altaface/af_core/af_api/exceptions/http_exception.dart';
+import 'package:altaface/af_core/af_api/exceptions/server_sent_exception.dart';
+import 'package:altaface/af_core/af_api/services/af_api.dart';
+import 'package:altaface/af_core/af_api/services/network_adapter.dart';
+import 'package:altaface/af_core/entity/company/company.dart';
+import 'package:altaface/af_core/repository/company/company_repository.dart';
+import 'package:altaface/af_core/constants/company_urls.dart';
 
 import '../../repository/company/company_response_processor.dart';
 
@@ -33,7 +33,7 @@ class CurrentCompanyProvider {
   }
 
   Company? getCurrentCompany() {
-    return _companyRepository.getCurrentCompany() ;
+    return _companyRepository.getCurrentCompany();
   }
 
   Future<Company?> login(String key) async {
@@ -46,8 +46,10 @@ class CurrentCompanyProvider {
 
     try {
       var apiResponse = await _networkAdapter.get(apiRequest);
-      var responseData = CompanyResponseProcessor().processResponse(apiResponse);
-      var response =  APIResponse(apiRequest, apiResponse.statusCode, responseData, {});
+      var responseData =
+          CompanyResponseProcessor().processResponse(apiResponse);
+      var response =
+          APIResponse(apiRequest, apiResponse.statusCode, responseData, {});
       isLoading = false;
       return _processResponse(response);
     } on APIException catch (exception) {

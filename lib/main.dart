@@ -4,7 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'main/views/main_screen.dart';
+import 'ui/main/views/main_screen.dart';
 
 List<CameraDescription> cameras = <CameraDescription>[];
 

@@ -1,5 +1,5 @@
-import 'package:flutter_projects/af_core/af_api/entities/api_response.dart';
-import 'package:flutter_projects/af_core/af_api/exceptions/unexpected_response_format_exception.dart';
+import 'package:altaface/af_core/af_api/entities/api_response.dart';
+import 'package:altaface/af_core/af_api/exceptions/unexpected_response_format_exception.dart';
 
 class UserResponseProcessor {
   dynamic processResponse(APIResponse response) {

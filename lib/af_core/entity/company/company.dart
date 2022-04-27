@@ -1,11 +1,9 @@
-
-import 'package:flutter_projects/_shared/exceptions/mapping_exception.dart';
-import 'package:flutter_projects/_shared/json_serialisation_base/json_convertible.dart';
-import 'package:flutter_projects/_shared/json_serialisation_base/json_initializable.dart';
+import 'package:altaface/_shared/exceptions/mapping_exception.dart';
+import 'package:altaface/_shared/json_serialisation_base/json_convertible.dart';
+import 'package:altaface/_shared/json_serialisation_base/json_initializable.dart';
 import 'package:sift/sift.dart';
 
 class Company extends JSONInitializable implements JSONConvertible {
-
   late String _id;
   String? _name;
   String? _language;
@@ -23,7 +21,8 @@ class Company extends JSONInitializable implements JSONConvertible {
       _language = sift.readStringFromMap(jsonMap, 'language');
       _timeZone = sift.readStringFromMap(jsonMap, 'timezone');
       _logoUrl = sift.readStringFromMap(jsonMap, 'logo');
-      _siteDefaultRadius = sift.readNumberFromMap(jsonMap, 'site_default_radius') ;
+      _siteDefaultRadius =
+          sift.readNumberFromMap(jsonMap, 'site_default_radius');
       _addressId = sift.readStringFromMap(jsonMap, 'address_id');
       _isArchived = sift.readBooleanFromMap(jsonMap, 'is_archived');
     } on SiftException catch (e) {
@@ -34,8 +33,6 @@ class Company extends JSONInitializable implements JSONConvertible {
 
   @override
   Map<String, dynamic> toJson() {
-
-
     Map<String, dynamic> jsonMap = {
       'id': _id,
       'name': _name,
@@ -44,7 +41,7 @@ class Company extends JSONInitializable implements JSONConvertible {
       'logo': _logoUrl,
       'site_default_radius': _siteDefaultRadius,
       'address_id': _addressId,
-      'is_archived' : _isArchived
+      'is_archived': _isArchived
     };
     return jsonMap;
   }
@@ -57,7 +54,7 @@ class Company extends JSONInitializable implements JSONConvertible {
 
   String? get timeZone => _timeZone;
 
-  String?  get logoUrl =>_logoUrl;
+  String? get logoUrl => _logoUrl;
 
   num? get siteDefaultRadius => _siteDefaultRadius;
 

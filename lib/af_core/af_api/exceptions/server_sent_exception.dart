@@ -1,4 +1,4 @@
-import 'package:flutter_projects/af_core/af_api/exceptions/api_exception.dart';
+import 'package:altaface/af_core/af_api/exceptions/api_exception.dart';
 
 class ServerSentException extends APIException {
   static const String _userReadableMessage =

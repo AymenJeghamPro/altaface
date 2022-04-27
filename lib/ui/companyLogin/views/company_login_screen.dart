@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:flutter_projects/_shared/constants/app_colors.dart';
-import 'package:flutter_projects/common_widgets/alert/alert.dart';
-import 'package:flutter_projects/common_widgets/buttons/rounded_action_button.dart';
-import 'package:flutter_projects/common_widgets/form_widgets/login_text_field.dart';
-import 'package:flutter_projects/common_widgets/notifiable/item_notifiable.dart';
-import 'package:flutter_projects/common_widgets/screen_presenter/screen_presenter.dart';
-import 'package:flutter_projects/ui/adminsList/views/admin_list_screen.dart';
-import 'package:flutter_projects/ui/companyLogin/contracts/company_login_view.dart';
-import 'package:flutter_projects/ui/companyLogin/presenters/company_login_presenter.dart';
+import 'package:altaface/_shared/constants/app_colors.dart';
+import 'package:altaface/common_widgets/alert/alert.dart';
+import 'package:altaface/common_widgets/buttons/rounded_action_button.dart';
+import 'package:altaface/common_widgets/form_widgets/login_text_field.dart';
+import 'package:altaface/common_widgets/notifiable/item_notifiable.dart';
+import 'package:altaface/common_widgets/screen_presenter/screen_presenter.dart';
+import 'package:altaface/ui/adminsList/views/admin_list_screen.dart';
+import 'package:altaface/ui/companyLogin/contracts/company_login_view.dart';
+import 'package:altaface/ui/companyLogin/presenters/company_login_presenter.dart';
 
 class CompanyLoginScreen extends StatefulWidget {
   const CompanyLoginScreen({Key? key}) : super(key: key);
@@ -36,27 +36,47 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SafeArea(
-        child: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage("assets/icons/background1.png"),
-                fit: BoxFit.cover),
-          ),
-          padding: const EdgeInsets.all(10.0),
-          child: ListView(
-            physics: const ClampingScrollPhysics(),
-            children: <Widget>[
-              userIcon(),
-              loginIcon(),
-              const SizedBox(height: 40),
-              formUI(),
-              const SizedBox(height: 16),
-              _loginButton()
-            ],
-          ),
+        child: Column(
+          children: [
+            Expanded(
+              child: Container(
+                height: size.height,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('assets/images/top1.png'),
+                      fit: BoxFit.fill),
+                ),
+                child: Stack(
+                  children: <Widget>[
+                    Positioned(
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage('assets/images/top2.png'),
+                              fit: BoxFit.fill),
+                        ),
+                      ),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        loginIcon(),
+                        const SizedBox(height: 40),
+                        formUI(),
+                        const SizedBox(height: 16),
+                        _loginButton()
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -67,48 +87,44 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
       notifier: _showLogoNotifier,
       builder: (context, showLogo) => AnimatedContainer(
         duration: const Duration(milliseconds: 100),
-        margin: EdgeInsets.only(top: (showLogo ?? true) ? 40 : 0),
         curve: Curves.easeInOut,
         width: double.infinity,
         child: Center(
           child: SizedBox(
             height: (showLogo ?? true) ? 120 : 0,
             width: 120,
-            child: Image.asset('assets/logo/ic_altagem_logo.png'),
+            child: Image.asset('assets/logo/altaface_logo.png'),
           ),
         ),
       ),
     );
   }
 
-  Widget userIcon() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        SizedBox(
-          height: 120,
-          width: 120,
-          child: Image.asset('assets/logo/ic_altagem_logo.png'),
-        ),
-      ],
-    );
-  }
+  // Widget userIcon() {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.end,
+  //     children: [
+  //       SizedBox(
+  //         height: 120,
+  //         width: 120,
+  //         child: Image.asset('assets/logo/altaface_logo.png'),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget formUI() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        ItemNotifiable<String>(
-          notifier: _keyErrorNotifier,
-          builder: (context, value) => LoginTextField(
-            controller: _keyTextController,
-            hint: "Company key",
-            errorText: value,
-            textInputAction: TextInputAction.next,
-          ),
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.33,
+      child: ItemNotifiable<String>(
+        notifier: _keyErrorNotifier,
+        builder: (context, value) => LoginTextField(
+          controller: _keyTextController,
+          hint: "Clé d'entreprise",
+          errorText: value,
+          textInputAction: TextInputAction.next,
         ),
-        const SizedBox(height: 16)
-      ],
+      ),
     );
   }
 
@@ -116,7 +132,7 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen>
     return ItemNotifiable<bool>(
       notifier: _showLoaderNotifier,
       builder: (context, value) => RoundedRectangleActionButton(
-        title: 'Login',
+        title: 'Se connecter',
         borderColor: AppColors.successColor,
         color: AppColors.successColor,
         onPressed: () => _performLogin(),

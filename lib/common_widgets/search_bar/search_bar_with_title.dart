@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_projects/_shared/constants/app_colors.dart';
-import 'package:flutter_projects/common_widgets/text/text_styles.dart';
+import 'package:altaface/_shared/constants/app_colors.dart';
+import 'package:altaface/common_widgets/text/text_styles.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class SearchBarWithTitle extends StatefulWidget {

@@ -1,10 +1,9 @@
-import 'package:flutter_projects/_shared/exceptions/mapping_exception.dart';
-import 'package:flutter_projects/_shared/json_serialisation_base/json_convertible.dart';
-import 'package:flutter_projects/_shared/json_serialisation_base/json_initializable.dart';
+import 'package:altaface/_shared/exceptions/mapping_exception.dart';
+import 'package:altaface/_shared/json_serialisation_base/json_convertible.dart';
+import 'package:altaface/_shared/json_serialisation_base/json_initializable.dart';
 import 'package:sift/sift.dart';
 
 class User extends JSONInitializable implements JSONConvertible {
-
   String? _id;
   String? _type;
   String? _teamId;
@@ -25,25 +24,29 @@ class User extends JSONInitializable implements JSONConvertible {
     try {
       _id = sift.readStringFromMap(jsonMap, 'id');
       _type = sift.readStringFromMap(jsonMap, 'type');
-      _teamId = sift.readStringFromMapWithDefaultValue(jsonMap, 'team_id',null);
-      _weeklyScheduleId = sift.readStringFromMapWithDefaultValue(jsonMap, 'weekly_schedule_id',null);
+      _teamId =
+          sift.readStringFromMapWithDefaultValue(jsonMap, 'team_id', null);
+      _weeklyScheduleId = sift.readStringFromMapWithDefaultValue(
+          jsonMap, 'weekly_schedule_id', null);
       _firstName = sift.readStringFromMap(jsonMap, 'first_name');
       _lastName = sift.readStringFromMap(jsonMap, 'last_name');
       _userName = sift.readStringFromMap(jsonMap, 'username');
       _isLocalized = sift.readBooleanFromMap(jsonMap, 'is_localized');
-      _storeId = sift.readStringFromMapWithDefaultValue(jsonMap, 'store_id',null);
-      _avatar = sift.readStringFromMapWithDefaultValue(jsonMap, 'avatar',null);
+      _storeId =
+          sift.readStringFromMapWithDefaultValue(jsonMap, 'store_id', null);
+      _avatar = sift.readStringFromMapWithDefaultValue(jsonMap, 'avatar', null);
       _isArchived = sift.readBooleanFromMap(jsonMap, 'is_archived');
-      _authenticationToken = sift.readStringFromMapWithDefaultValue(jsonMap, 'authentication_token',null);
-      _workDayId = sift.readStringFromMapWithDefaultValue(jsonMap, 'workday_id',null);
-      _activitiesCount = sift.readNumberFromMapWithDefaultValue(jsonMap, 'current_activities_count',0)!;
-
+      _authenticationToken = sift.readStringFromMapWithDefaultValue(
+          jsonMap, 'authentication_token', null);
+      _workDayId =
+          sift.readStringFromMapWithDefaultValue(jsonMap, 'workday_id', null);
+      _activitiesCount = sift.readNumberFromMapWithDefaultValue(
+          jsonMap, 'current_activities_count', 0)!;
     } on SiftException catch (e) {
       throw MappingException(
           'Failed to cast Company response. Error message - ${e.errorMessage}');
     }
   }
-
 
   @override
   Map<String, dynamic> toJson() {
@@ -59,7 +62,7 @@ class User extends JSONInitializable implements JSONConvertible {
       'store_id': _storeId,
       'avatar': _avatar,
       'is_archived': _isArchived,
-      'authentication_token' : _authenticationToken
+      'authentication_token': _authenticationToken
     };
     return jsonMap;
   }
